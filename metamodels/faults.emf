@@ -1,3 +1,12 @@
 @namespace(uri="project")
 
 package project;
+
+/* This DSL is responsible for defining the fault scenarios
+* which are provided by the user in order to evaluate their
+* criticality through the genetic algorithm 
+*/
+
+class Fault {
+	
+}
