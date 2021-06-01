@@ -1,3 +1,41 @@
-@namespace(uri="project")
+@namespace(uri="project", prefix="")
 
 package project;
+
+import "platform:/resource/Project/ecore/specification.ecore";
+import "platform:/resource/Project/ecore/environment.ecore";
+import "platform:/resource/Project/ecore/fault.ecore";
+
+/* This DSL is responsible for defining the specification
+* of the mission which is going to be executed by the MRS 
+* including robots, goals, environment, constrains etc.
+*/
+
+
+class Goal {
+	attr String name;
+	ref Behaviour[*] behaviours;
+}
+
+class Behaviour {
+	attr String name;
+	val BehaviourParameter[*] params;
+}
+
+class BehaviourParameter {
+	attr String paramName;
+}
+
+/* Mission definition */
+
+class Mission {
+	val project.Robot[*] robots;
+	val project.Server[*] servers;	
+	val Goal[*] goals;
+	val project.Object[*] objects;
+	val project.Obstacle[*] obstacles;
+	val project.Area[*] areas;
+	val project.Fault[*] faults;
+	val Behaviour[*] behaviours;
+}
+
