@@ -1,0 +1,47 @@
+@namespace(uri="project", prefix="")
+
+package project;
+
+/* This DSL is responsible for defining the environtment
+* in which the mission is going to be executed by defining
+* elements including obstacles, objects to be inspected, regions etc.
+*/
+
+class Coordinate {
+	attr double x;
+	attr double y;
+	attr double z;
+}
+
+abstract class Area {
+	
+}
+
+class Line extends Area {
+	val Coordinate[2..*] coordinates;
+}
+
+class Rectangle extends Area {
+	val Coordinate[1] c1;
+	val Coordinate[1] c2;
+}
+
+class Circle extends Area {
+	attr double radius;
+	val Coordinate[1] centre;
+}
+
+class Polygon extends Area {
+	val Coordinate[3..*] coordinates;
+}
+
+class Object extends Coordinate {
+	attr String type;
+	attr boolean hazardous;
+}
+
+class Obstacle extends Coordinate {
+	attr String type;
+	val Polygon shape;
+	val Rectangle area;
+}
