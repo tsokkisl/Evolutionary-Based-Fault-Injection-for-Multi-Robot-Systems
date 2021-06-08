@@ -1,0 +1,175 @@
+[% out.setContentType("Java"); %]
+[* componentLookup is used for resolving the name assigned in the Java
+DSL to everything that is a subclass of component *]
+[% var componentLookup = new Map(); %]
+[% var EObjectLookup = new Map(); %]
+package dsl.dslloader;
+
+import dsl.*;
+import dsl.faults.*;
+import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
+public class GeneratedDSLLoader implements DSLLoader {
+	public Mission loadMission() throws DSLLoadFailed {
+	[% for (m in M!Mission.allInstances()) { %]
+	[% 	var robotNum = 0; 
+		var serverNum = 0; 
+	%]	
+	Mission mission = new Mission();
+	
+	[% for (s in m.servers) { %]
+	[% var serverName = "s" + serverNum++;	%]
+	Server [%= serverName %] = new Server("[%= s.name %]");
+	[% componentLookup.put(s, serverName); %]
+	mission.addServer([%= serverName %]);
+	[% } %]
+	
+	[% for (r in m.robots) { %]
+		[% var robotName = "r" + r.name; %]
+		[% componentLookup.put(r, robotName); %]
+		Robot [%= robotName %] = new Robot("[%= r.name %]");
+		[* Extract the necessary properties for r
+		Set the properies for r *]
+		[% for (p in r.componentProperties) { %]
+			[% if (p.isKindOf(IntProperty)) { %]
+		[%= robotName %].setIntComponentProperty("[%= p.name %]", [%= p.value %]);
+			[% } %]
+			[% if (p.isKindOf(DoubleProperty)) { %]
+		[%= robotName %].setDoubleComponentProperty("[%= p.name %]", [%= p.value %]);
+			[% } %]
+			[% if (p.isKindOf(StringProperty)) { %]
+		[%= robotName %].setPointComponentProperty("[%= p.name %]", [%= p.value %]);
+			[% } %]
+		[% } %]
+		
+		[* Add subcomponents to the robots *]
+		[% var subCNum = 0; %]
+		[% for (subc in r.subcomponents) { %]
+			[% var subID = "s" + robotName + "_" + subCNum++; %] 
+			[% componentLookup.put(subc, subID); %]
+			[% if (subc.isKindOf(Sensor)) { %]
+		Sensor [%= subID %] = new Sensor(SensorType.[%= subc.type %]);
+		[%= subID %].setParent([%= robotName %]);
+				[* set subcomponent properties here *]
+				[% for (sp in subc.componentProperties) { %]
+				[* TODO: factor this property pocessing into a subroutine call? *]
+					[% if (sp.isKindOf(IntProperty)) { %]
+		[%= subID %].setIntComponentProperty("[%= sp.name %]", [%= sp.value %]);
+					[% } %]
+					[% if (sp.isKindOf(DoubleProperty)) { %]
+		[%= subID %].setDoubleComponentProperty("[%= sp.name %]", [%= sp.value %]);
+					[% } %]
+				[% } %]
+		[%= robotName %].addSubcomponent([%= subID %]);
+			[% } %]
+			
+			[* TODO: properties for these subcomponent types *]
+			[% if (subc.isKindOf(MotionSource)) { %]
+			MotionSource [%= subID %] = new MotionSource();
+			[%= robotName %].addSubcomponent([%= subID %]);
+			[% } %]
+			[% if (subc.isKindOf(Actuator)) { %]
+			Actuator [%= subID %] = new Actuator();
+			[%= robotName %].addSubcomponent([%= subID %]);
+			[% } %]
+			
+		[% } %]
+			
+		[* Add the robot to the mission *]
+		mission.addRobot([%= robotName %]);
+	 [% } %] [* end Robot loop *]
+	
+	[* Add objects *]
+	[% var objectID = 0; %]
+	[% for (o in m.objects) { %]
+	Object o[%= objectID++ %] = new Object([%= o.label %], new Point([%= o.x %],[%= o.y %],[%= o.z %]), [%= o.isHazard %]);
+	mission.addObject(eo[%= objectID %]);
+	[% EObjectLookup.put(o, o.label); %]
+	[% } %]
+	[* end objects *]
+	
+	[% var goalnum = 0; %]
+	[% for (g in m.goals) { %]
+		[% goalnum++; %]
+		[% var goalName = g.name; %]
+		[% if (g.members.isKindOf(GoalStaticMembers)) { %]
+			[% var allNames = ""; %]
+			[% for (robot in g.GoalStaticMembers.goalMembers) { %]
+				[% allNames = allNames + "r" + robot.name + ","; %] 
+			[% } %]
+			[* Strip off the final comma from the end of it *]
+			[% var allNamesLen = allNames.length(); %]
+			[% allNames = allNames.substring(0, allNamesLen-1); %]
+		
+		Robot [] grp[%= goalnum%] = {[%= allNames %]}; 
+		GoalMembers gm[%= goalName %] = new GoalStaticMembers(grp[%= goalnum %], mission);
+		[% } %]
+		
+		[% var goalTemp = g.dependentGoals; %]
+		
+		GoalDependencies gd[%= goalnum %] = new GoalDependencies([%= goalTemp.earliestStartTime %], [%= goalTemp.latestFinishTime %]);
+		
+		[* Goal actions *]
+		[% var goalTask = g.task; %]
+		[% if (goalTask.isKindOf(Sense)) { %]
+		GoalTask gt[%= goalnum %] = new Sense([%= goalTask.density %], [%= goalTask.samplesPerUnit %], SensorType.[%= goalTask.sensortype %]);
+		[% } %]
+		
+		[% if (goalTask.isKindOf(AvoidCollision)) { %]
+		GoalTask gt[%= goalnum %] = new AvoidCollision();
+		[% } %]
+		
+		[% if (goalTask.isKindOf(Discover)) { %]
+		List<Object> gt[%= goalnum %]Objs = new ArrayList<Object>();
+		[% for (o in goalTask.objects) { %]
+		gt[%= goalnum %]Objs.add(eo[%= EObjectLookup.get(o) %]);
+		[% } %]
+		goalTask gt[%= goalnum %] = new Discover(ga[%= goalnum %]Objs, [%= goalTask.robotsNeeded %]);
+		
+		[% } %]
+		
+		[% var goalArea = g.area; %]
+		[% if (goalArea.isKindOf(StaticGoalArea)) { %]
+		[% var sa = goalArea.staticGoalArea; %]
+		GoalArea gar[%= goalName %] = new StaticGoalArea(
+			new Area(new Point([%= sa.c1.x %], [%= sa.c1.y %], [%= sa.c1.z %]),
+			           new Point([%= sa.c2.x %], [%= sa.c2.y %], [%= sa.c2.z %])));
+		[% } %]
+		
+		[% if (goalArea.isKindOf(DynamicGoalArea)) { %]
+		[% var parentGoal = goalArea.dependentGoal; %]
+		GoalArea gar[%= goalName %] = new DynamicGoalArea([%= parentGoal.name %]);
+		[% } %]
+		
+		Goal [%= goalName %] = new Goal("[%= g.name %]", mission, gd[%= goalnum %], gm[%= goalName %], Optional.of(gar[%= goalName %]), gt[%= goalnum %]);
+		
+		[* Register goal dependencies - need an exception handler around this if any dependencies
+		   are inserted *]
+		[% if (g.dependentGoals.dependencies.size > 0) { %]
+		try {
+			[% for (dep in g.dependentGoals.dependencies) { %]
+			[%= goalName %].setDependencyOn([%= dep.name %]);
+			[% } %]
+		} catch (SelfDependencyError e) {
+			throw new DSLLoadFailed("Goal [%= goalName %] depends on itself");
+		}
+		[% } %]
+		
+		mission.addGoal("[%= g.name %]", [%= g.name %]);
+	[% } %]
+	
+	[* Add messages - naming schema msg[name] *]
+	[% for (msg in m.messages) { %]
+	[% 	var msgName = "msg" + msg.header; 
+		var cFromName = componentLookup.get(msg.from); 
+	 	var cToName = componentLookup.get(msg.to); %] 
+		Message [%= msgName %] = new Message("[%= msg.header %]", [%= msg.body %], [%= cFromName %], [%= cToName %]);
+		mission.addMessage([%= msgName %]); 
+	[% } %]
+	
+	[% } %] [* end Mission loop *]
+	return mission;
+	}
+}
