@@ -1,20 +1,98 @@
-@namespace(uri="project", prefix="")
+@namespace(uri="project-mission", prefix="")
 
 package project;
 
 import "platform:/resource/Project/ecore/specification.ecore";
 import "platform:/resource/Project/ecore/environment.ecore";
-import "platform:/resource/Project/ecore/fault.ecore";
+import "platform:/resource/Project/ecore/faults.ecore";
 
 /* This DSL is responsible for defining the specification
 * of the mission which is going to be executed by the MRS 
 * including robots, goals, environment, constrains etc.
 */
 
+abstract class GoalMembers {
+	
+}
+
+class GoalStaticMembers extends GoalMembers {
+	val project.Robot[*] goalMembers;	
+}
+
+class GoalDynamicMembers extends GoalMembers {
+	ref Goal goal;
+	ref GoalStaticMembers staticMembers;
+	attr int memberLimit;	
+}
+
+class GoalDependencies {
+	ref Goal[*] dependencies;
+	attr double earliestStartTime;
+	attr double latestFinishTime;
+}
+
+abstract class GoalArea {
+	
+}
+
+class StaticGoalArea extends GoalArea {
+	val project.Rectangle staticGoalArea;	
+}
+
+class DynamicGoalArea extends GoalArea {
+	ref Goal[1] dependentGoal;
+}
+
+abstract class GoalTask {
+	
+}
+
+class Patrol extends GoalTask {
+	
+}
+
+class Visit extends GoalTask {
+	
+}
+
+class Avoid extends GoalTask {
+	
+}
+
+class Cover extends GoalTask {
+	
+}
+
+class Track extends GoalTask {
+	
+}
+
+class Stay extends GoalTask {
+	attr boolean stop;
+}
+
+class AvoidCollision extends GoalTask {
+	
+}
+
+class Discover extends GoalTask {
+	ref project.Object[*] objects;
+	attr int robotsNeeded;
+}
+
+class Sense extends Cover {
+	attr double density;
+	attr int samplesPerUnit;
+	attr project.SensorType sensorType;
+}
 
 class Goal {
 	attr String name;
 	ref Behaviour[*] behaviours;
+	val GoalMembers[*] members;
+	val GoalDependencies[*] dependentGoals;
+	val GoalArea[0..1] area;
+	val GoalTask task;
 }
 
 class Behaviour {
@@ -29,6 +107,7 @@ class BehaviourParameter {
 /* Mission definition */
 
 class Mission {
+	attr String name;
 	val project.Robot[*] robots;
 	val project.Server[*] servers;	
 	val Goal[*] goals;
@@ -37,5 +116,6 @@ class Mission {
 	val project.Area[*] areas;
 	val project.Fault[*] faults;
 	val Behaviour[*] behaviours;
+	val project.Message[*] messages;
 }
 

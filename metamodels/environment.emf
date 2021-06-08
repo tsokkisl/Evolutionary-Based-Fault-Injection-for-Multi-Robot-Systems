@@ -1,4 +1,4 @@
-@namespace(uri="project", prefix="")
+@namespace(uri="project-environment", prefix="")
 
 package project;
 
