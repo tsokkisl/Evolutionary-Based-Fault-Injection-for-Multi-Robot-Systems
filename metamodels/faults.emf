@@ -9,7 +9,7 @@ import "platform:/resource/Project/ecore/specification.ecore";
 * criticality through the genetic algorithm 
 */
 
-abstract class FaultType {
+class FaultType {
 	
 }
 

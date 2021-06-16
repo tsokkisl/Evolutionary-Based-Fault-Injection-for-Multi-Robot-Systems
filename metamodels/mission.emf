@@ -89,8 +89,8 @@ class Sense extends Cover {
 class Goal {
 	attr String name;
 	ref Behaviour[*] behaviours;
-	val GoalMembers[*] members;
-	val GoalDependencies[*] dependentGoals;
+	val GoalMembers members;
+	val GoalDependencies dependentGoals;
 	val GoalArea[0..1] area;
 	val GoalTask task;
 }
