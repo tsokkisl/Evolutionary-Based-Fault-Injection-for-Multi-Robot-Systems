@@ -5,15 +5,15 @@ rule Model2MissionLoader
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/missionloader.java"
+	target : "../middleware/src/dsl/dslloader/MissionLoader.java"
 }
 
 rule Model2FaultMissionLoader 
 	transform m : Mission {
 
-	template : "genfaultmissionloader.egl"
+	template : "genfaultengine.egl"
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/faultmissionloader.java"
+	target : "../middleware/src/dsl/dslloader/FaultEngine.java"
 }
