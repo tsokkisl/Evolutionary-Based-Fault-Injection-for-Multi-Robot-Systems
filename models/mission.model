@@ -1,49 +1,32 @@
 <?xml version="1.0" encoding="ASCII"?>
-<Mission xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="project-mission" xmlns:_1="project-specification" xmlns:_2="project-faults" xmi:id="_KnwzwM3wEeuFb8lwzyTrGg" name="Mission 1.4">
-  <robots xmi:id="_Y8RbMM3wEeuFb8lwzyTrGg" name="Robot1">
-    <componentProperties xsi:type="_1:DoubleProperty" xmi:id="_r1vbkM3wEeuFb8lwzyTrGg" name="SPEED" value="200.0"/>
-    <componentProperties xsi:type="_1:IntProperty" xmi:id="_uw_EsM3wEeuFb8lwzyTrGg" name="MOTION" value="50"/>
-    <componentProperties xsi:type="_1:StringProperty" xmi:id="_xklNsM3wEeuFb8lwzyTrGg" name="TYPE" value="Scanner"/>
-    <subcomponents xsi:type="_1:Actuator" xmi:id="_8EgJMM3wEeuFb8lwzyTrGg" name="A1">
-      <commands>C1</commands>
-      <commands>C2</commands>
-    </subcomponents>
-    <subcomponents xsi:type="_1:Battery" xmi:id="_8meN0M3wEeuFb8lwzyTrGg" name="B1" totalEnergy="2400"/>
-    <subcomponents xsi:type="_1:CPU" xmi:id="_9HPYkM3wEeuFb8lwzyTrGg" name="Robot1_cpu"/>
-    <subcomponents xsi:type="_1:Sensor" xmi:id="_KsoQMM3xEeuFb8lwzyTrGg" name="S1">
-      <detections>D1</detections>
-      <detections>D2</detections>
-      <detections>D3</detections>
-    </subcomponents>
-    <subcomponents xsi:type="_1:Sensor" xmi:id="_LJw4IM3xEeuFb8lwzyTrGg" name="S2"/>
-  </robots>
-  <robots xmi:id="_Z8bQoM3wEeuFb8lwzyTrGg" name="Robot2">
-    <componentProperties xsi:type="_1:DoubleProperty" xmi:id="_UkEPYM3xEeuFb8lwzyTrGg" name="SPEED" value="200.0"/>
-    <componentProperties xsi:type="_1:IntProperty" xmi:id="_VLusUM3xEeuFb8lwzyTrGg" name="MOTION" value="100"/>
-    <componentProperties xsi:type="_1:StringProperty" xmi:id="_VuNuUM3xEeuFb8lwzyTrGg" name="TYPE" value="COORDINATOR"/>
-    <subcomponents xsi:type="_1:Actuator" xmi:id="_WfhPcM3xEeuFb8lwzyTrGg" name="A2">
-      <commands>C1</commands>
-      <commands>C2</commands>
-    </subcomponents>
-    <subcomponents xsi:type="_1:Battery" xmi:id="_W7QwQM3xEeuFb8lwzyTrGg" name="B2" totalEnergy="5000"/>
-    <subcomponents xsi:type="_1:CPU" xmi:id="_XYRcYM3xEeuFb8lwzyTrGg" name="Robot2_cpu"/>
-    <subcomponents xsi:type="_1:Sensor" xmi:id="_YbOHIM3xEeuFb8lwzyTrGg" name="S3" type="GPS_POSITION">
-      <detections>D1</detections>
-      <detections>D2</detections>
-    </subcomponents>
-  </robots>
-  <servers xmi:id="_dz54gM3wEeuFb8lwzyTrGg" name="S1">
-    <subcomponents xsi:type="_1:CPU" xmi:id="_nssikM3wEeuFb8lwzyTrGg" name="ServerCPU"/>
-  </servers>
-  <faults xmi:id="_qI2b8M3wEeuFb8lwzyTrGg" name="MotionFault" faultStart="2.0" faultFinish="1.5">
-    <fault xsi:type="_2:MotionLoss" xmi:id="_x1FSYM3xEeuFb8lwzyTrGg" affectedComponent="_Y8RbMM3wEeuFb8lwzyTrGg" motionLoss="5"/>
-  </faults>
-  <faults xmi:id="_qiC_EM3wEeuFb8lwzyTrGg" name="EnergyLoss" faultStart="4.5" faultFinish="3.0">
-    <fault xsi:type="_2:EnergyLoss" xmi:id="_3Hb80M3xEeuFb8lwzyTrGg" affectedComponent="_Z8bQoM3wEeuFb8lwzyTrGg" energyLoss="500"/>
-  </faults>
-  <faults xmi:id="_q59v0M3wEeuFb8lwzyTrGg" name="DisableComponent" faultStart="8.0" faultFinish="5.0">
-    <fault xsi:type="_2:DisableComponent" xmi:id="_cy8f4M3yEeuFb8lwzyTrGg" affectedComponent="_WfhPcM3xEeuFb8lwzyTrGg"/>
-  </faults>
-  <messages xmi:id="_rYbYAM3xEeuFb8lwzyTrGg" header="Header1" body="Body1" from="_Y8RbMM3wEeuFb8lwzyTrGg" to="_Z8bQoM3wEeuFb8lwzyTrGg"/>
-  <messages xmi:id="_sDbc0M3xEeuFb8lwzyTrGg" header="Header2" body="Body2" from="_dz54gM3wEeuFb8lwzyTrGg" to="_Z8bQoM3wEeuFb8lwzyTrGg"/>
-</Mission>
+<Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="project-setup" xmlns:_1="project-faults" xmi:id="_GU090M-DEeu-qsa2sxfeUw">
+  <mission xmi:id="_HCD3QM-DEeu-qsa2sxfeUw">
+    <robots xmi:id="_cMGMEM-DEeu-qsa2sxfeUw"/>
+    <servers xmi:id="_csBpUM-DEeu-qsa2sxfeUw"/>
+    <objects xmi:id="_EFSRMM-QEeu-qsa2sxfeUw"/>
+    <objects xmi:id="_Eyk1AM-QEeu-qsa2sxfeUw"/>
+    <messages xmi:id="_e3NugM-DEeu-qsa2sxfeUw"/>
+  </mission>
+  <scenario xmi:id="_HZPBIM-DEeu-qsa2sxfeUw" ID="1">
+    <faults xmi:id="_HxPRcM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:DisableComponent" xmi:id="_P8CIoM-DEeu-qsa2sxfeUw" affectedComponent="_cMGMEM-DEeu-qsa2sxfeUw"/>
+    </faults>
+    <faults xmi:id="_TBp1wM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:ModifyIntMessage" xmi:id="_Uaep4M-DEeu-qsa2sxfeUw" affectedMessage="_e3NugM-DEeu-qsa2sxfeUw"/>
+    </faults>
+    <faults xmi:id="_VXP0IM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:MotionLoss" xmi:id="_Wfa9IM-DEeu-qsa2sxfeUw" affectedComponent="_cMGMEM-DEeu-qsa2sxfeUw"/>
+    </faults>
+  </scenario>
+  <scenario xmi:id="_OaOXoM-DEeu-qsa2sxfeUw" ID="2">
+    <faults xmi:id="_PH-OcM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:DelayMessage" xmi:id="_PnNvMM-DEeu-qsa2sxfeUw" affectedMessage="_e3NugM-DEeu-qsa2sxfeUw"/>
+    </faults>
+    <faults xmi:id="_Qcz6cM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:DelayMessage" xmi:id="_Q9KOcM-DEeu-qsa2sxfeUw" affectedMessage="_e3NugM-DEeu-qsa2sxfeUw"/>
+    </faults>
+    <faults xmi:id="_R-NbwM-DEeu-qsa2sxfeUw">
+      <fault xsi:type="_1:EnergyLoss" xmi:id="_SfT9sM-DEeu-qsa2sxfeUw" affectedComponent="_csBpUM-DEeu-qsa2sxfeUw"/>
+    </faults>
+  </scenario>
+</Setup>
