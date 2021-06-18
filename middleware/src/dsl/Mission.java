@@ -21,7 +21,6 @@ public class Mission {
 	private Map<String,Obstacle> obstacles = new LinkedHashMap<String,EnvironmentalObstacle>();
 	private Map<String,Goal> goals = new LinkedHashMap<String,Goal>();
 	private Map<String,Message> messages = new LinkedHashMap<String,Message>();
-	private Map<String,Fault> faults = new LinkedHashMap<String,Fault>();
 	private List<String> behaviourVariables = new ArrayList<String>();
 	
 	/* GOALS */
