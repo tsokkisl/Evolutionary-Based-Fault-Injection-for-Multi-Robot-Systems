@@ -84,9 +84,9 @@ public class MissionLoader {
 	[* Add objects *]
 	[% var objectID = 0; %]
 	[% for (o in m.objects) { %]
-	Object o[%= objectID++ %] = new Object([%= o.label %], new Point([%= o.x %],[%= o.y %],[%= o.z %]), [%= o.isHazard %]);
+	Object o[%= objectID++ %] = new Object([%= o.type %], new Point([%= o.x %],[%= o.y %],[%= o.z %]), [%= o.hazardous %]);
 	mission.addObject(eo[%= objectID %]);
-	[% EObjectLookup.put(o, o.label); %]
+	[% EObjectLookup.put(o, o.type); %]
 	[% } %]
 	[* end objects *]
 	
@@ -96,7 +96,7 @@ public class MissionLoader {
 		[% var goalName = g.name; %]
 		[% if (g.members.isKindOf(GoalStaticMembers)) { %]
 			[% var allNames = ""; %]
-			[% for (robot in g.GoalStaticMembers.goalMembers) { %]
+			[% for (robot in g.members.goalMembers) { %]
 				[% allNames = allNames + "r" + robot.name + ","; %] 
 			[% } %]
 			[* Strip off the final comma from the end of it *]

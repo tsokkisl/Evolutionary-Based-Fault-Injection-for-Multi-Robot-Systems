@@ -11,9 +11,9 @@ rule Model2MissionLoader
 rule Model2FaultMissionLoader 
 	transform m : Mission {
 
-	template : "genfaultengine.egl"
+	template : "genfaultscenario.egl"
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/FaultEngine.java"
+	target : "../middleware/src/dsl/dslloader/FaultScenario.java"
 }

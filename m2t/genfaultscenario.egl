@@ -1,0 +1,42 @@
+[% out.setContentType("Java"); %]
+[* componentLookup is used for resolving the name assigned in the Java
+DSL to everything that is a subclass of component *]
+[% var componentLookup = new Map(); %]
+[% var EObjectLookup = new Map(); %]
+package dsl.dslloader;
+
+import dsl.*;
+import dsl.faults.*;
+import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
+public class FaultScenario {
+	private Mission mission;
+		
+	public FaultScenario(Mission m) {
+		this.mission = m;
+	}
+[% for (fs in M!FaultScenario.allInstances()) { %]
+	
+	/* Fault Scenario [%= fs.ID %] */
+	[% for (f in fs.faults) { %]
+		
+		[% if (f.fault.isKindOf(DisableComponent)) { %]
+	DisableComponent ft = new DisableComponent(m.robots.get([%= f.fault.affectedComponent.name %]))
+		[% } %]
+		[% if (f.fault.isKindOf(EnableComponent)) { %]
+	EnableComponent ft = new EnableComponent([%= f.fault.affectedComponent.name %]) 
+		[% } %]
+		[% if (f.fault.isKindOf(EnergyLoss)) { %]
+	EnergyLoss ft = new EnergyLoss([%= f.fault.affectedComponent.name %], [%= f.fault.energyLoss %]) 
+		[% } %]
+		[% if (f.fault.isKindOf(MotionLoss)) { %]
+	MotionLoss ft = new MotionLoss([%= f.fault.affectedComponent.name %], [%= f.fault.motionLoss %]) 
+		[% } %]
+	Fault [%= f.name %] = new Fault("[%= f.name %]", ft, [%= f.faultStart %], [%= f.faultFinish %]);
+
+	[% } %] [* end Robot loop *]
+	 
+   [% } %]
+}
