@@ -4,7 +4,6 @@ package project;
 
 import "platform:/resource/Project/ecore/specification.ecore";
 import "platform:/resource/Project/ecore/environment.ecore";
-import "platform:/resource/Project/ecore/faults.ecore";
 
 /* This DSL is responsible for defining the specification
 * of the mission which is going to be executed by the MRS 
@@ -114,7 +113,6 @@ class Mission {
 	val project.Object[*] objects;
 	val project.Obstacle[*] obstacles;
 	val project.Area[*] areas;
-	val project.Fault[*] faults;
 	val Behaviour[*] behaviours;
 	val project.Message[*] messages;
 }
