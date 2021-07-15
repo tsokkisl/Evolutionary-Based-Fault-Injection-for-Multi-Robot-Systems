@@ -5,15 +5,35 @@ rule Model2MissionLoader
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/MissionLoader.java"
+	target : "../middleware/src/dsl/dslloader/mission_loader.py"
 }
 
 rule Model2FaultMissionLoader 
 	transform m : Mission {
 
-	template : "genfaultscenario.egl"
+	template : "genfaultspecification.egl"
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/FaultScenario.java"
+	target : "../middleware/src/dsl/dslloader/fault_specification.py"
+}
+
+rule Model2SimulationInterface
+	transform m : Mission {
+
+	template : "gensiminterface.egl"
+
+	parameters : Map{}
+
+	target : "../simulation/sim_interface.py"
+}
+
+rule Model2CI 
+	transform m : Mission {
+
+	template : "genCI.egl"
+
+	parameters : Map{}
+
+	target : "../middleware/src/dsl/dslloader/CI.py"
 }

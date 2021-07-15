@@ -1,0 +1,88 @@
+from ..faults import *
+from ..mission import *
+
+class FaultSpecification:
+
+	faults = []
+
+	def __init__(self, mission):
+		self.mission = mission
+	[% for (fs in M!FaultSpecification.allInstances()){ %]
+		#Fault Specification [%= fs.ID %]
+	[% for (f in fs.faults) { %]
+		#Initializing Fault: [%= f.name %]
+		[% switch(f.type.type().name) { %]
+		[% case "StartRobot": %]
+		[% var msg = f.type.fakeMessage; %]
+		[% if (msg.from.isKindOf(Robot)) { %]
+		sender = self.mission.robots.get("[%= msg.from.ID %]")
+		[% } else { %]
+		sender = self.mission.servers.get("[%= msg.from.ID %]")
+		[% } %]
+		[% if (msg.to.isKindOf(Robot)) { %]
+		receiver = self.mission.robots.get("[%= msg.to.ID %]")
+		[% } else { %]
+		receiver = self.mission.servers.get("[%= msg.to.ID %]")
+		[% } %]
+		data = []
+		[% for (data in msg.body) {%]
+		data.append(["[%= data.name %]", "[%= data.type %]"])
+		[% } %]
+		ft = StartRobot(mission.robots.get("[%= f.type.affectedRobot.ID %]"), Message("[%= msg.header %]", sender, receiver, data))
+		[% case "StopRobot": %]
+		ft = StopRobot(mission.robots.get("[%= f.type.affectedRobot.ID %]"), "[%= f.type.fakeMessage.ID %]") 
+		[% case "ActivateSensor": %]
+		ft = ActivateSensor(mission.robots.get("[%= f.type.affectedSensor.parent_ID %]").subcomponents.get("[%= f.type.affectedSensor.ID %]"), "[%= f.type.fakeMessage.ID %]")
+		[% case "DeactivateSensor": %]
+		ft = DeactivateSensor(mission.robots.get("[%= f.type.affectedSensor.parent_ID %]").subcomponents.get("[%= f.type.affectedSensor.ID %]"), "[%= f.type.fakeMessage.ID %]") 
+		[% case "DelayMessage": %]
+		ft = DelayMessage(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.delay %]) 
+		[% case "BlockSentMessages": %]
+		ft = BlockSentMessages(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.blockDuration %]) 
+		[% case "BlockReceivedMessages": %]
+		ft = BlockReceivedMessages(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.blockDuration %]) 
+		[% case "RandomRemainingEnergyCapacity": %]
+		ft = RandomRemainingEnergyCapacity(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.LOWER_BOUND %], [%= f.type.UPPER_BOUND %]) 
+		[% case "ZeroRemainingEnergyCapacity": %]
+		ft = ZeroRemainingEnergyCapacity(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.CAPACITY %]) 
+		[% case "FixedRemainingEnergyCapacity": %]
+		ft = FixedRemainingEnergyCapacity(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.FIXED_VAL %]) 
+		[% case "IncrementRemainingEnergyCapacityReport": %]
+		ft = IncrementRemainingEnergyCapacityReport(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.INCREMENT_VAL %])
+		[% case "DecrementRemainingEnergyCapacityReport": %]
+		ft = DecrementRemainingEnergyCapacityReport(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.DECREMENT_VAL %]) 
+		[% case "RandomSpeed": %]
+		ft = RandomSpeed(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.RANDOM_VAL %]) 
+		[% case "ZeroSpeed": %]
+		ft = ZeroSpeed(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.SPEED %])
+		[% case "FixedSpeed": %]
+		ft = FixedSpeed(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.FIXED_VAL %])
+		[% case "RandomSampleRate": %]
+		ft = RandomSampleRate(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), , [%= f.type.LOWER_BOUND %], , [%= f.type.UPPER_BOUND %]) 
+		[% case "FixedSampleRate": %]
+		ft = FixedSampleRate(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), , [%= f.type.FIXED_VAL %]) 
+		[% case "IncrementSpeed": %]
+		ft = IncrementSpeed(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.PERCENTAGE %]) 
+		[% case "DecrementSpeed": %]
+		ft = DecrementSpeed(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.PERCENTAGE %]) 
+		[% case "IncrementSampleRate": %]
+		ft = IncrementSampleRate(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.PERCENTAGE %]) 
+		[% case "DecrementSampleRate": %]
+		ft = DecrementSampleRate(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.PERCENTAGE %]) 
+		[% case "FixedEmptyStringMessage": %]
+		ft = FixedEmptyStringMessage(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.FIXED_VAL %]) 
+		[% case "RandomStringMessage": %]
+		ft = RandomStringMessage(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.RANDOM_VAL %]) 
+		[% case "FixedRobotCoordinates": %]
+		ft = FixedRobotCoordinates(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.NEW_X %], [%= f.type.NEW_Y %], [%= f.type.NEW_Z %]) 
+		[% case "FixedRobotCoordinates": %]
+		ft = FixedRobotCoordinates(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.NEW_X %], [%= f.type.NEW_Y %], [%= f.type.NEW_Z %]) 
+		[% case "FixedObstacleCoordinates": %]
+		ft = FixedObstacleCoordinates(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.NEW_X %], [%= f.type.NEW_Y %], [%= f.type.NEW_Z %]) 
+		[% case "RandomObstacleCoordinates": %]
+		ft = RandomObstacleCoordinates(mission.goals.get("[%= f.type.affectedMessage.goal_ID %]").messages.get("[%= f.type.affectedMessage.ID %]"), [%= f.type.NEW_X %], [%= f.type.NEW_Y %], [%= f.type.NEW_Z %]) 
+		[% } %]
+		fault_[%= f.name %] = Fault("[%= f.name %]", ft, [%= f.faultStart %], [%= f.faultFinish %], [%= f.faultProbability %])
+		self.faults.append(fault_[%= f.name %])
+	[% } %]
+   [% } %]

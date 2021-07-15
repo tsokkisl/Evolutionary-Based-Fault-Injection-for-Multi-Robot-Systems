@@ -1,175 +1,153 @@
-[% out.setContentType("Java"); %]
-[* componentLookup is used for resolving the name assigned in the Java
-DSL to everything that is a subclass of component *]
+from ..mission import *
 [% var componentLookup = new Map(); %]
 [% var EObjectLookup = new Map(); %]
-package dsl.dslloader;
 
-import dsl.*;
-import dsl.faults.*;
-import java.util.Optional;
-import java.util.List;
-import java.util.ArrayList;
-
-public class MissionLoader {
-	public Mission loadMission() throws DSLLoadFailed {
+class MissionLoader:
+	def loadMission(self):
 	[% for (m in M!Mission.allInstances()) { %]
 	[% 	var robotNum = 0; 
-		var serverNum = 0; 
-	%]	
-	Mission mission = new Mission();
-	
+		var serverNum = 0; %]	
+		self.mission = Mission()
+	[* Initilize Servers *]	
 	[% for (s in m.servers) { %]
+		# Initilize Server: [%= s.name %]
 	[% var serverName = "s" + serverNum++;	%]
-	Server [%= serverName %] = new Server("[%= s.name %]");
+		[%= serverName %] = Server("[%= s.name %]")
 	[% componentLookup.put(s, serverName); %]
-	mission.addServer([%= serverName %]);
+		self.mission.addServer("[%= s.ID %]")
 	[% } %]
-	
+	[* Initilize Robots and subcomponents *]
 	[% for (r in m.robots) { %]
-		[% var robotName = "r" + r.name; %]
-		[% componentLookup.put(r, robotName); %]
-		Robot [%= robotName %] = new Robot("[%= r.name %]");
-		[* Extract the necessary properties for r
-		Set the properies for r *]
+		# Initilize Robot: [%= r.name %]
+		[% componentLookup.put(r, r.ID); %]
+		robot_[%= r.ID %] = Robot("[%= r.name %]")
 		[% for (p in r.componentProperties) { %]
 			[% if (p.isKindOf(IntProperty)) { %]
-		[%= robotName %].setIntComponentProperty("[%= p.name %]", [%= p.value %]);
+		robot_[%= r.ID %].setIntComponentProperty("[%= p.name %]", [%= p.value %])
 			[% } %]
 			[% if (p.isKindOf(DoubleProperty)) { %]
-		[%= robotName %].setDoubleComponentProperty("[%= p.name %]", [%= p.value %]);
+		robot_[%= r.ID %].setDoubleComponentProperty("[%= p.name %]", [%= p.value %])
 			[% } %]
 			[% if (p.isKindOf(StringProperty)) { %]
-		[%= robotName %].setPointComponentProperty("[%= p.name %]", [%= p.value %]);
+		robot_[%= r.ID %].setStringComponentProperty("[%= p.name %]", "[%= p.value %]")
 			[% } %]
-		[% } %]
-		
-		[* Add subcomponents to the robots *]
+		[% } %]	
 		[% var subCNum = 0; %]
+		# Initilize Robot: [%= r.name %]'s subcomponents
 		[% for (subc in r.subcomponents) { %]
-			[% var subID = "s" + robotName + "_" + subCNum++; %] 
-			[% componentLookup.put(subc, subID); %]
+			[% componentLookup.put(subc, subc.ID); %]
 			[% if (subc.isKindOf(Sensor)) { %]
-		Sensor [%= subID %] = new Sensor(SensorType.[%= subc.type %]);
-		[%= subID %].setParent([%= robotName %]);
-				[* set subcomponent properties here *]
+		sensor_[%= subc.ID %] = Sensor("[%= subc.type %]")
+		sensor_[%= subc.ID %].setParent(robot_[%= r.ID %])
 				[% for (sp in subc.componentProperties) { %]
-				[* TODO: factor this property pocessing into a subroutine call? *]
 					[% if (sp.isKindOf(IntProperty)) { %]
-		[%= subID %].setIntComponentProperty("[%= sp.name %]", [%= sp.value %]);
+		[%= subID %].setIntComponentProperty("[%= sp.name %]", [%= sp.value %])
 					[% } %]
 					[% if (sp.isKindOf(DoubleProperty)) { %]
-		[%= subID %].setDoubleComponentProperty("[%= sp.name %]", [%= sp.value %]);
+		[%= subID %].setDoubleComponentProperty("[%= sp.name %]", [%= sp.value %])
 					[% } %]
 				[% } %]
-		[%= robotName %].addSubcomponent([%= subID %]);
+		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", sensor_[%= subc.ID %])
 			[% } %]
-			
-			[* TODO: properties for these subcomponent types *]
 			[% if (subc.isKindOf(MotionSource)) { %]
-			MotionSource [%= subID %] = new MotionSource();
-			[%= robotName %].addSubcomponent([%= subID %]);
+		motion_source_[%= subc.ID %] = MotionSource()
+		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", motion_source_[%= subc.ID %])
 			[% } %]
-			[% if (subc.isKindOf(Actuator)) { %]
-			Actuator [%= subID %] = new Actuator();
-			[%= robotName %].addSubcomponent([%= subID %]);
+			[% if (subc.isKindOf(Battery)) { %]
+		battery_[%= subc.ID %] = Battery()
+		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", battery_[%= subc.ID %])
 			[% } %]
-			
+		[% if (subc.isKindOf(CPU)) { %]
+		cpu_[%= subc.ID %] = CPU()
+		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", cpu_[%= subc.ID %])
+			[% } %]	
 		[% } %]
-			
-		[* Add the robot to the mission *]
-		mission.addRobot([%= robotName %]);
-	 [% } %] [* end Robot loop *]
-	
-	[* Add objects *]
-	[% var objectID = 0; %]
-	[% for (o in m.objects) { %]
-	Object o[%= objectID++ %] = new Object([%= o.type %], new Point([%= o.x %],[%= o.y %],[%= o.z %]), [%= o.hazardous %]);
-	mission.addObject(eo[%= objectID %]);
-	[% EObjectLookup.put(o, o.type); %]
+		self.mission.addRobot("[%= r.ID %]", robot_[%= r.ID %])
 	[% } %]
-	[* end objects *]
 	
+	[* Initilize Goals *]
 	[% var goalnum = 0; %]
 	[% for (g in m.goals) { %]
+		# Initilize Goal: [%= g.name %]
 		[% goalnum++; %]
 		[% var goalName = g.name; %]
-		[% if (g.members.isKindOf(GoalStaticMembers)) { %]
-			[% var allNames = ""; %]
+		members = []
 			[% for (robot in g.members.goalMembers) { %]
-				[% allNames = allNames + "r" + robot.name + ","; %] 
+		members.append(self.mission.robots.get("[%= robot.ID %]"))
 			[% } %]
-			[* Strip off the final comma from the end of it *]
-			[% var allNamesLen = allNames.length(); %]
-			[% allNames = allNames.substring(0, allNamesLen-1); %]
-		
-		Robot [] grp[%= goalnum%] = {[%= allNames %]}; 
-		GoalMembers gm[%= goalName %] = new GoalStaticMembers(grp[%= goalnum %], mission);
+		goal_members_[%= g.ID %] = GoalMembers(members, self.mission)		
+		[% var goalDep = g.dependentGoals; %]
+		g_deps = []
+		[% if (goalDep.size() > 1) { %]
+		[% for (goal in goalDep.dependencies) { %]
+		g_deps.append(self.mission.goals.get("[%= goal.ID %]"))
+			[% } %]
+		goal_dependecies_[%= g.ID %] = GoalDependencies([%= goalDep.earliestStartTime %], [%= goalDep.latestFinishTime %], g_deps)
+		[% } else { %]
+		goal_dependecies_[%= g.ID %] = []	
 		[% } %]
-		
-		[% var goalTemp = g.dependentGoals; %]
-		
-		GoalDependencies gd[%= goalnum %] = new GoalDependencies([%= goalTemp.earliestStartTime %], [%= goalTemp.latestFinishTime %]);
-		
-		[* Goal actions *]
+		[* Goal Tasks *]
 		[% var goalTask = g.task; %]
-		[% if (goalTask.isKindOf(Sense)) { %]
-		GoalTask gt[%= goalnum %] = new Sense([%= goalTask.density %], [%= goalTask.samplesPerUnit %], SensorType.[%= goalTask.sensortype %]);
+		[% if (goalTask.isKindOf(GatherSamples)) { %]
+		s = self.mission.sensors.get("[%= goalTask.sensor.ID %]")
+		goal_task_[%= g.ID %] = GatherSamples([%= goalTask.samplesPerSecond %], [%= goalTask.targetSampleNumber %], s)
 		[% } %]
-		
 		[% if (goalTask.isKindOf(AvoidCollision)) { %]
-		GoalTask gt[%= goalnum %] = new AvoidCollision();
+		rbts = []
+		obs = []
+		[% for (r in goalTask.robots) { %]
+		rbts.append(self.mission.robots.get("[%= r.ID %]"))
 		[% } %]
-		
-		[% if (goalTask.isKindOf(Discover)) { %]
-		List<Object> gt[%= goalnum %]Objs = new ArrayList<Object>();
-		[% for (o in goalTask.objects) { %]
-		gt[%= goalnum %]Objs.add(eo[%= EObjectLookup.get(o) %]);
+		[% for (o in goalTask.obstacles) { %]
+		obs.append(self.mission.obstacles.get("[%= o.ID %]"))
 		[% } %]
-		goalTask gt[%= goalnum %] = new Discover(ga[%= goalnum %]Objs, [%= goalTask.robotsNeeded %]);
-		
+		goal_task_[%= g.ID %] = AvoidCollision(rbts, obs)
 		[% } %]
-		
+		[% if (goalTask.isKindOf(FixedDistanceBetweenRobots)) { %]
+		goal_task_[%= g.ID %] = FixedDistance([%= goalTask.fixedDistance %])
+		[% } %]
+		[% if (goalTask.isKindOf(Patrol)) { %]
+		goal_task_[%= g.ID %] = Patrol()
+		[% } %]
+		[% if (goalTask.isKindOf(Visit)) { %]
+		goal_task_[%= g.ID %] = Visit()
+		[% } %]
+		[% if (goalTask.isKindOf(Track)) { %]
+		goal_task_[%= g.ID %] = Track()
+		[% } %]
+		[% if (goalTask.isKindOf(Stay)) { %]
+		goal_task_[%= g.ID %] = Stay()
+		[% } %]
+		[% if (goalTask.isKindOf(SufficientEnergy)) { %]
+		goal_task_[%= g.ID %] = SufficientEnergy()
+		[% } %]
 		[% var goalArea = g.area; %]
-		[% if (goalArea.isKindOf(StaticGoalArea)) { %]
-		[% var sa = goalArea.staticGoalArea; %]
-		GoalArea gar[%= goalName %] = new StaticGoalArea(
-			new Area(new Point([%= sa.c1.x %], [%= sa.c1.y %], [%= sa.c1.z %]),
-			           new Point([%= sa.c2.x %], [%= sa.c2.y %], [%= sa.c2.z %])));
+		[% var ga = goalArea.goalArea; %]
+		goal_area_[%= g.ID %] = GoalArea(Area(Coordinate([%= ga.center.x %], [%= ga.center.y %], [%= ga.center.z %]), [%= ga.radius %]))
+
+		[* Initilize Messages *]
+		goal_messages = []
+		[% for (msg in g.messages) { %]
+		[% if (msg.from.isKindOf(Robot)) { %]
+		sender = self.mission.robots.get("[%= msg.from.ID %]")
+		[% } else { %]
+		sender = self.mission.servers.get("[%= msg.from.ID %]")
 		[% } %]
-		
-		[% if (goalArea.isKindOf(DynamicGoalArea)) { %]
-		[% var parentGoal = goalArea.dependentGoal; %]
-		GoalArea gar[%= goalName %] = new DynamicGoalArea([%= parentGoal.name %]);
+		[% if (msg.to.isKindOf(Robot)) { %]
+		receiver = self.mission.robots.get("[%= msg.to.ID %]")
+		[% } else { %]
+		receiver = self.mission.servers.get("[%= msg.to.ID %]")
 		[% } %]
-		
-		Goal [%= goalName %] = new Goal("[%= g.name %]", mission, gd[%= goalnum %], gm[%= goalName %], Optional.of(gar[%= goalName %]), gt[%= goalnum %]);
-		
-		[* Register goal dependencies - need an exception handler around this if any dependencies
-		   are inserted *]
-		[% if (g.dependentGoals.dependencies.size > 0) { %]
-		try {
-			[% for (dep in g.dependentGoals.dependencies) { %]
-			[%= goalName %].setDependencyOn([%= dep.name %]);
-			[% } %]
-		} catch (SelfDependencyError e) {
-			throw new DSLLoadFailed("Goal [%= goalName %] depends on itself");
-		}
+		data = []
+		[% for (data in msg.body) {%]
+		data.append(["[%= data.name %]", "[%= data.type %]"])
 		[% } %]
+		msg_[%= msg.ID %] = Message("[%= msg.header %]", sender, receiver, data)
+		goal_messages.append(msg_[%= msg.ID %]) 
+		[% } %]
+		goal_[%= g.ID %] = Goal("[%= g.name %]", self.mission, goal_dependecies_[%= g.ID %], goal_members_[%= g.ID %], goal_area_[%= g.ID %], goal_task_[%= g.ID %], goal_messages)
+		self.mission.addGoal("[%= g.ID %]", goal_[%= g.ID %])
 		
-		mission.addGoal("[%= g.name %]", [%= g.name %]);
 	[% } %]
-	
-	[* Add messages - naming schema msg[name] *]
-	[% for (msg in m.messages) { %]
-	[% 	var msgName = "msg" + msg.header; 
-		var cFromName = componentLookup.get(msg.from); 
-	 	var cToName = componentLookup.get(msg.to); %] 
-		Message [%= msgName %] = new Message("[%= msg.header %]", [%= msg.body %], [%= cFromName %], [%= cToName %]);
-		mission.addMessage([%= msgName %]); 
 	[% } %]
-	
-	[% } %] [* end Mission loop *]
-	return mission;
-	}
-}
+		return self.mission

@@ -9,12 +9,12 @@ import "platform:/resource/Project/ecore/mission.ecore";
 * the fault scenarios which are going to be evaluated
 */
 
-class FaultScenario {
+class FaultSpecification {
 	attr String ID;
 	val project.Fault[*] faults;
 }
 
 class Setup {
 	val project.Mission mission;
-	val FaultScenario[*] scenario;
+	val FaultSpecification[*] specification;
 }

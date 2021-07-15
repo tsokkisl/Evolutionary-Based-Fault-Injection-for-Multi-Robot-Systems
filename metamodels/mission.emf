@@ -2,26 +2,117 @@
 
 package project;
 
-import "platform:/resource/Project/ecore/specification.ecore";
-import "platform:/resource/Project/ecore/environment.ecore";
-
 /* This DSL is responsible for defining the specification
 * of the mission which is going to be executed by the MRS 
 * including robots, goals, environment, constrains etc.
 */
 
-abstract class GoalMembers {
-	
+/* Mission Environment */
+
+class Coordinate {
+	attr int x;
+	attr int y;
+	attr int z;
 }
 
-class GoalStaticMembers extends GoalMembers {
-	val project.Robot[*] goalMembers;	
+class Area {
+	attr String ID;
+	attr int radius;
+	val Coordinate center;
 }
 
-class GoalDynamicMembers extends GoalMembers {
-	ref Goal goal;
-	ref GoalStaticMembers staticMembers;
-	attr int memberLimit;	
+class Obstacle {
+	attr String ID;
+	val Area area;
+}
+
+/* Components Specification */
+
+abstract class CProperty {
+	attr String name;
+}
+
+class IntProperty extends CProperty {
+	attr int value;
+}
+
+class StringProperty extends CProperty {
+	attr String value;	
+}
+
+class DoubleProperty extends CProperty {
+	attr Double value;	
+}
+
+abstract class Component {
+	attr String name;
+	attr String ID;
+	val CProperty[*] componentProperties;
+}
+
+class MainComponent extends Component {	
+	val Component[*] subcomponents;
+}
+
+class Robot extends MainComponent {
+	val Coordinate position;
+}
+
+class Server extends MainComponent {
+
+}
+
+class SubComponent extends Component {
+	attr String parent_ID;
+}
+
+enum SensorType {
+ 	GPS_POSITION = 1;
+	DEPTH = 2;
+	TEMPERATURE = 3;
+	PRESSURE = 4;
+}
+
+class Sensor extends SubComponent {
+ 	attr SensorType type;
+}
+
+class CPU extends SubComponent {
+	attr String model;
+}
+
+class MotionSource extends SubComponent {
+ 	attr double energyPerDistanceUnit;
+}
+
+class Battery extends SubComponent {
+ 	attr int totalEnergy; 
+}
+
+class EnergySource extends SubComponent {
+ 	attr int productionRate;
+}
+
+/* Mission messages */
+
+class MessageData {
+	attr String name;
+	attr String type;
+}
+
+class Message {
+	attr String ID;
+	attr String goal_ID;
+	ref Component[1] from;
+	ref Component[1] to;
+	attr String header;
+	val MessageData[*] body;
+}
+
+/* Goals */
+
+class GoalMembers {
+	ref Robot[*] goalMembers;
 }
 
 class GoalDependencies {
@@ -30,16 +121,8 @@ class GoalDependencies {
 	attr double latestFinishTime;
 }
 
-abstract class GoalArea {
-	
-}
-
-class StaticGoalArea extends GoalArea {
-	val project.Rectangle staticGoalArea;	
-}
-
-class DynamicGoalArea extends GoalArea {
-	ref Goal[1] dependentGoal;
+class GoalArea {
+	val Area goalArea;
 }
 
 abstract class GoalTask {
@@ -54,66 +137,50 @@ class Visit extends GoalTask {
 	
 }
 
-class Avoid extends GoalTask {
-	
-}
-
-class Cover extends GoalTask {
-	
-}
-
 class Track extends GoalTask {
 	
 }
 
 class Stay extends GoalTask {
-	attr boolean stop;
+
 }
 
 class AvoidCollision extends GoalTask {
+	ref Robot[*] robots;
+	ref Obstacle[*] obstacles;
+}
+
+class FixedDistanceBetweenRobots extends GoalTask {
+	attr int fixedDistance;
+}
+
+class GatherSamples extends GoalTask {
+	attr int samplesPerSecond;
+	attr int targetSampleNumber;
+	ref Sensor sensor;
+}
+
+class SufficientEnergy extends GoalTask {
 	
 }
 
-class Discover extends GoalTask {
-	ref project.Object[*] objects;
-	attr int robotsNeeded;
-}
-
-class Sense extends Cover {
-	attr double density;
-	attr int samplesPerUnit;
-	attr project.SensorType sensorType;
-}
-
 class Goal {
+	attr String ID;
 	attr String name;
-	ref Behaviour[*] behaviours;
 	val GoalMembers members;
 	val GoalDependencies dependentGoals;
 	val GoalArea[0..1] area;
 	val GoalTask task;
-}
-
-class Behaviour {
-	attr String name;
-	val BehaviourParameter[*] params;
-}
-
-class BehaviourParameter {
-	attr String paramName;
+	val Message[*] messages;
 }
 
 /* Mission definition */
 
 class Mission {
 	attr String name;
-	val project.Robot[*] robots;
-	val project.Server[*] servers;	
+	val Robot[*] robots;
+	val Server[*] servers;	
 	val Goal[*] goals;
-	val project.Object[*] objects;
-	val project.Obstacle[*] obstacles;
-	val project.Area[*] areas;
-	val Behaviour[*] behaviours;
-	val project.Message[*] messages;
+	val Obstacle[*] obstacles;
 }
 

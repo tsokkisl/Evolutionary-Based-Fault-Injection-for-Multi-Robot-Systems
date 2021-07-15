@@ -2,76 +2,177 @@
 
 package project;
 
-import "platform:/resource/Project/ecore/specification.ecore";
+import "platform:/resource/Project/ecore/mission.ecore";
 
 /* This DSL is responsible for defining the faults included in
 * a fault scenario which are provided by the user in order to
 * evaluate their criticality through the genetic algorithm 
 */
 
-class FaultType {
-	
+class FaultClass {
+
 }
 
-/* Message Faults */
-
-class MessageFault extends FaultType {
-	ref project.Message[1] affectedMessage;
+class AffectPredefinedMessages extends FaultClass {
+	ref project.Message affectedMessage;
 }
 
-class DelayMessage extends MessageFault {
+/* Delay Message */
+class DelayMessage extends AffectPredefinedMessages {
 	attr double delay;
 }
 
-class DeleteMessage extends MessageFault {
+/* Block Message */
+class BlockMessage extends AffectPredefinedMessages {
+	attr double blockDuration;
+}
+
+class BlockSentMessages extends BlockMessage {
+
+}
+
+class BlockReceivedMessages extends BlockMessage {
 	
 }
 
-class ModifyMessage extends MessageFault {
+/* Modify Message */
+class ModifyMessage extends AffectPredefinedMessages {
 	
 }
+
+/* ------------------------------------------------------ */
 
 class ModifyIntMessage extends ModifyMessage {
 	
 }
 
-class ModifyStringMessage extends ModifyMessage {
-	
+class RandomRemainingEnergyCapacity extends ModifyIntMessage {
+	attr int LOWER_BOUND;
+	attr int UPPER_BOUND;
 }
+
+class ZeroRemainingEnergyCapacity extends ModifyIntMessage {
+	attr int CAPACITY = 0;
+}
+
+class FixedRemainingEnergyCapacity extends ModifyIntMessage {
+	attr int FIXED_VAL;
+}
+
+class IncrementRemainingEnergyCapacityReport extends ModifyIntMessage {
+	attr int INCREMENT_VAL;
+}
+
+class DecrementRemainingEnergyCapacityReport extends ModifyIntMessage {
+	attr int DECREMENT_VAL;
+}
+
+/* ------------------------------------------------------ */
 
 class ModifyDoubleMessage extends ModifyMessage {
 	
 }
 
-class ModifyPointMessage extends ModifyMessage {
+class RandomSpeed extends ModifyDoubleMessage {
+	attr double RANDOM_VAL;
+}
+
+class ZeroSpeed extends ModifyDoubleMessage {
+	attr double SPEED = 0;
+}
+
+class FixedSpeed extends ModifyDoubleMessage {
+	attr double FIXED_VAL;
+}
+
+class RandomSampleRate extends ModifyDoubleMessage {
+	attr Double LOWER_BOUND;
+	attr Double UPPER_BOUND;
+}
+
+class FixedSampleRate extends ModifyDoubleMessage {
+	attr double FIXED_VAL;
+}
+
+class IncrementSpeed extends ModifyDoubleMessage {
+	attr double PERCENTAGE;
+}
+
+class DecrementSpeed extends ModifyDoubleMessage {
+	attr double PERCENTAGE;
+}
+
+class IncrementSampleRate extends ModifyDoubleMessage {
+	attr double PERCENTAGE;
+}
+
+class DecrementSampleRate extends ModifyDoubleMessage {
+	attr double PERCENTAGE;
+}
+
+/* ------------------------------------------------------ */
+
+class ModifyStringMessage extends ModifyMessage {
 	
 }
 
-/* Component Faults */
-
-class ComponentFault extends FaultType {
-	ref project.Component[1] affectedComponent;
+class FixedEmptyStringMessage extends ModifyStringMessage {
+	attr String FIXED_VAL = ""; 	
 }
 
-class DisableComponent extends ComponentFault {
+class RandomStringMessage extends ModifyStringMessage {
+	attr String RANDOM_VAL;
+}
+
+/* ------------------------------------------------------ */
+
+class ModifyCoordinatesMessage extends ModifyMessage {
+	attr int NEW_X;
+	attr int NEW_Y;
+	attr int NEW_Z;
+}
+
+class FixedRobotCoordinates extends ModifyCoordinatesMessage {
 	
 }
 
-class EnableComponent extends ComponentFault {
+class RandomRobotCoordinates extends ModifyCoordinatesMessage {
+
+}
+
+class FixedObstacleCoordinates extends ModifyCoordinatesMessage {
 	
 }
 
-class EnergyLoss extends ComponentFault {
-	attr int energyLoss;
+class RandomObstacleCoordinates extends ModifyCoordinatesMessage {
+	
 }
 
-class MotionLoss extends ComponentFault {
-	attr int motionLoss;
+/* Generate fake messages */
+class GenerateFakeCommands extends FaultClass {
+	val project.Message fakeMessage;
+}
+
+class StartRobot extends GenerateFakeCommands {
+	ref project.Robot[1] affectedRobot;
+}
+
+class StopRobot extends GenerateFakeCommands {
+	ref project.Robot[1] affectedRobot;
+}
+
+class ActivateSensor extends GenerateFakeCommands {
+	ref project.Sensor[1] affectedSensor;
+}
+
+class DeactivateSensor extends GenerateFakeCommands {
+	ref project.Sensor[1] affectedSensor;
 }
 
 class Fault {
 	attr String name;
 	attr double faultStart;
 	attr double faultFinish;
-	val FaultType[1] fault;
+	attr double faultProbability;
+	val FaultClass[1] type;
 }

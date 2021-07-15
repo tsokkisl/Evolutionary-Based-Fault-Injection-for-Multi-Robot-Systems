@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="project-setup" xmlns:_1="project-mission" xmlns:_2="project-faults" xmi:id="_W5UNoOJ4Eeu_d_lncBdKEQ">
+  <mission xmi:id="_YT-00OJ4Eeu_d_lncBdKEQ" name="V4">
+    <robots xmi:id="_dghyMOJ4Eeu_d_lncBdKEQ" name="FREDDY" ID="r1000">
+      <componentProperties xsi:type="_1:DoubleProperty" xmi:id="_kg1zQOJ4Eeu_d_lncBdKEQ" name="SPEED" value="200.0"/>
+      <subcomponents xsi:type="_1:Battery" xmi:id="_g1SHgOJ4Eeu_d_lncBdKEQ" name="B1" ID="b1000" parent_ID="r1000" totalEnergy="2400"/>
+      <subcomponents xsi:type="_1:CPU" xmi:id="_haa04OJ4Eeu_d_lncBdKEQ" name="CPU1" ID="c1000" parent_ID="r1000" model="PX210"/>
+      <subcomponents xsi:type="_1:MotionSource" xmi:id="_h2a0YOJ4Eeu_d_lncBdKEQ" name="MS1" ID="m1000" parent_ID="r1000" energyPerDistanceUnit="200.0"/>
+      <subcomponents xsi:type="_1:Sensor" xmi:id="_A9fgoOKmEeu_d_lncBdKEQ" name="S1" ID="s1000" parent_ID="r1000"/>
+      <position xmi:id="_jtm_gOJ4Eeu_d_lncBdKEQ" x="4" y="4" z="4"/>
+    </robots>
+    <robots xmi:id="_d11T0OJ4Eeu_d_lncBdKEQ" name="SAM" ID="r1001">
+      <componentProperties xsi:type="_1:DoubleProperty" xmi:id="_mugksOJ4Eeu_d_lncBdKEQ" name="SPEED" value="400.0"/>
+      <subcomponents xsi:type="_1:CPU" xmi:id="_nKmDwOJ4Eeu_d_lncBdKEQ" name="CPU2" ID="c1001" parent_ID="r1001" model="PX200"/>
+      <subcomponents xsi:type="_1:Battery" xmi:id="_nh7lsOJ4Eeu_d_lncBdKEQ" name="B1" ID="b1001" parent_ID="r1001" totalEnergy="4000"/>
+      <subcomponents xsi:type="_1:MotionSource" xmi:id="_oJkNcOJ4Eeu_d_lncBdKEQ" name="MS2" ID="m1001" parent_ID="r1001" energyPerDistanceUnit="400.0"/>
+      <subcomponents xsi:type="_1:Sensor" xmi:id="_ookdoOJ4Eeu_d_lncBdKEQ" name="S2" ID="s1001" parent_ID="r1001"/>
+      <subcomponents xsi:type="_1:Sensor" xmi:id="_pBOOMOJ4Eeu_d_lncBdKEQ" name="S3" ID="s1002" parent_ID="r1001"/>
+      <position xmi:id="_GsGl4OJ9Eeu_d_lncBdKEQ" x="2" y="5" z="5"/>
+    </robots>
+    <servers xmi:id="_eK0sYOJ4Eeu_d_lncBdKEQ" name="SV1" ID="sv1000">
+      <subcomponents xsi:type="_1:CPU" xmi:id="_fBZIAOJ4Eeu_d_lncBdKEQ" name="CPU3" ID="c2000" parent_ID="sv1000" model="PX500"/>
+    </servers>
+    <goals xmi:id="_aU_DQOJ4Eeu_d_lncBdKEQ" ID="g1000" name="Patrol">
+      <members xmi:id="_TpiFoOJ9Eeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_TQprkOJ9Eeu_d_lncBdKEQ" earliestStartTime="1.0" latestFinishTime="2.0"/>
+      <area xmi:id="_S4lw4OJ9Eeu_d_lncBdKEQ">
+        <goalArea xmi:id="_Yh90MOJ9Eeu_d_lncBdKEQ" radius="2">
+          <center xmi:id="_Y8raQOJ9Eeu_d_lncBdKEQ" x="1" y="1" z="1"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_UAFkcOJ9Eeu_d_lncBdKEQ" ID="m1000" goal_ID="g1000" from="_eK0sYOJ4Eeu_d_lncBdKEQ" to="_d11T0OJ4Eeu_d_lncBdKEQ" header="h1">
+        <body xmi:id="__jbO0OKDEeu_d_lncBdKEQ" name="ENERGY" type="INT"/>
+        <body xmi:id="__jbO0OKDEeu_d_lncBdKEQ" name="SPEED" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_aq2lkOJ4Eeu_d_lncBdKEQ" ID="g1001" name="Stay">
+      <members xmi:id="_6Evx4OJ-Eeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_5jjwYOJ-Eeu_d_lncBdKEQ" dependencies="_aU_DQOJ4Eeu_d_lncBdKEQ" earliestStartTime="2.0" latestFinishTime="2.0"/>
+      <area xmi:id="_4_4bkOJ-Eeu_d_lncBdKEQ">
+        <goalArea xmi:id="_BtBK0OJ_Eeu_d_lncBdKEQ" radius="1">
+          <center xmi:id="_Cg9JMOJ_Eeu_d_lncBdKEQ" x="1" y="1" z="1"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_6exbcOJ-Eeu_d_lncBdKEQ" ID="m1001" goal_ID="g1001" from="_eK0sYOJ4Eeu_d_lncBdKEQ" to="_d11T0OJ4Eeu_d_lncBdKEQ" header="h2">
+        <body xmi:id="_BSNr4OKEEeu_d_lncBdKEQ" name="ENERGY" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_a7d0cOJ4Eeu_d_lncBdKEQ" ID="g1002" name="SufficientEnergy">
+      <members xmi:id="_VecG4OJ_Eeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_U8qPgOJ_Eeu_d_lncBdKEQ" dependencies="_aU_DQOJ4Eeu_d_lncBdKEQ" earliestStartTime="1.0" latestFinishTime="2.0"/>
+      <area xmi:id="_HfDa4OJ_Eeu_d_lncBdKEQ">
+        <goalArea xmi:id="_H9LhUOJ_Eeu_d_lncBdKEQ">
+          <center xmi:id="_IW9TQOJ_Eeu_d_lncBdKEQ" x="1" y="1" z="1"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_WBphoOJ_Eeu_d_lncBdKEQ" ID="m1002" goal_ID="g1002" from="_dghyMOJ4Eeu_d_lncBdKEQ" to="_eK0sYOJ4Eeu_d_lncBdKEQ" header="h3">
+        <body xmi:id="_-jTOkOKDEeu_d_lncBdKEQ" name="ENERGY" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_bL1ywOJ4Eeu_d_lncBdKEQ" ID="g1003" name="Track">
+      <members xmi:id="_gcRGYOJ_Eeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_gBrcIOJ_Eeu_d_lncBdKEQ" dependencies="_a7d0cOJ4Eeu_d_lncBdKEQ"/>
+      <area xmi:id="_fvQPYOJ_Eeu_d_lncBdKEQ">
+        <goalArea xmi:id="_wYxmYOJ_Eeu_d_lncBdKEQ" radius="20">
+          <center xmi:id="_w_5QwOJ_Eeu_d_lncBdKEQ" x="4" y="2" z="4"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_gzXXwOJ_Eeu_d_lncBdKEQ" ID="m1003" goal_ID="g1003" from="_dghyMOJ4Eeu_d_lncBdKEQ" to="_eK0sYOJ4Eeu_d_lncBdKEQ" header="h4">
+        <body xmi:id="_-FFBgOKDEeu_d_lncBdKEQ" name="X" type="INT"/>
+        <body xmi:id="_Q6wHAOKEEeu_d_lncBdKEQ" name="Y" type="INT"/>
+        <body xmi:id="_ROzEYOKEEeu_d_lncBdKEQ" name="Z" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_be-xMOJ4Eeu_d_lncBdKEQ" ID="1004" name="Visit">
+      <members xmi:id="_Fepz8OKAEeu_d_lncBdKEQ" goalMembers="_d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_ExDuIOKAEeu_d_lncBdKEQ" dependencies="_a7d0cOJ4Eeu_d_lncBdKEQ _be-xMOJ4Eeu_d_lncBdKEQ" earliestStartTime="2.0" latestFinishTime="8.0"/>
+      <area xmi:id="_EZ1g8OKAEeu_d_lncBdKEQ">
+        <goalArea xmi:id="_KGgI0OKAEeu_d_lncBdKEQ" radius="1">
+          <center xmi:id="_Kbb3AOKAEeu_d_lncBdKEQ" x="1" y="1" z="1"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_FG-60OKAEeu_d_lncBdKEQ" ID="m1004" goal_ID="g1004" from="_eK0sYOJ4Eeu_d_lncBdKEQ" to="_dghyMOJ4Eeu_d_lncBdKEQ" header="h5">
+        <body xmi:id="_U3UDMOKEEeu_d_lncBdKEQ" name="X" type="INT"/>
+        <body xmi:id="_aVvawOKEEeu_d_lncBdKEQ" name="Y" type="INT"/>
+        <body xmi:id="_aB88EOKEEeu_d_lncBdKEQ" name="Y" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_b0o4IOJ4Eeu_d_lncBdKEQ" ID="1005" name="AvoidCollision">
+      <members xmi:id="_Tgn54OKAEeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_TBCa4OKAEeu_d_lncBdKEQ" earliestStartTime="2.0" latestFinishTime="11.0"/>
+      <area xmi:id="_Sh8rIOKAEeu_d_lncBdKEQ">
+        <goalArea xmi:id="_Y2ZEsOKAEeu_d_lncBdKEQ" radius="11">
+          <center xmi:id="_ZJ-IAOKAEeu_d_lncBdKEQ"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_T32uIOKAEeu_d_lncBdKEQ" ID="m1005" goal_ID="m1005" from="_dghyMOJ4Eeu_d_lncBdKEQ" to="_d11T0OJ4Eeu_d_lncBdKEQ" header="h6">
+        <body xmi:id="_fJW6wOKEEeu_d_lncBdKEQ" name="X" type="INT"/>
+        <body xmi:id="_nC8tMOKEEeu_d_lncBdKEQ" name="Y" type="INT"/>
+        <body xmi:id="_nZ7CwOKEEeu_d_lncBdKEQ" name="Z" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_cHUjkOJ4Eeu_d_lncBdKEQ" ID="1006" name="FDBR">
+      <members xmi:id="_eJ5lsOKAEeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_ds0oIOKAEeu_d_lncBdKEQ" dependencies="_b0o4IOJ4Eeu_d_lncBdKEQ _c0gZsOJ4Eeu_d_lncBdKEQ"/>
+      <area xmi:id="_dXjiwOKAEeu_d_lncBdKEQ">
+        <goalArea xmi:id="_ibDR0OKAEeu_d_lncBdKEQ" radius="5">
+          <center xmi:id="_iwevQOKAEeu_d_lncBdKEQ" x="4" y="4" z="4"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_eiuVYOKAEeu_d_lncBdKEQ" ID="m1006" goal_ID="g1006" from="_dghyMOJ4Eeu_d_lncBdKEQ" to="_d11T0OJ4Eeu_d_lncBdKEQ" header="h7">
+        <body xmi:id="_r6sfQOKEEeu_d_lncBdKEQ" name="X" type="INT"/>
+        <body xmi:id="_uGJqMOKEEeu_d_lncBdKEQ" name="Y" type="INT"/>
+        <body xmi:id="_t0qRkOKEEeu_d_lncBdKEQ" name="Z" type="INT"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_c0gZsOJ4Eeu_d_lncBdKEQ" ID="1007" name="GatherSamples">
+      <members xmi:id="_3o0FgOJ_Eeu_d_lncBdKEQ" goalMembers="_dghyMOJ4Eeu_d_lncBdKEQ _d11T0OJ4Eeu_d_lncBdKEQ"/>
+      <dependentGoals xmi:id="_3OrHMOJ_Eeu_d_lncBdKEQ" dependencies="_a7d0cOJ4Eeu_d_lncBdKEQ _bL1ywOJ4Eeu_d_lncBdKEQ" earliestStartTime="5.0" latestFinishTime="7.0"/>
+      <area xmi:id="_233wwOJ_Eeu_d_lncBdKEQ">
+        <goalArea xmi:id="_9GPXgOJ_Eeu_d_lncBdKEQ" radius="8">
+          <center xmi:id="_9i1M4OJ_Eeu_d_lncBdKEQ" x="1" y="1" z="1"/>
+        </goalArea>
+      </area>
+      <messages xmi:id="_4JS8YOJ_Eeu_d_lncBdKEQ" ID="m1007" goal_ID="g1007" from="_dghyMOJ4Eeu_d_lncBdKEQ" to="_eK0sYOJ4Eeu_d_lncBdKEQ" header="h8">
+        <body xmi:id="_A_iyEOKFEeu_d_lncBdKEQ" name="SAMPLE" type="DOUBLE"/>
+      </messages>
+      <messages xmi:id="_4tUPcOJ_Eeu_d_lncBdKEQ" ID="m1008" goal_ID="g1007" from="_d11T0OJ4Eeu_d_lncBdKEQ" to="_eK0sYOJ4Eeu_d_lncBdKEQ" header="h9">
+        <body xmi:id="_BhSNMOKFEeu_d_lncBdKEQ" name="SAMPLE" type="DOUBLE"/>
+      </messages>
+    </goals>
+    <obstacles xmi:id="_qqbnsOJ4Eeu_d_lncBdKEQ" ID="o1000">
+      <area xmi:id="_sHKEYOJ4Eeu_d_lncBdKEQ" radius="5">
+        <center xmi:id="_slSx4OJ4Eeu_d_lncBdKEQ" x="1" z="3"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_rBCJ0OJ4Eeu_d_lncBdKEQ" ID="o1001">
+      <area xmi:id="_tmODYOJ4Eeu_d_lncBdKEQ" radius="4">
+        <center xmi:id="_wBS-sOJ4Eeu_d_lncBdKEQ" x="2" y="2" z="4"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_rur6AOJ4Eeu_d_lncBdKEQ" ID="o1002">
+      <area xmi:id="_uoxFgOJ4Eeu_d_lncBdKEQ" radius="2">
+        <center xmi:id="_wbr0oOJ4Eeu_d_lncBdKEQ" x="1" z="8"/>
+      </area>
+    </obstacles>
+  </mission>
+  <specification xmi:id="_1VLPIOKkEeu_d_lncBdKEQ" ID="345454">
+    <faults xmi:id="_ceJ64ONXEeu_d_lncBdKEQ" name="f1" faultStart="3.0" faultFinish="1.0" faultProbability="2.0">
+      <type xsi:type="_2:StartRobot" xmi:id="_dj8eQONXEeu_d_lncBdKEQ" affectedRobot="_d11T0OJ4Eeu_d_lncBdKEQ">
+        <fakeMessage xmi:id="_eFVUEONXEeu_d_lncBdKEQ" ID="8888" goal_ID="6777" from="_eK0sYOJ4Eeu_d_lncBdKEQ" to="_d11T0OJ4Eeu_d_lncBdKEQ" header="h65"/>
+      </type>
+    </faults>
+  </specification>
+</Setup>

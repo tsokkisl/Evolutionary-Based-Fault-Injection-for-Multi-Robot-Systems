@@ -1,0 +1,26 @@
+from .mission_loader import MissionLoader
+
+class CI:
+
+    def __init__(self, m, fs):
+        self.mission = m
+        self.fault_specification = fs
+        # Initialize system's state
+        
+    def reset_system_state(self, fs):
+        self.fault_specification = fs
+        # Reset system's state
+
+    def runCI(self, fs):
+        self.reset_system_state(fs)
+        # Run simulation
+    
+    [% for (m in M!Mission.allInstances()) { %]
+        [% for (g in m.goals) { %]
+    def [%= g.name.ftlc() %](self):
+        [%=out.startPreserve("#", "#", "Insert Implementation", true)%]
+        pass
+		[%=out.stopPreserve()%]	
+        
+        [% } %]
+    [% } %]

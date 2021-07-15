@@ -1,0 +1,2 @@
+class GoalMembers:
+	pass
