@@ -154,6 +154,10 @@ class FixedDistanceBetweenRobots extends GoalTask {
 	attr int fixedDistance;
 }
 
+class StayWithinMissionArea extends GoalTask {
+	
+}
+
 class GatherSamples extends GoalTask {
 	attr int samplesPerSecond;
 	attr int targetSampleNumber;
@@ -178,9 +182,11 @@ class Goal {
 
 class Mission {
 	attr String name;
+	attr Double duration;
 	val Robot[*] robots;
 	val Server[*] servers;	
 	val Goal[*] goals;
 	val Obstacle[*] obstacles;
+	val Area missionArea;
 }
 

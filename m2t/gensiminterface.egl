@@ -1,0 +1,71 @@
+from ..src.dsl.mission import *
+import time
+import roslibpy
+
+class SimInterface():
+    
+    topics = []
+
+    def __init__(self):
+        client = roslibpy.Ros(host='localhost', port=9090)
+        client.run()
+        [% for (mission in M!Mission.allInstances()) { %]
+            [% for (robot in mission.robots) { %]
+        #--------------------------------- Robot [%= robot.name %] Topics ---------------------------------#
+                [% for (cp in robot.componentProperties) { %]
+        [%= robot.ID %]_[%= cp.name %] = roslibpy.Topic(client, '/[%= robot.ID %]_[%= cp.name %]', 'std_msgs/String')
+        self.topics.add("[%= robot.ID %]_[%= cp.name %]", [%= robot.ID %]_[%= cp.name %])
+                [% } %]
+        [%= robot.ID %]_POSITION = roslibpy.Topic(client, '/[%= robot.ID %]_POSITION', 'std_msgs/String')
+        self.topics.add("[%= robot.ID %]_POSITION", [%= robot.ID %]_POSITION)
+                [% for (sc in robot.subcomponents) { %]
+                    [% if (sc.isKindOf(Sensor)) {%]
+        [%= sc.ID %]_[%= sc.type %] = roslibpy.Topic(client, '/[%= sc.ID %]_[%= sc.type %]', 'std_msgs/String')
+        self.topics.add("[%= sc.ID %]_[%= sc.type %]", [%= sc.ID %]_[%= sc.type %])
+                    [% } %]
+                [% } %]
+        
+			[% } %]
+        [% } %]
+            
+
+    def find_topic(self, obj, val):
+        return self.topics.get(obj.ID + "_" + val)
+
+    def get_sensor_sample(self, sensor):
+        topic = self.find_topic(sensor.ID, sensor.sensorType)
+        sample = topic.subscribe(lambda message: message['data'])
+        return sample
+
+    def get_POSITION(self, robot):
+        topic = self.find_topic(robot.ID, "POSITION")
+        position = topic.subscribe(lambda message: message['data'])
+        return position
+    
+    [% var properties = new List(); %]
+        [% for (mission in M!Mission.allInstances()) { %]
+            [% for (robot in mission.robots) { %]
+                [% for (cp in robot.componentProperties) { %]
+                    [% if (properties.excludes(cp.name)) { %]
+    def get_[%= cp.name %](self, robot):
+        topic = self.find_topic(robot.ID, "[%= cp.name %]")
+        sample = topic.subscribe(lambda message: message['data'])
+        return sample
+        
+        		        [% properties.add(cp.name); %]
+                    [% } %]
+                [% } %]
+                [* [% for (sc in robot.subcomponents) { %]
+                    [% if (sc.isKindOf(Sensor) and properties.excludes(sc.type)) { %]
+    def get_[%= sc.type %](self, component):
+        pass
+        				[% properties.add(sc.type); %]
+                    [% } %]
+                [% } %] *]
+            [% } %]
+        [% } %]
+
+    def update_robot_speed(self, robot, new_speed):
+        pass
+
+            

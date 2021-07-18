@@ -25,7 +25,7 @@ rule Model2SimulationInterface
 
 	parameters : Map{}
 
-	target : "../simulation/sim_interface.py"
+	target : "../middleware/core/sim_interface.py"
 }
 
 rule Model2CI 

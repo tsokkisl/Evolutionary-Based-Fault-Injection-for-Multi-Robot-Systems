@@ -1,10 +1,12 @@
 from .mission_loader import MissionLoader
+from ....core.sim_interface import SimInterface
 
 class CI:
-
+	
     def __init__(self, m, fs):
         self.mission = m
         self.fault_specification = fs
+        self.sim_interface = SimInterface()
         # Initialize system's state
         
     def reset_system_state(self, fs):
@@ -17,10 +19,21 @@ class CI:
     
     [% for (m in M!Mission.allInstances()) { %]
         [% for (g in m.goals) { %]
-    def [%= g.name.ftlc() %](self):
-        [%=out.startPreserve("#", "#", "Insert Implementation", true)%]
+        	[% if (g.task.isKindOf(GatherSamples)) { %]
+    def [%= g.name.ftlc() %]_[%= g.ID %](self, sensor):
+        [%=out.startPreserve("#", "", "User implemented method", true)%]
+        goal_ID = [%= g.ID %]
+        s = self.mission.robots.get(sensor.parent_ID).sensors.get(sensor.ID)
         pass
-		[%=out.stopPreserve()%]	
-        
+		[%=out.stopPreserve()%]
+		
+        	[% } %]
+        	[% else { %]
+    def [%= g.name.ftlc() %](self):
+        [%=out.startPreserve("#", "", "User implemented method", true)%]
+        pass
+		[%=out.stopPreserve()%]
+		
+        	[% } %]
         [% } %]
     [% } %]

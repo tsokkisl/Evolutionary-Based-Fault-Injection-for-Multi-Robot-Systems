@@ -16,12 +16,14 @@ class CI:
     def runCI(self, fs):
         self.reset_system_state(fs)
         # Run simulation
-    
+        for i in range(self.mission.duration):
+            continue
+
     def gather_samples_g1000(self, sensor):
         # protected region User implemented method on begin
         goal_ID = "1000"
         s = self.mission.robots.get(sensor.parent_ID).sensors.get(sensor.ID)
-        sample = self.sim_interface.get_sensor_sample(s)
+        sample = self.sim_interface.get_sample(s)
         if sample != "NaN":
             g = self.mission.goals.get(goal_ID)
             g.total_samples += 1
@@ -30,9 +32,6 @@ class CI:
 		
     def avoid_collision(self):
         # protected region User implemented method on begin
-        for robot in self.mission.robots:
-            current_position = self.sim_interface.get_POSITION(robot)
-            robot.update_position(current_position)
         collision_points = [[r.ID, r.position] for r in self.mission.robots] + [[o.ID, o.area.center] for o in self.mission.obstacles]
         for robot in self.mission.robots:
             for point in collision_points:
@@ -43,17 +42,18 @@ class CI:
     def sufficient_energy(self):
         # protected region User implemented method on begin
         for robot in self.mission.robots:
-            robot.update_position(self.sim_interface.get_POSITION(robot))
-            robot.update_energy(self.sim_interface.get_ENERGY(robot))
+            self.sim_interface.update_robot_position(robot.ID)
+            self.sim_interface.update_robot_remaining_energy(robot.ID)
             if robot.check_for_sufficient_energy():
-                self.sim_interface.update_speed(robot, robot.getDoubleComponentProperty("SPEED") * 0.5)
+                for sensor in robot:
+                    sensor.stop()
 		# protected region User implemented method end
 
     def gather_samples_1004(self, sensor):
         # protected region User implemented method on begin
         goal_ID = "1004"
         s = self.mission.robots.get(sensor.parent_ID).sensors.get(sensor.ID)
-        sample = self.sim_interface.get_sensor_sample(s)
+        sample = self.sim_interface.get_sample(s)
         if sample != "NaN":
             g = self.mission.goals.get(goal_ID)
             g.total_samples += 1
@@ -63,8 +63,7 @@ class CI:
     def stayWithinMissionArea(self):
         # protected region User implemented method on begin
         for robot in self.mission.robots:
-            current_position = self.sim_interface.get_POSITION(robot)
-            robot.update_position(current_position)
+            self.sim_interface.update_robot_position(robot.ID)
             if robot.distance_from_mission_center() > self.mission.area.radius:
                 robot.change_direction(robot.direction)
 		# protected region User implemented method end

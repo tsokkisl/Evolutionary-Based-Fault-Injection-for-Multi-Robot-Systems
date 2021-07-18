@@ -4,23 +4,24 @@ from ..mission import *
 
 class MissionLoader:
 	def loadMission(self):
-	[% for (m in M!Mission.allInstances()) { %]
+	[% for (mission in M!Mission.allInstances()) { %]
 	[% 	var robotNum = 0; 
 		var serverNum = 0; %]	
 		self.mission = Mission()
+		[* self.mission.duration = [%= mission.duration %] *]
 	[* Initilize Servers *]	
-	[% for (s in m.servers) { %]
+	[% for (s in mission.servers) { %]
 		# Initilize Server: [%= s.name %]
 	[% var serverName = "s" + serverNum++;	%]
-		[%= serverName %] = Server("[%= s.name %]")
+		[%= serverName %] = Server("[%= s.ID %]", "[%= s.name %]")
 	[% componentLookup.put(s, serverName); %]
 		self.mission.addServer("[%= s.ID %]")
 	[% } %]
 	[* Initilize Robots and subcomponents *]
-	[% for (r in m.robots) { %]
+	[% for (r in mission.robots) { %]
 		# Initilize Robot: [%= r.name %]
 		[% componentLookup.put(r, r.ID); %]
-		robot_[%= r.ID %] = Robot("[%= r.name %]")
+		robot_[%= r.ID %] = Robot("[%= r.ID %]", "[%= r.name %]")
 		[% for (p in r.componentProperties) { %]
 			[% if (p.isKindOf(IntProperty)) { %]
 		robot_[%= r.ID %].setIntComponentProperty("[%= p.name %]", [%= p.value %])
@@ -31,13 +32,14 @@ class MissionLoader:
 			[% if (p.isKindOf(StringProperty)) { %]
 		robot_[%= r.ID %].setStringComponentProperty("[%= p.name %]", "[%= p.value %]")
 			[% } %]
-		[% } %]	
+		[% } %]
+		robot_[%= r.ID %].setCoordinateComponentProperty("startLocation", Coordinate([%= r.position.x %], [%= r.position.y %], [%= r.position.z %]))	
 		[% var subCNum = 0; %]
 		# Initilize Robot: [%= r.name %]'s subcomponents
 		[% for (subc in r.subcomponents) { %]
 			[% componentLookup.put(subc, subc.ID); %]
 			[% if (subc.isKindOf(Sensor)) { %]
-		sensor_[%= subc.ID %] = Sensor("[%= subc.type %]")
+		sensor_[%= subc.ID %] = Sensor("[%= subc.ID %]", "[%= subc.type %]")
 		sensor_[%= subc.ID %].setParent(robot_[%= r.ID %])
 				[% for (sp in subc.componentProperties) { %]
 					[% if (sp.isKindOf(IntProperty)) { %]
@@ -67,7 +69,7 @@ class MissionLoader:
 	
 	[* Initilize Goals *]
 	[% var goalnum = 0; %]
-	[% for (g in m.goals) { %]
+	[% for (g in mission.goals) { %]
 		# Initilize Goal: [%= g.name %]
 		[% goalnum++; %]
 		[% var goalName = g.name; %]
@@ -146,8 +148,9 @@ class MissionLoader:
 		goal_messages.append(msg_[%= msg.ID %]) 
 		[% } %]
 		goal_[%= g.ID %] = Goal("[%= g.name %]", self.mission, goal_dependecies_[%= g.ID %], goal_members_[%= g.ID %], goal_area_[%= g.ID %], goal_task_[%= g.ID %], goal_messages)
-		self.mission.addGoal("[%= g.ID %]", goal_[%= g.ID %])
-		
+		self.mission.addGoal("[%= g.ID %]", goal_[%= g.ID %])	
 	[% } %]
+		[* Initialize Mission Area *]
+		[* mission_area = Area(Coordinate([%= ga.center.x %], [%= ga.center.y %], [%= ga.center.z %]), [%= ga.radius %]) *]
 	[% } %]
 		return self.mission

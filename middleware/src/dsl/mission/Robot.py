@@ -5,12 +5,15 @@ from enum import Enum
 from .Sensor import Sensor
 from .MotionSource import MotionSource
 from .Battery import Battery
+import math
 
 class Robot(Component):
     name = ""
     subcomponents = {}
     currentEnergy = 0.0
     startingEnergy = 0.0
+    speed = 0
+    direction = "NORTH"
 
     class RobotType(Enum):
         TYPE_1 = 1,
@@ -19,15 +22,16 @@ class Robot(Component):
 
     type = RobotType.TYPE_1
 
-    def __init__(self, name):
+    def __init__(self, id, name):
         self.name = name
-
+        self.ID = id
+        
     def addSubcomponent(self, id, subcomponent):
         self.subcomponents.put(id, subcomponent)
 	
     def setInitialLocation(self):
         starting_location = self.getCoordinateComponentProperty("startLocation")
-        self.setCoordinateComponentProperty("location", Coordinate(starting_location.getX(), starting_location.getY()))
+        self.setCoordinateComponentProperty("location", Coordinate(starting_location.getX(), starting_location.getY(), starting_location.getZ()))
 
     def configureRobot(self):
         try:
@@ -91,3 +95,10 @@ class Robot(Component):
             self.currentEnergy = max(self.currentEnergy, 0.0)
         else:
             print("No motion source found!")
+    
+    def change_direction(self, current_direction):
+        directions = ["NORTH", "EAST", "WEST", "SOUTH", "NORTH_EAST", "NORTH_WEST", "SOUTH_EAST", "SOUTH_WEST"]
+        i = math.random()
+        while directions[i] == current_direction:
+            i = math.random()
+        self.direction = directions[i]

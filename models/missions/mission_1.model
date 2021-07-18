@@ -23,8 +23,8 @@
       <subcomponents xsi:type="_1:EnergySource" xmi:id="_uDWi8OT3Eeu_d_lncBdKEQ" name="ES1" ID="e1000" parent_ID="s1000" productionRate="150"/>
       <subcomponents xsi:type="_1:CPU" xmi:id="_uw8owOT3Eeu_d_lncBdKEQ" name="CPU3" ID="c1002" parent_ID="s1000" model="vp200"/>
     </servers>
-    <goals xmi:id="_cWkYIOT3Eeu_d_lncBdKEQ" ID="g1000" name="GatherSamples">
-      <members xmi:id="_N7-E4OT5Eeu_d_lncBdKEQ" goalMembers="_Z8LZUOT3Eeu_d_lncBdKEQ _b1CYYOT3Eeu_d_lncBdKEQ"/>
+    <goals xmi:id="_cWkYIOT3Eeu_d_lncBdKEQ" ID="g1000" name="Gather_samples">
+      <members xmi:id="_N7-E4OT5Eeu_d_lncBdKEQ" goalMembers="_Z8LZUOT3Eeu_d_lncBdKEQ"/>
       <area xmi:id="_NU0lUOT5Eeu_d_lncBdKEQ">
         <goalArea xmi:id="_mT6gIOT5Eeu_d_lncBdKEQ" ID="a1002" radius="1">
           <center xmi:id="_mo1AMOT5Eeu_d_lncBdKEQ" x="5" y="5" z="5"/>
@@ -33,7 +33,7 @@
       <task xsi:type="_1:GatherSamples" xmi:id="_OiAKIOT5Eeu_d_lncBdKEQ" samplesPerSecond="100" targetSampleNumber="200" sensor="_pVsEgOT4Eeu_d_lncBdKEQ"/>
       <messages xmi:id="_SuNr4OT5Eeu_d_lncBdKEQ" ID="m1000" goal_ID="g1000" from="_Z8LZUOT3Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="TEMPERATURE"/>
     </goals>
-    <goals xmi:id="_csEHAOT3Eeu_d_lncBdKEQ" ID="g1001" name="AvoidCollision">
+    <goals xmi:id="_csEHAOT3Eeu_d_lncBdKEQ" ID="g1001" name="Avoid_collision">
       <members xmi:id="_V13ZUOT5Eeu_d_lncBdKEQ" goalMembers="_Z8LZUOT3Eeu_d_lncBdKEQ _b1CYYOT3Eeu_d_lncBdKEQ"/>
       <area xmi:id="_UeNp4OT5Eeu_d_lncBdKEQ">
         <goalArea xmi:id="_Ff5bAOT6Eeu_d_lncBdKEQ" ID="a1004" radius="1">
@@ -44,7 +44,7 @@
       <messages xmi:id="_WMo6kOT5Eeu_d_lncBdKEQ" ID="m1001" goal_ID="g1001" from="_Z8LZUOT3Eeu_d_lncBdKEQ" to="_b1CYYOT3Eeu_d_lncBdKEQ" header="COORDINATES"/>
       <messages xmi:id="_MSvAwOT6Eeu_d_lncBdKEQ" ID="m1002" goal_ID="g1001" from="_b1CYYOT3Eeu_d_lncBdKEQ" to="_Z8LZUOT3Eeu_d_lncBdKEQ" header="COORDINATES"/>
     </goals>
-    <goals xmi:id="_X5uHcOT5Eeu_d_lncBdKEQ" ID="g1002" name="SufficientEnergy">
+    <goals xmi:id="_X5uHcOT5Eeu_d_lncBdKEQ" ID="g1002" name="Sufficient_energy">
       <members xmi:id="_-K48UOT5Eeu_d_lncBdKEQ" goalMembers="_Z8LZUOT3Eeu_d_lncBdKEQ _b1CYYOT3Eeu_d_lncBdKEQ"/>
       <dependentGoals xmi:id="_9rVSgOT5Eeu_d_lncBdKEQ" dependencies="_ZfhnoOT5Eeu_d_lncBdKEQ" earliestStartTime="1.0" latestFinishTime="2.0"/>
       <area xmi:id="_9QFg8OT5Eeu_d_lncBdKEQ">
@@ -56,7 +56,7 @@
       <messages xmi:id="_-sbjIOT5Eeu_d_lncBdKEQ" ID="m1003" goal_ID="g1002" from="_Z8LZUOT3Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="ENERGY"/>
       <messages xmi:id="_pD4Q4OT6Eeu_d_lncBdKEQ" ID="m1004" goal_ID="g1002" from="_b1CYYOT3Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="ENERGY"/>
     </goals>
-    <goals xmi:id="_ZfhnoOT5Eeu_d_lncBdKEQ" ID="1003" name="FixedDistanceBetweenRobots">
+    <goals xmi:id="_ZfhnoOT5Eeu_d_lncBdKEQ" ID="1003" name="Fixed_distance_between_robots">
       <members xmi:id="_02eVMOT6Eeu_d_lncBdKEQ" goalMembers="_Z8LZUOT3Eeu_d_lncBdKEQ _b1CYYOT3Eeu_d_lncBdKEQ"/>
       <dependentGoals xmi:id="_0VquMOT6Eeu_d_lncBdKEQ" dependencies="_csEHAOT3Eeu_d_lncBdKEQ _X5uHcOT5Eeu_d_lncBdKEQ" earliestStartTime="2.0" latestFinishTime="3.0"/>
       <area xmi:id="_z8UaEOT6Eeu_d_lncBdKEQ">
@@ -67,6 +67,16 @@
       <task xsi:type="_1:FixedDistanceBetweenRobots" xmi:id="_aQOr0OT5Eeu_d_lncBdKEQ" fixedDistance="5"/>
       <messages xmi:id="_1QeJkOT6Eeu_d_lncBdKEQ" ID="m1005" goal_ID="g1003" from="_Z8LZUOT3Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="COORDINATES"/>
       <messages xmi:id="_3YNSIOT6Eeu_d_lncBdKEQ" ID="m1006" goal_ID="g1003" from="_b1CYYOT3Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="COORDINATES"/>
+    </goals>
+    <goals xmi:id="_DIs9MOaGEeu_d_lncBdKEQ" ID="1004" name="Gather_samples">
+      <members xmi:id="_FFgoIOaGEeu_d_lncBdKEQ" goalMembers="_b1CYYOT3Eeu_d_lncBdKEQ"/>
+      <area xmi:id="_EU31YOaGEeu_d_lncBdKEQ">
+        <goalArea xmi:id="_UYqpIOaGEeu_d_lncBdKEQ" ID="a1007" radius="8">
+          <center xmi:id="_UwbB0OaGEeu_d_lncBdKEQ"/>
+        </goalArea>
+      </area>
+      <task xsi:type="_1:GatherSamples" xmi:id="_Dz7EcOaGEeu_d_lncBdKEQ" samplesPerSecond="200" targetSampleNumber="900" sensor="_t6uV8OT4Eeu_d_lncBdKEQ"/>
+      <messages xmi:id="_FeHVYOaGEeu_d_lncBdKEQ" ID="m1008" goal_ID="g1004" from="_t6uV8OT4Eeu_d_lncBdKEQ" to="_d2D08OT3Eeu_d_lncBdKEQ" header="TEMPERATURE"/>
     </goals>
     <obstacles xmi:id="_dKpgcOT3Eeu_d_lncBdKEQ" ID="o1000">
       <area xmi:id="__fVRoOT3Eeu_d_lncBdKEQ" ID="a1000" radius="4">

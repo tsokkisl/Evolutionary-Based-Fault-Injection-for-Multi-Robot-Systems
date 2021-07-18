@@ -24,7 +24,7 @@ class Component:
 		self.stringProperties.put(name, StringProperty(name,value))
 	
 	def setCoordinateComponentProperty(self, name, value):
-		self.coordinateProperties.put(name, CoordinateProperty(name,value))
+		self.coordinateProperties.put(name, CoordinateProperty(name, value))
 
 	def getIntComponentProperty(self, name):
 		p = self.intProperties.get(name)
