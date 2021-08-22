@@ -1,0 +1,2 @@
+class FixedEmptyStringMessage:
+    pass

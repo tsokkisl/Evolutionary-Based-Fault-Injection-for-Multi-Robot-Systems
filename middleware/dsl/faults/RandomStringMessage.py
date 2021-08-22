@@ -1,0 +1,2 @@
+class RandomStringMessage:
+    pass
