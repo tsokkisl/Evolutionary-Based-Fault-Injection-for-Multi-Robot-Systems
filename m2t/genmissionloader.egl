@@ -1,75 +1,76 @@
-from ..mission import *
-[% var componentLookup = new Map(); %]
-[% var EObjectLookup = new Map(); %]
+from dsl.mission.Mission import Mission
+from dsl.mission.Server import Server
+from dsl.mission.Battery import Battery
+from dsl.mission.Robot import Robot
+from dsl.mission.Coordinates import Coordinates
+from dsl.mission.Sensor import Sensor
+from dsl.mission.Goal import Goal
+from dsl.mission.GoalMembers import GoalMembers
+from dsl.mission.Area import Area
+from dsl.mission.GoalArea import GoalArea
+from dsl.mission.Message import Message
+from dsl.mission.GatherSamples import GatherSamples
+from dsl.mission.SufficientEnergy import SufficientEnergy
+from dsl.mission.AvoidCollision import AvoidCollision
+from dsl.mission.FixedDistance import FixedDistance
+from dsl.mission.MotionSource import MotionSource
+from dsl.mission.Obstacle import Obstacle
+from dsl.mission.StayWithinMissionArea import StayWithinMissionArea
+from dsl.mission.GoalDependencies import GoalDependencies
 
 class MissionLoader:
-	def loadMission(self):
-	[% for (mission in M!Mission.allInstances()) { %]
+	def load_mission(self):
+	[% for (mission in Mission.allInstances()) { %]
 	[% 	var robotNum = 0; 
-		var serverNum = 0; %]	
-		self.mission = Mission()
+		var serverNum = 0; %]
+		[* Initialize Mission Area *]
+		mission_area = Area(Coordinates([%= mission.missionArea.center.x %], [%= mission.missionArea.center.y %], [%= mission.missionArea.center.z %]), [%= mission.missionArea.radius %])	
+		self.mission = Mission("[%= mission.name %]", [%= mission.duration %], mission_area)
 		[* self.mission.duration = [%= mission.duration %] *]
 	[* Initilize Servers *]	
 	[% for (s in mission.servers) { %]
 		# Initilize Server: [%= s.name %]
 	[% var serverName = "s" + serverNum++;	%]
 		[%= serverName %] = Server("[%= s.ID %]", "[%= s.name %]")
-	[% componentLookup.put(s, serverName); %]
-		self.mission.addServer("[%= s.ID %]")
+		self.mission.add_server("[%= s.ID %]", [%= serverName %])
 	[% } %]
 	[* Initilize Robots and subcomponents *]
 	[% for (r in mission.robots) { %]
+	
 		# Initilize Robot: [%= r.name %]
-		[% componentLookup.put(r, r.ID); %]
-		robot_[%= r.ID %] = Robot("[%= r.ID %]", "[%= r.name %]")
-		[% for (p in r.componentProperties) { %]
-			[% if (p.isKindOf(IntProperty)) { %]
-		robot_[%= r.ID %].setIntComponentProperty("[%= p.name %]", [%= p.value %])
-			[% } %]
-			[% if (p.isKindOf(DoubleProperty)) { %]
-		robot_[%= r.ID %].setDoubleComponentProperty("[%= p.name %]", [%= p.value %])
-			[% } %]
-			[% if (p.isKindOf(StringProperty)) { %]
-		robot_[%= r.ID %].setStringComponentProperty("[%= p.name %]", "[%= p.value %]")
-			[% } %]
-		[% } %]
-		robot_[%= r.ID %].setCoordinateComponentProperty("startLocation", Coordinate([%= r.position.x %], [%= r.position.y %], [%= r.position.z %]))	
+		subcomponents = []
 		[% var subCNum = 0; %]
 		# Initilize Robot: [%= r.name %]'s subcomponents
-		[% for (subc in r.subcomponents) { %]
-			[% componentLookup.put(subc, subc.ID); %]
-			[% if (subc.isKindOf(Sensor)) { %]
-		sensor_[%= subc.ID %] = Sensor("[%= subc.ID %]", "[%= subc.type %]")
-		sensor_[%= subc.ID %].setParent(robot_[%= r.ID %])
-				[% for (sp in subc.componentProperties) { %]
-					[% if (sp.isKindOf(IntProperty)) { %]
-		[%= subID %].setIntComponentProperty("[%= sp.name %]", [%= sp.value %])
-					[% } %]
-					[% if (sp.isKindOf(DoubleProperty)) { %]
-		[%= subID %].setDoubleComponentProperty("[%= sp.name %]", [%= sp.value %])
-					[% } %]
-				[% } %]
-		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", sensor_[%= subc.ID %])
-			[% } %]
-			[% if (subc.isKindOf(MotionSource)) { %]
-		motion_source_[%= subc.ID %] = MotionSource()
-		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", motion_source_[%= subc.ID %])
-			[% } %]
-			[% if (subc.isKindOf(Battery)) { %]
-		battery_[%= subc.ID %] = Battery()
-		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", battery_[%= subc.ID %])
-			[% } %]
-		[% if (subc.isKindOf(CPU)) { %]
-		cpu_[%= subc.ID %] = CPU()
-		robot_[%= r.ID %].addSubcomponent("[%= subc.ID %]", cpu_[%= subc.ID %])
-			[% } %]	
+		[% for (s in r.sensors) { %]
+		sensor_[%= s.ID %] = Sensor("[%= s.ID %]", "[%= s.parentID %]", "[%= s.type %]", [%= s.energyPerSample %], [%= s.samplesPerSecond %])
+		subcomponents.append(sensor_[%= s.ID %])
 		[% } %]
-		self.mission.addRobot("[%= r.ID %]", robot_[%= r.ID %])
+		[% for (ms in r.motionSources) { %]
+		motion_source_[%= ms.ID %] = MotionSource("[%= ms.ID %]", [%= ms.energyPerDistanceUnit %])
+		subcomponents.append(motion_source_[%= ms.ID %])
+		[% } %]
+		[% for (b in r.batteries) { %]
+		battery_[%= b.ID %] = Battery("[%= b.ID %]", [%= b.totalEnergy %])
+		subcomponents.append(battery_[%= b.ID %])
+		[% } %]
+		robot_[%= r.ID %] = Robot("[%= r.ID %]", "[%= r.name %]", [%= r.speed %], Coordinates([%= r.position.x %], [%= r.position.y %], [%= r.position.z %]), subcomponents)
+		[% for (p in r.intProperties) { %]
+		robot_[%= r.ID %].set_int_component_property("[%= p.name %]", [%= p.value %])
+		[% } %]
+		[% for (p in r.doubleProperties) { %]
+		robot_[%= r.ID %].set_double_component_property("[%= p.name %]", [%= p.value %])
+		[% } %]
+		[% for (p in r.stringProperties) { %]
+		robot_[%= r.ID %].set_string_component_property("[%= p.name %]", "[%= p.value %]")
+		[% } %]
+		robot_[%= r.ID %].configure_robot()
+		self.mission.add_robot("[%= r.ID %]", robot_[%= r.ID %])
 	[% } %]
 	
 	[* Initilize Goals *]
 	[% var goalnum = 0; %]
 	[% for (g in mission.goals) { %]
+	
 		# Initilize Goal: [%= g.name %]
 		[% goalnum++; %]
 		[% var goalName = g.name; %]
@@ -80,77 +81,93 @@ class MissionLoader:
 		goal_members_[%= g.ID %] = GoalMembers(members, self.mission)		
 		[% var goalDep = g.dependentGoals; %]
 		g_deps = []
-		[% if (goalDep.size() > 1) { %]
+		[* [% if (goalDep.size() > 1) { %] *]
 		[% for (goal in goalDep.dependencies) { %]
 		g_deps.append(self.mission.goals.get("[%= goal.ID %]"))
 			[% } %]
-		goal_dependecies_[%= g.ID %] = GoalDependencies([%= goalDep.earliestStartTime %], [%= goalDep.latestFinishTime %], g_deps)
-		[% } else { %]
+		goal_dependecies_[%= g.ID %] = GoalDependencies(g_deps)
+		[* [% } else { %]
 		goal_dependecies_[%= g.ID %] = []	
-		[% } %]
+		[% } %] *]
 		[* Goal Tasks *]
 		[% var goalTask = g.task; %]
-		[% if (goalTask.isKindOf(GatherSamples)) { %]
-		s = self.mission.sensors.get("[%= goalTask.sensor.ID %]")
-		goal_task_[%= g.ID %] = GatherSamples([%= goalTask.samplesPerSecond %], [%= goalTask.targetSampleNumber %], s)
+		[% if (goalTask.gatherSamples != null) { %]
+		s = self.mission.robots["[%= goalTask.gatherSamples.sensor.parentID %]"].subcomponents["[%= goalTask.gatherSamples.sensor.ID %]"]
+		goal_task_[%= g.ID %] = GatherSamples([%= goalTask.gatherSamples.targetSampleNumber %], s)
 		[% } %]
-		[% if (goalTask.isKindOf(AvoidCollision)) { %]
+		[% if (goalTask.avoidCollision != null) { %]
 		rbts = []
 		obs = []
-		[% for (r in goalTask.robots) { %]
+		[% for (r in goalTask.avoidCollision.robots) { %]
 		rbts.append(self.mission.robots.get("[%= r.ID %]"))
 		[% } %]
-		[% for (o in goalTask.obstacles) { %]
+		[% for (o in goalTask.avoidCollision.obstacles) { %]
 		obs.append(self.mission.obstacles.get("[%= o.ID %]"))
 		[% } %]
 		goal_task_[%= g.ID %] = AvoidCollision(rbts, obs)
 		[% } %]
-		[% if (goalTask.isKindOf(FixedDistanceBetweenRobots)) { %]
-		goal_task_[%= g.ID %] = FixedDistance([%= goalTask.fixedDistance %])
+		[% if (goalTask.fixedDistanceBetweenRobots != null) { %]
+		goal_task_[%= g.ID %] = FixedDistance([%= goalTask.fixedDistanceBetweenRobots.fixedDistance %])
 		[% } %]
-		[% if (goalTask.isKindOf(Patrol)) { %]
-		goal_task_[%= g.ID %] = Patrol()
+		[% if (goalTask.patrol != null) { %]
+		goal_task_[%= g.ID %] = Patrol(Area(Coordinates([%= goalTask.patrol.area.center.x %], [%= goalTask.patrol.area.center.y %], [%= goalTask.patrol.area.center.z %]), [%= goalTask.patrol.area.radius %]))
 		[% } %]
-		[% if (goalTask.isKindOf(Visit)) { %]
-		goal_task_[%= g.ID %] = Visit()
+		[% if (goalTask.visit != null) { %]
+		goal_task_[%= g.ID %] = Visit(Coordinates([%= goalTask.visit.coordinates.x %], [%= goalTask.visit.coordinates.y %], [%= goalTask.visit.coordinates.z %]))
 		[% } %]
-		[% if (goalTask.isKindOf(Track)) { %]
-		goal_task_[%= g.ID %] = Track()
+		[% if (goalTask.track != null) { %]
+		trajectory = []
+		[% for (c in goalTask.track.trajectory) { %]
+		trajectory.append(Coordinates([%= c.x %], [%= c.y %], [%= c.z %]))
 		[% } %]
-		[% if (goalTask.isKindOf(Stay)) { %]
-		goal_task_[%= g.ID %] = Stay()
+		goal_task_[%= g.ID %] = Track(trajectory)
 		[% } %]
-		[% if (goalTask.isKindOf(SufficientEnergy)) { %]
+		[% if (goalTask.stay != null) { %]
+		goal_task_[%= g.ID %] = Stay(Area(Coordinates([%= goalTask.stay.area.center.x %], [%= goalTask.stay.area.center.y %], [%= goalTask.stay.area.center.z %]), [%= goalTask.stay.area.radius %]))
+		[% } %]
+		[% if (goalTask.sufficientEnergy != null) { %]
 		goal_task_[%= g.ID %] = SufficientEnergy()
+		[% } %]
+		[% if (goalTask.stayWithinMissionArea != null) { %]
+		goal_task_[%= g.ID %] = StayWithinMissionArea(Area(Coordinates([%= m.missionArea.center.x %], [%= m.missionArea.center.y %], [%= m.missionArea.center.z %]), [%= m.missionArea.radius %]))
 		[% } %]
 		[% var goalArea = g.area; %]
 		[% var ga = goalArea.goalArea; %]
-		goal_area_[%= g.ID %] = GoalArea(Area(Coordinate([%= ga.center.x %], [%= ga.center.y %], [%= ga.center.z %]), [%= ga.radius %]))
-
+		goal_area_[%= g.ID %] = GoalArea(Area(Coordinates([%= ga.center.x %], [%= ga.center.y %], [%= ga.center.z %]), [%= ga.radius %]))
 		[* Initilize Messages *]
 		goal_messages = []
 		[% for (msg in g.messages) { %]
 		[% if (msg.from.isKindOf(Robot)) { %]
 		sender = self.mission.robots.get("[%= msg.from.ID %]")
-		[% } else { %]
+		[% } else if (msg.from.isKindOf(Server)) { %]
 		sender = self.mission.servers.get("[%= msg.from.ID %]")
+		[% } else { %]
+		sender = self.mission.robots.get("[%= msg.from.parentID %]").subcomponents.get("[%= msg.from.ID %]")
 		[% } %]
 		[% if (msg.to.isKindOf(Robot)) { %]
 		receiver = self.mission.robots.get("[%= msg.to.ID %]")
-		[% } else { %]
+		[% } else if (msg.to.isKindOf(Server)) { %]
 		receiver = self.mission.servers.get("[%= msg.to.ID %]")
+		[% } else { %]
+		receiver = self.mission.robots.get("[%= msg.to.parentID %]").subcomponents.get("[%= msg.to.ID %]")
 		[% } %]
 		data = []
 		[% for (data in msg.body) {%]
 		data.append(["[%= data.name %]", "[%= data.type %]"])
 		[% } %]
-		msg_[%= msg.ID %] = Message("[%= msg.header %]", sender, receiver, data)
+		msg_[%= msg.ID %] = Message("[%= msg.ID %]", "[%= msg.goal_ID %]", "[%= msg.header %]", sender, receiver, data)
 		goal_messages.append(msg_[%= msg.ID %]) 
 		[% } %]
 		goal_[%= g.ID %] = Goal("[%= g.name %]", self.mission, goal_dependecies_[%= g.ID %], goal_members_[%= g.ID %], goal_area_[%= g.ID %], goal_task_[%= g.ID %], goal_messages)
-		self.mission.addGoal("[%= g.ID %]", goal_[%= g.ID %])	
+		self.mission.add_goal("[%= g.ID %]", goal_[%= g.ID %])	
 	[% } %]
-		[* Initialize Mission Area *]
-		[* mission_area = Area(Coordinate([%= ga.center.x %], [%= ga.center.y %], [%= ga.center.z %]), [%= ga.radius %]) *]
+	[* Initilize Obstacle *]
+	[% for (o in mission.obstacles) { %]
+	
+		# Initilize Obstacle: [%= o.ID %]
+		obstacle_[%= o.ID %] = Obstacle("[%= o.ID %]", Area(Coordinates([%= o.area.center.x %], [%= o.area.center.y %], [%= o.area.center.z %]), [%= o.area.radius %]))
+		self.mission.add_obstacle("[%= o.ID %]", obstacle_[%= o.ID %])	
 	[% } %]
+	[% } %]
+	
 		return self.mission

@@ -1,15 +1,15 @@
-@namespace(uri="project-mission", prefix="")
+@namespace(uri="acs_project_mission", prefix="")
 
 package project;
 
-/* This DSL is responsible for defining the specification
+/* This DSL is used for defining the specification
 * of the mission which is going to be executed by the MRS 
 * including robots, goals, environment, constrains etc.
 */
 
 /* Mission Environment */
 
-class Coordinate {
+class Coordinates {
 	attr int x;
 	attr int y;
 	attr int z;
@@ -18,7 +18,7 @@ class Coordinate {
 class Area {
 	attr String ID;
 	attr int radius;
-	val Coordinate center;
+	val Coordinates center;
 }
 
 class Obstacle {
@@ -28,42 +28,40 @@ class Obstacle {
 
 /* Components Specification */
 
-abstract class CProperty {
+class IntProperty {
 	attr String name;
-}
-
-class IntProperty extends CProperty {
 	attr int value;
 }
 
-class StringProperty extends CProperty {
+class StringProperty {
+	attr String name;
 	attr String value;	
 }
 
-class DoubleProperty extends CProperty {
+class DoubleProperty {
+	attr String name;
 	attr Double value;	
 }
 
-abstract class Component {
+class Robot {
 	attr String name;
 	attr String ID;
-	val CProperty[*] componentProperties;
+	attr int speed;
+	val Coordinates position;
+	val IntProperty[*] intProperties;
+	val StringProperty[*] stringProperties;
+	val DoubleProperty[*] doubleProperties;
+	val Sensor[*] sensors;
+	val Battery[*] batteries;
+	val MotionSource[*] motionSources;
 }
 
-class MainComponent extends Component {	
-	val Component[*] subcomponents;
-}
-
-class Robot extends MainComponent {
-	val Coordinate position;
-}
-
-class Server extends MainComponent {
-
-}
-
-class SubComponent extends Component {
-	attr String parent_ID;
+class Server {
+	attr String name;
+	attr String ID;
+	val IntProperty[*] intProperties;
+	val StringProperty[*] stringProperties;
+	val DoubleProperty[*] doubleProperties;
 }
 
 enum SensorType {
@@ -73,24 +71,27 @@ enum SensorType {
 	PRESSURE = 4;
 }
 
-class Sensor extends SubComponent {
- 	attr SensorType type;
+class Sensor {
+	attr String name;
+	attr String ID;
+	attr String parentID;
+ 	attr Double energyPerSample;
+	attr int samplesPerSecond;
+	attr SensorType type;
 }
 
-class CPU extends SubComponent {
-	attr String model;
+class MotionSource {
+	attr String name;
+	attr String ID;
+	attr String parentID;
+ 	attr Double energyPerDistanceUnit;
 }
 
-class MotionSource extends SubComponent {
- 	attr double energyPerDistanceUnit;
-}
-
-class Battery extends SubComponent {
- 	attr int totalEnergy; 
-}
-
-class EnergySource extends SubComponent {
- 	attr int productionRate;
+class Battery {
+	attr String name;
+	attr String ID;
+	attr String parentID;
+ 	attr Double totalEnergy;
 }
 
 /* Mission messages */
@@ -103,8 +104,8 @@ class MessageData {
 class Message {
 	attr String ID;
 	attr String goal_ID;
-	ref Component[1] from;
-	ref Component[1] to;
+	ref Robot[1] from;
+	ref Server[1] to;
 	attr String header;
 	val MessageData[*] body;
 }
@@ -117,55 +118,60 @@ class GoalMembers {
 
 class GoalDependencies {
 	ref Goal[*] dependencies;
-	attr double earliestStartTime;
-	attr double latestFinishTime;
 }
 
 class GoalArea {
 	val Area goalArea;
 }
 
-abstract class GoalTask {
-	
+class Patrol {
+	val Area area;
 }
 
-class Patrol extends GoalTask {
-	
+class Visit {
+	val Coordinates coordinates;
 }
 
-class Visit extends GoalTask {
-	
+class Track {
+	val Coordinates[*] trajectory;
 }
 
-class Track extends GoalTask {
-	
+class Stay {
+	val Area area;
 }
 
-class Stay extends GoalTask {
-
-}
-
-class AvoidCollision extends GoalTask {
+class AvoidCollision {
 	ref Robot[*] robots;
 	ref Obstacle[*] obstacles;
 }
 
-class FixedDistanceBetweenRobots extends GoalTask {
+class FixedDistanceBetweenRobots {
 	attr int fixedDistance;
 }
 
-class StayWithinMissionArea extends GoalTask {
+class StayWithinMissionArea {
 	
 }
 
-class GatherSamples extends GoalTask {
-	attr int samplesPerSecond;
+class GatherSamples {
 	attr int targetSampleNumber;
 	ref Sensor sensor;
 }
 
-class SufficientEnergy extends GoalTask {
+class SufficientEnergy {
 	
+}
+
+class GoalTask {
+	val Patrol[0..1] patrol;
+	val Visit[0..1] visit;
+	val Track[0..1] track;
+	val Stay[0..1] stay;
+	val AvoidCollision[0..1] avoidCollision;
+	val FixedDistanceBetweenRobots[0..1] fixedDistanceBetweenRobots;
+	val GatherSamples[0..1] gatherSamples;
+	val SufficientEnergy[0..1] sufficientEnergy;
+	val StayWithinMissionArea[0..1] stayWithinMissionArea;
 }
 
 class Goal {

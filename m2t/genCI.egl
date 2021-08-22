@@ -1,39 +1,123 @@
-from .mission_loader import MissionLoader
-from ....core.sim_interface import SimInterface
+from gen.mission_loader import MissionLoader
+from gen.fault_specification import FaultSpecification
+from gen.sim_interface import SimInterface
+import random
+from dsl.mission.Sensor import Sensor
+from dsl.mission.Coordinates import Coordinates
 
 class CI:
 	
-    def __init__(self, m, fs):
-        self.mission = m
-        self.fault_specification = fs
+    total_goal_violations = [] 
+    goal_violations_per_fault = {}
+    time = 0
+    
+    def __init__(self):
         self.sim_interface = SimInterface()
-        # Initialize system's state
+        self.mission = MissionLoader().load_mission()
+        self.sim_interface.start()
         
-    def reset_system_state(self, fs):
-        self.fault_specification = fs
-        # Reset system's state
 
+    def reset_system_state(self, fs):
+        self.mission = MissionLoader().load_mission()
+        self.fault_specification = fs
+        self.sim_interface.mission = self.mission
+        self.total_goal_violations = [0 for _ in range(self.mission.duration)]
+        self.goal_violations_per_fault = {}
+        self.time = 0
+
+    def update_goal_violations(self, gid):
+        self.total_goal_violations[self.time] += 1
+        if gid in self.goal_violations_per_fault.keys():
+            self.goal_violations_per_fault[gid] += 1
+        else:
+            self.goal_violations_per_fault[gid] = 1
+
+    def update_system_state(self):
+        """ Update mission state """
+        for robot in self.mission.robots.values():
+            robot.update_position(self.sim_interface.get_POSITION(robot))
+            robot.update_energy(self.sim_interface.get_ENERGY(robot))
+            robot.update_speed(self.sim_interface.get_SPEED(robot))
+            for sc in robot.subcomponents.values():
+                if isinstance(sc, Sensor) and sc.state == "Active":
+                    sample = self.sim_interface.get_sensor_sample(sc)
+                    sc.samples.append(sample)
+            """print(robot.position.x)
+            print(robot.position.y)
+            print(robot.position.z)
+            print(robot.speed)
+            print(robot.current_energy)
+            print('--------------------------------')"""
+
+    def execute_faults(self):
+        """ Check for fault """
+        for fault in self.fault_specification:
+            fault.exec_fault(self.time, self.sim_interface.mission)
+            	
     def runCI(self, fs):
         self.reset_system_state(fs)
         # Run simulation
-    
-    [% for (m in M!Mission.allInstances()) { %]
+        for t in range(self.mission.duration):
+        	self.update_system_state()
+        	self.execute_faults()
+        [% for (m in Mission.all) { %]
+        	[% for (g in m.goals) { %]
+        	[% if (g.task.gatherSamples != null) { %]
+        	self.check_[%= g.name.ftlc() %]_[%= g.ID %]()
+        	[% } %]
+        	[% else { %]
+        	self.check_[%= g.name.ftlc() %]()
+        	[% } %]
+    		[% } %]
+        [% } %]
+        	t += 1
+        	self.time = t
+        print(self.goal_violations_per_fault)
+        #print(self.total_goal_violations)
+                
+    [% for (m in Mission.all) { %]
         [% for (g in m.goals) { %]
-        	[% if (g.task.isKindOf(GatherSamples)) { %]
-    def [%= g.name.ftlc() %]_[%= g.ID %](self, sensor):
-        [%=out.startPreserve("#", "", "User implemented method", true)%]
-        goal_ID = [%= g.ID %]
-        s = self.mission.robots.get(sensor.parent_ID).sensors.get(sensor.ID)
-        pass
-		[%=out.stopPreserve()%]
+        	[% if (g.task.gatherSamples != null) { %]
+    def check_[%= g.name.ftlc() %]_[%= g.ID %](self):
+        [%= out.startPreserve("#", "", "User implemented method", true) %]
+        goal_ID = "[%= g.ID %]"
+        sensor = self.mission.goals[goal_ID].sensor
+        """ Check if goal is violated and make a decision """
+		[%= out.stopPreserve() %]
 		
         	[% } %]
         	[% else { %]
-    def [%= g.name.ftlc() %](self):
-        [%=out.startPreserve("#", "", "User implemented method", true)%]
-        pass
-		[%=out.stopPreserve()%]
+    def check_[%= g.name.ftlc() %](self):
+        [%= out.startPreserve("#", "", "User implemented method", true) %]
+        goal_ID = "[%= g.ID %]"
+        """ Check if goal is violated and make a decision """
+		[%= out.stopPreserve() %]
 		
         	[% } %]
         [% } %]
     [% } %]
+    
+    """
+    def print_mission_and_fault_specification(self):
+        self.reset_system_state(FaultSpecification(MissionLoader().load_mission()))
+        # Setup mission specification
+        print("Mission Specification")
+        print(self.mission.name)
+        print(self.mission.duration)
+        print(self.mission.mission_area)
+        print(self.mission.robots)
+        print(self.mission.servers)
+        print(self.mission.obstacles)
+        print(self.mission.goals)
+
+        print("\nFault Specification")
+        print(self.fault_specification.faults)
+        pop = self.fault_specification.generate_population()
+        for i in range(len(pop)):
+            s = ""
+            print("INDIVIDUAL: " + str(i))
+            for k in pop[i]:
+                s += k.type.message.ID + "(" + str(k.start) + ", " + str(k.finish)+ ") "
+            print(s)
+            print("---------------------------------\n")
+     """

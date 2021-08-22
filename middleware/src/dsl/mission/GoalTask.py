@@ -1,2 +1,0 @@
-class GoalTask:
-    pass

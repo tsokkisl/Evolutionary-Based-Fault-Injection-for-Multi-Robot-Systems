@@ -5,7 +5,7 @@ rule Model2MissionLoader
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/mission_loader.py"
+	target : "../middleware/gen/mission_loader.py"
 }
 
 rule Model2FaultMissionLoader 
@@ -15,7 +15,7 @@ rule Model2FaultMissionLoader
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/fault_specification.py"
+	target : "../middleware/gen/fault_specification.py"
 }
 
 rule Model2SimulationInterface
@@ -25,7 +25,7 @@ rule Model2SimulationInterface
 
 	parameters : Map{}
 
-	target : "../middleware/core/sim_interface.py"
+	target : "../middleware/gen/sim_interface.py"
 }
 
 rule Model2CI 
@@ -35,5 +35,15 @@ rule Model2CI
 
 	parameters : Map{}
 
-	target : "../middleware/src/dsl/dslloader/CI.py"
+	target : "../middleware/gen/CI.py"
+}
+
+rule Model2MRS 
+	transform m : Mission {
+
+	template : "genMRS.egl"
+
+	parameters : Map{}
+
+	target : "../middleware/MRS.py"
 }

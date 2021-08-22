@@ -1,71 +1,117 @@
-from ..src.dsl.mission import *
-import time
+from dsl.mission.Coordinates import Coordinates
 import roslibpy
+from threading import Thread
 
-class SimInterface():
+class SimInterface(Thread):
     
-    topics = []
-
-    def __init__(self):
-        client = roslibpy.Ros(host='localhost', port=9090)
-        client.run()
-        [% for (mission in M!Mission.allInstances()) { %]
+    topics = {}
+    mission = None
+    flag = True
+	
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+    def reset(self):
+        print("Thread 1 reset...")
+     
+    def kill(self):
+    	print("Thread 1 killed...")
+    	self.flag = False
+                  
+    def run(self):
+    
+        self.client = roslibpy.Ros(host='localhost', port=9090)
+        self.client.run()
+        [% for (mission in Mission.all) { %]
             [% for (robot in mission.robots) { %]
+            
         #--------------------------------- Robot [%= robot.name %] Topics ---------------------------------#
-                [% for (cp in robot.componentProperties) { %]
-        [%= robot.ID %]_[%= cp.name %] = roslibpy.Topic(client, '/[%= robot.ID %]_[%= cp.name %]', 'std_msgs/String')
-        self.topics.add("[%= robot.ID %]_[%= cp.name %]", [%= robot.ID %]_[%= cp.name %])
+                [% for (cp in robot.intProperties) { %]
+        [%= robot.ID %]_[%= cp.name %] = roslibpy.Topic(self.client, '/[%= robot.ID %]_[%= cp.name %]', 'std_msgs/String')
+        [%= robot.ID %]_[%= cp.name %].subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_[%= cp.name %]', message))
+        [* self.topics.add("[%= robot.ID %]_[%= cp.name %]", [%= robot.ID %]_[%= cp.name %]) *]
                 [% } %]
-        [%= robot.ID %]_POSITION = roslibpy.Topic(client, '/[%= robot.ID %]_POSITION', 'std_msgs/String')
-        self.topics.add("[%= robot.ID %]_POSITION", [%= robot.ID %]_POSITION)
-                [% for (sc in robot.subcomponents) { %]
-                    [% if (sc.isKindOf(Sensor)) {%]
-        [%= sc.ID %]_[%= sc.type %] = roslibpy.Topic(client, '/[%= sc.ID %]_[%= sc.type %]', 'std_msgs/String')
-        self.topics.add("[%= sc.ID %]_[%= sc.type %]", [%= sc.ID %]_[%= sc.type %])
-                    [% } %]
+                [% for (cp in robot.doubleProperties) { %]
+        [%= robot.ID %]_[%= cp.name %] = roslibpy.Topic(self.client, '/[%= robot.ID %]_[%= cp.name %]', 'std_msgs/String')
+        [%= robot.ID %]_[%= cp.name %].subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_[%= cp.name %]', message))
+        [* self.topics.add("[%= robot.ID %]_[%= cp.name %]", [%= robot.ID %]_[%= cp.name %]) *]
                 [% } %]
-        
+                [% for (cp in robot.stringProperties) { %]
+        [%= robot.ID %]_[%= cp.name %] = roslibpy.Topic(self.client, '/[%= robot.ID %]_[%= cp.name %]', 'std_msgs/String')
+        [%= robot.ID %]_[%= cp.name %].subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_[%= cp.name %]', message))
+        [* self.topics.add("[%= robot.ID %]_[%= cp.name %]", [%= robot.ID %]_[%= cp.name %]) *]
+                [% } %]
+        [%= robot.ID %]_POSITION = roslibpy.Topic(self.client, '/[%= robot.ID %]_POSITION', 'std_msgs/String')
+        [%= robot.ID %]_POSITION.subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_POSITION', message))
+        [%= robot.ID %]_SPEED = roslibpy.Topic(self.client, '/[%= robot.ID %]_SPEED', 'std_msgs/String')
+        [%= robot.ID %]_SPEED.subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_SPEED', message))
+        [%= robot.ID %]_ENERGY = roslibpy.Topic(self.client, '/[%= robot.ID %]_ENERGY', 'std_msgs/String')
+        [%= robot.ID %]_ENERGY.subscribe(lambda message: self.assign_to_topic('[%= robot.ID %]_ENERGY', message))
+        [* self.topics.add("[%= robot.ID %]_POSITION", [%= robot.ID %]_POSITION) *]
+                [% for (s in robot.sensors) { %]
+        [%= s.ID %]_[%= s.type %] = roslibpy.Topic(self.client, '/[%= s.ID %]_[%= s.type %]', 'std_msgs/String')
+        [%= s.ID %]_[%= s.type %].subscribe(lambda message: self.assign_to_topic('[%= s.ID %]_[%= s.type %]', message))
+        [* self.topics.add("[%= sc.ID %]_[%= sc.type %]", [%= sc.ID %]_[%= sc.type %]) *]
+                [% } %]
 			[% } %]
         [% } %]
+        try:
+            while self.flag:
+                pass
+        except KeyboardInterrupt:
+            self.client.terminate()
             
-
-    def find_topic(self, obj, val):
-        return self.topics.get(obj.ID + "_" + val)
+    def assign_to_topic(self, topic_name, msg):
+        self.topics[topic_name] = msg
 
     def get_sensor_sample(self, sensor):
-        topic = self.find_topic(sensor.ID, sensor.sensorType)
-        sample = topic.subscribe(lambda message: message['data'])
-        return sample
+        if sensor.ID + "_" + sensor.sensor_type in self.topics.keys():
+            sample = self.topics[sensor.ID + "_" + sensor.sensor_type]["data"]
+            return int(sample)
+        else:
+            return 0
 
     def get_POSITION(self, robot):
-        topic = self.find_topic(robot.ID, "POSITION")
-        position = topic.subscribe(lambda message: message['data'])
-        return position
+        if robot.ID + "_" + "POSITION" in self.topics.keys():
+            position = self.topics[robot.ID + "_" + "POSITION"]["data"]
+            position = position.split(',')
+            return Coordinates(int(position[0]), int(position[1]), int(position[2]))
+        else:
+            return robot.position
     
-    [% var properties = new List(); %]
+    def get_SPEED(self, robot):
+        if robot.ID + "_" + "SPEED" in self.topics.keys():
+            position = self.topics[robot.ID + "_" + "SPEED"]["data"]
+            return int(position)
+        else:
+            return robot.speed
+        
+    def get_ENERGY(self, robot):
+        if robot.ID + "_" + "ENERGY" in self.topics.keys():
+            energy = self.topics[robot.ID + "_" + "ENERGY"]["data"]
+            return float(energy)
+        else: 
+            return robot.current_energy
+        
+    [*[% var properties = new List(); %]
         [% for (mission in M!Mission.allInstances()) { %]
             [% for (robot in mission.robots) { %]
                 [% for (cp in robot.componentProperties) { %]
                     [% if (properties.excludes(cp.name)) { %]
     def get_[%= cp.name %](self, robot):
-        topic = self.find_topic(robot.ID, "[%= cp.name %]")
-        sample = topic.subscribe(lambda message: message['data'])
-        return sample
-        
-        		        [% properties.add(cp.name); %]
+        # topic = self.find_topic(robot.ID, "[%= cp.name %]")
+        # sample = topic.subscribe(lambda message: message['data'])
+        if robot.ID + "_" + "[%= cp.name %] in self.topics.keys():
+        	property = self.topics[robot.ID + "_" + "[%= cp.name %]"]["data"]
+        	return property
+        else:
+        	return ""	
                     [% } %]
-                [% } %]
-                [* [% for (sc in robot.subcomponents) { %]
-                    [% if (sc.isKindOf(Sensor) and properties.excludes(sc.type)) { %]
-    def get_[%= sc.type %](self, component):
-        pass
-        				[% properties.add(sc.type); %]
-                    [% } %]
-                [% } %] *]
+                [% } %]      
             [% } %]
-        [% } %]
-
+        [% } %]*]
     def update_robot_speed(self, robot, new_speed):
-        pass
+        self.mission.robots[robot.ID].speed = new_speed
 
-            
+    def stop(self):
+        self.client.terminate()   

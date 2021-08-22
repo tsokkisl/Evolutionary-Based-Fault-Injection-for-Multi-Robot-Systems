@@ -1,9 +1,9 @@
-@namespace(uri="project-setup", prefix="")
+@namespace(uri="acs_project_setup", prefix="")
 
 package project;
 
-import "platform:/resource/Project/ecore/fault.ecore";
-import "platform:/resource/Project/ecore/mission.ecore";
+import "platform:/resource/acs_project/ecore/fault.ecore";
+import "platform:/resource/acs_project/ecore/mission.ecore";
 
 /* This DSL is responsible for creating the mission and
 * the fault scenarios which are going to be evaluated

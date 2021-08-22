@@ -1,178 +1,221 @@
-@namespace(uri="project-faults", prefix="")
+@namespace(uri="acs_project_fault", prefix="")
 
 package project;
 
-import "platform:/resource/Project/ecore/mission.ecore";
+import "platform:/resource/acs_project/ecore/mission.ecore";
 
-/* This DSL is responsible for defining the faults included in
+/* This DSL is used for defining the faults included in
 * a fault scenario which are provided by the user in order to
 * evaluate their criticality through the genetic algorithm 
 */
 
-class FaultClass {
-
-}
-
-class AffectPredefinedMessages extends FaultClass {
-	ref project.Message affectedMessage;
-}
-
 /* Delay Message */
-class DelayMessage extends AffectPredefinedMessages {
-	attr double delay;
+class DelayMessage {
+	ref project.Message affectedMessage;
+	attr Double DELAY;
 }
 
 /* Block Message */
-class BlockMessage extends AffectPredefinedMessages {
-	attr double blockDuration;
-}
-
-class BlockSentMessages extends BlockMessage {
-
-}
-
-class BlockReceivedMessages extends BlockMessage {
-	
-}
-
-/* Modify Message */
-class ModifyMessage extends AffectPredefinedMessages {
-	
+class BlockMessage {
+	ref project.Message affectedMessage;
+	attr Double BLOCK_DURATION;
 }
 
 /* ------------------------------------------------------ */
 
-class ModifyIntMessage extends ModifyMessage {
-	
-}
-
-class RandomRemainingEnergyCapacity extends ModifyIntMessage {
-	attr int LOWER_BOUND;
-	attr int UPPER_BOUND;
-}
-
-class ZeroRemainingEnergyCapacity extends ModifyIntMessage {
-	attr int CAPACITY = 0;
-}
-
-class FixedRemainingEnergyCapacity extends ModifyIntMessage {
-	attr int FIXED_VAL;
-}
-
-class IncrementRemainingEnergyCapacityReport extends ModifyIntMessage {
-	attr int INCREMENT_VAL;
-}
-
-class DecrementRemainingEnergyCapacityReport extends ModifyIntMessage {
-	attr int DECREMENT_VAL;
-}
-
-/* ------------------------------------------------------ */
-
-class ModifyDoubleMessage extends ModifyMessage {
-	
-}
-
-class RandomSpeed extends ModifyDoubleMessage {
-	attr double RANDOM_VAL;
-}
-
-class ZeroSpeed extends ModifyDoubleMessage {
-	attr double SPEED = 0;
-}
-
-class FixedSpeed extends ModifyDoubleMessage {
-	attr double FIXED_VAL;
-}
-
-class RandomSampleRate extends ModifyDoubleMessage {
+class RandomRemainingEnergyCapacityReport {
+	ref project.Message affectedMessage;
 	attr Double LOWER_BOUND;
 	attr Double UPPER_BOUND;
 }
 
-class FixedSampleRate extends ModifyDoubleMessage {
-	attr double FIXED_VAL;
+class ZeroRemainingEnergyCapacityReport {
+	ref project.Message affectedMessage;
+	attr Double CAPACITY = 0;
 }
 
-class IncrementSpeed extends ModifyDoubleMessage {
-	attr double PERCENTAGE;
+class FixedRemainingEnergyCapacityReport {
+	ref project.Message affectedMessage;
+	attr Double FIXED_VAL;
 }
 
-class DecrementSpeed extends ModifyDoubleMessage {
-	attr double PERCENTAGE;
+class IncrementRemainingEnergyCapacityReport {
+	ref project.Message affectedMessage;
+	attr Double PERCENTAGE;
 }
 
-class IncrementSampleRate extends ModifyDoubleMessage {
-	attr double PERCENTAGE;
+class DecrementRemainingEnergyCapacityReport {
+	ref project.Message affectedMessage;
+	attr Double PERCENTAGE;
 }
 
-class DecrementSampleRate extends ModifyDoubleMessage {
-	attr double PERCENTAGE;
+class RandomSensorEnergyPerSample {
+	ref project.Message affectedMessage;
+	attr Double LOWER_BOUND;
+	attr Double UPPER_BOUND;
+}
+
+class ZeroSensorEnergyPerSample {
+	ref project.Message affectedMessage;
+	attr Double CONSUMPTION = 0;
+}
+
+class FixedSensorEnergyPerSample {
+	ref project.Message affectedMessage;
+	attr Double FIXED_VAL;
+}
+
+class IncrementSensorEnergyPerSample {
+	ref project.Message affectedMessage;
+	attr Double PERCENTAGE;
+}
+
+class DecrementSensorEnergyPerSample {
+	ref project.Message affectedMessage;
+	attr Double PERCENTAGE;
 }
 
 /* ------------------------------------------------------ */
 
-class ModifyStringMessage extends ModifyMessage {
-	
+class RandomSpeed {
+	ref project.Message affectedMessage;	
 }
 
-class FixedEmptyStringMessage extends ModifyStringMessage {
+class ZeroSpeed {
+	ref project.Message affectedMessage;
+	attr int SPEED = 0;
+}
+
+class FixedSpeed {
+	ref project.Message affectedMessage;
+	attr int FIXED_VAL;
+}
+
+class IncrementSpeed {
+	ref project.Message affectedMessage;
+	attr int VAL;
+}
+
+class DecrementSpeed {
+	ref project.Message affectedMessage;
+	attr int VAL;
+}
+
+class RandomSampleRate {
+	ref project.Message affectedMessage;
+	attr int LOWER_BOUND;
+	attr int UPPER_BOUND;
+}
+
+class ZeroSampleRate {
+	ref project.Message affectedMessage;
+	attr int CONSUMPTION = 0;
+}
+
+class FixedSampleRate {
+	ref project.Message affectedMessage;
+	attr int FIXED_VAL;
+}
+
+class IncrementSampleRate {
+	ref project.Message affectedMessage;
+	attr int VAL;
+}
+
+class DecrementSampleRate {
+	ref project.Message affectedMessage;
+	attr int VAL;
+}
+
+/* ------------------------------------------------------ */
+
+class FixedEmptyStringMessage {
+	ref project.Message affectedMessage;
 	attr String FIXED_VAL = ""; 	
 }
 
-class RandomStringMessage extends ModifyStringMessage {
+class RandomStringMessage {
+	ref project.Message affectedMessage;
 	attr String RANDOM_VAL;
 }
 
 /* ------------------------------------------------------ */
 
-class ModifyCoordinatesMessage extends ModifyMessage {
+class FixedRobotCoordinates {
+	ref project.Message affectedMessage;
 	attr int NEW_X;
 	attr int NEW_Y;
 	attr int NEW_Z;
 }
 
-class FixedRobotCoordinates extends ModifyCoordinatesMessage {
-	
+class RandomRobotCoordinates {
+	ref project.Message affectedMessage;
 }
 
-class RandomRobotCoordinates extends ModifyCoordinatesMessage {
-
+class FixedObstacleCoordinates {
+	ref project.Message affectedMessage;
+	attr int NEW_X;
+	attr int NEW_Y;
+	attr int NEW_Z;
 }
 
-class FixedObstacleCoordinates extends ModifyCoordinatesMessage {
-	
+class RandomObstacleCoordinates {
+	ref project.Message affectedMessage;	
 }
 
-class RandomObstacleCoordinates extends ModifyCoordinatesMessage {
-	
-}
+/* Generate fake commands */
 
-/* Generate fake messages */
-class GenerateFakeCommands extends FaultClass {
-	val project.Message fakeMessage;
-}
-
-class StartRobot extends GenerateFakeCommands {
+class StartRobot {
 	ref project.Robot[1] affectedRobot;
 }
 
-class StopRobot extends GenerateFakeCommands {
+class StopRobot {
 	ref project.Robot[1] affectedRobot;
 }
 
-class ActivateSensor extends GenerateFakeCommands {
+class ActivateSensor {
 	ref project.Sensor[1] affectedSensor;
 }
 
-class DeactivateSensor extends GenerateFakeCommands {
+class DeactivateSensor {
 	ref project.Sensor[1] affectedSensor;
 }
 
 class Fault {
 	attr String name;
-	attr double faultStart;
-	attr double faultFinish;
-	attr double faultProbability;
-	val FaultClass[1] type;
+	attr Double start;
+	attr Double finish;
+	attr Double probability;
+	val DelayMessage[0..1] delayMessage;
+	val BlockMessage[0..1] blockMessage;
+	val RandomRemainingEnergyCapacityReport[0..1] randomRemainingEnergyCapacityReport;
+	val ZeroRemainingEnergyCapacityReport[0..1] zeroRemainingEnergyCapacityReport;
+	val FixedRemainingEnergyCapacityReport[0..1] fixedRemainingEnergyCapacityReport;
+	val IncrementRemainingEnergyCapacityReport[0..1] incrementRemainingEnergyCapacityReport;
+	val DecrementRemainingEnergyCapacityReport[0..1] decrementRemainingEnergyCapacityReport;
+	val RandomSensorEnergyPerSample[0..1] randomSensorEnergyPerSample;
+	val ZeroSensorEnergyPerSample[0..1] zeroSensorEnergyPerSample;
+	val FixedSensorEnergyPerSample[0..1] fixedSensorEnergyPerSample;
+	val IncrementSensorEnergyPerSample[0..1] incrementSensorEnergyPerSample;
+	val DecrementSensorEnergyPerSample[0..1] decrementSensorEnergyPerSample;
+	val RandomSpeed[0..1] randomSpeed;
+	val ZeroSpeed[0..1] zeroSpeed;
+	val FixedSpeed[0..1] fixedSpeed;
+	val IncrementSpeed[0..1] incrementSpeed;
+	val DecrementSpeed[0..1] decrementSpeed;
+	val RandomSampleRate[0..1] randomSampleRate;
+	val ZeroSampleRate[0..1] zeroSampleRate;
+	val FixedSampleRate[0..1] fixedSampleRate;
+	val IncrementSampleRate[0..1] incrementSampleRate;
+	val DecrementSampleRate[0..1] decrementSampleRate;
+	val FixedEmptyStringMessage[0..1] fixedEmptyStringMessage;
+	val RandomStringMessage[0..1] randomStringMessage;
+	val FixedRobotCoordinates[0..1] fixedRobotCoordinates;
+	val RandomRobotCoordinates[0..1] randomRobotCoordinates;
+	val FixedObstacleCoordinates[0..1] fixedObstacleCoordinates;
+	val RandomObstacleCoordinates[0..1] randomObstacleCoordinates;
+	val StartRobot[0..1] startRobot;
+	val StopRobot[0..1] stopRobot;
+	val ActivateSensor[0..1] activateSensor;
+	val DeactivateSensor[0..1] deactivateSensor;
 }
