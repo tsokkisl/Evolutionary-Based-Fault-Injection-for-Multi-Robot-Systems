@@ -81,7 +81,7 @@ class CI:
     def check_[%= g.name.ftlc() %]_[%= g.ID %](self):
         [%= out.startPreserve("#", "", "User implemented method", true) %]
         goal_ID = "[%= g.ID %]"
-        sensor = self.mission.goals[goal_ID].sensor
+        sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
         """ Check if goal is violated and make a decision """
 		[%= out.stopPreserve() %]
 		

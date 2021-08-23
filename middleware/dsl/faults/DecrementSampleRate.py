@@ -4,6 +4,6 @@ class DecrementSampleRate:
         self.message = message
         self.val = val
     
-    def run(self, mission):
+    def exec_fault(self, mission):
         s = mission.robots[self.message.get_from().parent_ID].subcomponents[self.message.get_from().ID]
         s.samples_per_second -= self.val

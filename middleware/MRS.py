@@ -10,61 +10,60 @@ class MRS(Thread):
 	
 	robots = {}
 	topics = {}
-	flag = True
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.reset_robots()
+		self.initialize_robots()
 	
-	def reset_robots(self):	
+	def initialize_robots(self):	
 		# Initilize Robot: TIM
 		subcomponents = []
 		# Initilize Robot: TIM's subcomponents
-		sensor_s1 = Sensor("s1", "r1", "GPS_POSITION", 10.0, 20)
+		sensor_s1 = Sensor("s1", "r1", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s1)
-		sensor_s2 = Sensor("s2", "r1", "PRESSURE", 22.0, 15)
+		sensor_s2 = Sensor("s2", "r1", "PRESSURE", 2.0, 5)
 		subcomponents.append(sensor_s2)
-		motion_source_ms1 = MotionSource("ms1", 25.0)
+		motion_source_ms1 = MotionSource("ms1", 5.0)
 		subcomponents.append(motion_source_ms1)
-		battery_b1 = Battery("b1", 2000.0)
+		battery_b1 = Battery("b1", 20000.0)
 		subcomponents.append(battery_b1)
-		battery_b2 = Battery("b2", 2000.0)
+		battery_b2 = Battery("b2", 80000.0)
 		subcomponents.append(battery_b2)
-		robot_r1 = Robot("r1", "TIM", 10, Coordinates(2, 1, 1), subcomponents)
+		robot_r1 = Robot("r1", "TIM", 10, Coordinates(-1000, 0, 1), subcomponents)
 		robot_r1.configure_robot()
 		self.robots["r1"] = robot_r1
 		
 		# Initilize Robot: JEN
 		subcomponents = []
 		# Initilize Robot: JEN's subcomponents
-		sensor_s3 = Sensor("s3", "r2", "GPS_POSITION", 14.0, 40)
+		sensor_s3 = Sensor("s3", "r2", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s3)
-		sensor_s4 = Sensor("s4", "r2", "TEMPERATURE", 20.0, 10)
+		sensor_s4 = Sensor("s4", "r2", "TEMPERATURE", 2.0, 5)
 		subcomponents.append(sensor_s4)
-		motion_source_ms2 = MotionSource("ms2", 25.0)
+		motion_source_ms2 = MotionSource("ms2", 5.0)
 		subcomponents.append(motion_source_ms2)
 		battery_b3 = Battery("b3", 4000.0)
 		subcomponents.append(battery_b3)
-		battery_b4 = Battery("b4", 500.0)
+		battery_b4 = Battery("b4", 60000.0)
 		subcomponents.append(battery_b4)
-		robot_r2 = Robot("r2", "JEN", 8, Coordinates(5, 2, 1), subcomponents)
+		robot_r2 = Robot("r2", "JEN", 8, Coordinates(0, 1000, 1), subcomponents)
 		robot_r2.configure_robot()
 		self.robots["r2"] = robot_r2
 		
 		# Initilize Robot: KAL
 		subcomponents = []
 		# Initilize Robot: KAL's subcomponents
-		sensor_s5 = Sensor("s5", "r3", "GPS_POSITION", 22.0, 15)
+		sensor_s5 = Sensor("s5", "r3", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s5)
-		sensor_s6 = Sensor("s6", "r3", "DEPTH", 15.0, 15)
+		sensor_s6 = Sensor("s6", "r3", "DEPTH", 2.0, 5)
 		subcomponents.append(sensor_s6)
-		motion_source_ms3 = MotionSource("ms3", 19.0)
+		motion_source_ms3 = MotionSource("ms3", 5.0)
 		subcomponents.append(motion_source_ms3)
-		battery_b5 = Battery("b5", 3000.0)
+		battery_b5 = Battery("b5", 50000.0)
 		subcomponents.append(battery_b5)
-		battery_b6 = Battery("b6", 1000.0)
+		battery_b6 = Battery("b6", 50000.0)
 		subcomponents.append(battery_b6)
-		robot_r3 = Robot("r3", "KAL", 5, Coordinates(8, 9, 2), subcomponents)
+		robot_r3 = Robot("r3", "KAL", 5, Coordinates(1000, 0, 1), subcomponents)
 		robot_r3.configure_robot()
 		self.robots["r3"] = robot_r3
 		
@@ -144,7 +143,7 @@ class MRS(Thread):
 			s6_DEPTH.publish(roslibpy.Message({'data': str(self.robots["r3"].subcomponents["s6"].generate_samples())}))
 		
 				
-		for topic in self.topics:
+		for topic in self.topics.values():
 			topic.unadvertise()
 			
 	def stop(self):
@@ -155,4 +154,4 @@ class MRS(Thread):
 	
 	def kill(self):
 		print("Thread 2 killed...")
-		self.flag = False
+		self.stop()

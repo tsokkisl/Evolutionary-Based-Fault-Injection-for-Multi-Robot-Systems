@@ -12,7 +12,7 @@ class Robot(Component):
     starting_energy = 0
     direction = "NORTH"
     moves = {"NORTH": [0, 1, 0], "EAST": [1, 0, 0], "WEST": [-1, 0, 0], "SOUTH": [0, -1, 0], "NORTH_EAST": [1, 1, 0], "NORTH_WEST": [-1, 1, 0], "SOUTH_EAST": [1, -1, 0], "SOUTH_WEST": [-1, -1, 0]}
-
+    
     def __init__(self, id, name, speed, position, subcomponents):
         super().__init__()
         self.name = name
@@ -22,6 +22,7 @@ class Robot(Component):
         self.subcomponents = {}
         for sc in subcomponents:
             self.add_subcomponent(sc.ID, sc)
+        self.starting_position = position
 
     def add_subcomponent(self, id, subcomponent):
         self.subcomponents[id] = subcomponent
@@ -121,6 +122,15 @@ class Robot(Component):
         #return distance.euclidean((self.position.get_x(), self.position.get_y(), self.position.get_z()), (center.get_x(), center.get_y(), center.get_z()))
         return int(math.sqrt((self.position.get_x()-center.get_x())**2 + (self.position.get_y()-center.get_y())**2 + (self.position.get_z()-center.get_z())**2))
     
-    def check_for_sufficient_energy(self, area):
-        d = area.radius - self.distance_from_mission_center(area.center)
-        return self.current_energy - d * self.speed**2
+    def distance(self, coors):
+        return int(math.sqrt((self.position.get_x()-coors.get_x())**2 + (self.position.get_y()-coors.get_y())**2 + (self.position.get_z()-coors.get_z())**2))
+
+    def check_for_sufficient_energy(self):
+        #d = area.radius - self.distance_from_mission_center(area.center)
+        #return self.current_energy - d * self.speed**2
+        ms = None
+        for sc in self.subcomponents.values():
+            if isinstance(sc, MotionSource):
+                ms = sc
+                break
+        return self.current_energy - (self.distance(self.starting_position) * ms.energy_per_distance_unit) > 0

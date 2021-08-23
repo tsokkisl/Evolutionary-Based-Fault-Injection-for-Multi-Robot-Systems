@@ -73,31 +73,7 @@ class CI:
                 
     def check_avoidCollision(self):
         # protected region User implemented method on begin
-        """ Check if goal is violated and make a decision """
         goal_ID = "g1"
-        for robot in self.sim_interface.mission.robots.values():
-            if robot.distance_from_mission_center(self.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
-                self.update_goal_violations(goal_ID)
-                robot.change_direction(robot.direction)
-                return False
-        return True
-		# protected region User implemented method end
-		
-    def check_sufficientEnergy(self):
-        # protected region User implemented method on begin
-        """ Check if goal is violated and make a decision """
-        goal_ID = "g2"
-        for robot in self.sim_interface.mission.robots.values():
-            if not robot.check_for_sufficient_energy(self.mission.mission_area):
-                self.update_goal_violations(goal_ID)
-                self.sim_interface.mission.robots[robot.ID].update_speed(random.randint(robot.speed // 2, (robot.speed // 2) + 1))
-                return False
-        return True
-		# protected region User implemented method end
-		
-    def check_avoidCollision(self):
-        # protected region User implemented method on begin
-        goal_ID = "g3"
         """ Check if goal is violated and make a decision """
         collision_points = [[r.ID, r.position] for r in self.sim_interface.mission.robots.values()] + [[o.ID, o.area.center] for o in self.sim_interface.mission.obstacles.values()]
         for robot in self.sim_interface.mission.robots.values():
@@ -109,11 +85,35 @@ class CI:
         return True
 		# protected region User implemented method end
 		
-    def check_gatherSamples_g4(self):
+    def check_stayWithinMissionArea(self):
+        # protected region User implemented method on begin
+        goal_ID = "g2"
+        """ Check if goal is violated and make a decision """
+        for robot in self.sim_interface.mission.robots.values():
+            if robot.distance_from_mission_center(self.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
+                self.update_goal_violations(goal_ID)
+                robot.change_direction(robot.direction)
+                return False
+        return True
+		# protected region User implemented method end
+		
+    def check_sufficientEnergy(self):
+        # protected region User implemented method on begin
+        goal_ID = "g3"
+        """ Check if goal is violated and make a decision """
+        for robot in self.sim_interface.mission.robots.values():
+            if not robot.check_for_sufficient_energy():
+                self.update_goal_violations(goal_ID)
+                self.sim_interface.mission.robots[robot.ID].update_speed(random.randint(robot.speed // 2, (robot.speed // 2) + 1))
+                return False
+        return True
+		# protected region User implemented method end
+		
+    def check_gathersamples_g4(self):
         # protected region User implemented method on begin
         goal_ID = "g4"
-        """ Check if goal is violated and make a decision """
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        """ Check if goal is violated and make a decision """
         if sensor.state == "Active" and self.check_sufficientEnergy() and self.check_stayWithinMissionArea():
             if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
                 g = self.sim_interface.mission.goals.get(goal_ID).goalTask
@@ -125,8 +125,21 @@ class CI:
     def check_gatherSamples_g5(self):
         # protected region User implemented method on begin
         goal_ID = "g5"
-        """ Check if goal is violated and make a decision """
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        """ Check if goal is violated and make a decision """
+        if sensor.state == "Active" and self.check_sufficientEnergy() and self.check_stayWithinMissionArea():
+            if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
+                g = self.sim_interface.mission.goals.get(goal_ID).goalTask
+                g.total_samples += sensor.samples[len(sensor.samples) - 1]
+        else:
+            self.update_goal_violations(goal_ID)
+		# protected region User implemented method end
+		
+    def check_gatherSamples_g6(self):
+        # protected region User implemented method on begin
+        goal_ID = "g6"
+        sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        """ Check if goal is violated and make a decision """
         if sensor.state == "Active" and self.check_sufficientEnergy() and self.check_stayWithinMissionArea():
             if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
                 g = self.sim_interface.mission.goals.get(goal_ID).goalTask

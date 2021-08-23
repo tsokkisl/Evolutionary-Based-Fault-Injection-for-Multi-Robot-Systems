@@ -20,8 +20,8 @@ from dsl.mission.GoalDependencies import GoalDependencies
 
 class MissionLoader:
 	def load_mission(self):
-		mission_area = Area(Coordinates(0, 0, 0), 150)	
-		self.mission = Mission("Mission1", 5000.0, mission_area)
+		mission_area = Area(Coordinates(0, 0, 0), 1000)	
+		self.mission = Mission("Mission1", 2000.0, mission_area)
 	
 		# Initilize Server: sv1
 		s1 = Server("sv1", "sv1")
@@ -30,51 +30,51 @@ class MissionLoader:
 		# Initilize Robot: TIM
 		subcomponents = []
 		# Initilize Robot: TIM's subcomponents
-		sensor_s1 = Sensor("s1", "r1", "GPS_POSITION", 10.0, 20)
+		sensor_s1 = Sensor("s1", "r1", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s1)
-		sensor_s2 = Sensor("s2", "r1", "PRESSURE", 22.0, 15)
+		sensor_s2 = Sensor("s2", "r1", "PRESSURE", 2.0, 5)
 		subcomponents.append(sensor_s2)
-		motion_source_ms1 = MotionSource("ms1", 25.0)
+		motion_source_ms1 = MotionSource("ms1", 5.0)
 		subcomponents.append(motion_source_ms1)
-		battery_b1 = Battery("b1", 2000.0)
+		battery_b1 = Battery("b1", 20000.0)
 		subcomponents.append(battery_b1)
-		battery_b2 = Battery("b2", 2000.0)
+		battery_b2 = Battery("b2", 80000.0)
 		subcomponents.append(battery_b2)
-		robot_r1 = Robot("r1", "TIM", 10, Coordinates(2, 1, 1), subcomponents)
+		robot_r1 = Robot("r1", "TIM", 10, Coordinates(-1000, 0, 1), subcomponents)
 		robot_r1.configure_robot()
 		self.mission.add_robot("r1", robot_r1)
 	
 		# Initilize Robot: JEN
 		subcomponents = []
 		# Initilize Robot: JEN's subcomponents
-		sensor_s3 = Sensor("s3", "r2", "GPS_POSITION", 14.0, 40)
+		sensor_s3 = Sensor("s3", "r2", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s3)
-		sensor_s4 = Sensor("s4", "r2", "TEMPERATURE", 20.0, 10)
+		sensor_s4 = Sensor("s4", "r2", "TEMPERATURE", 2.0, 5)
 		subcomponents.append(sensor_s4)
-		motion_source_ms2 = MotionSource("ms2", 25.0)
+		motion_source_ms2 = MotionSource("ms2", 5.0)
 		subcomponents.append(motion_source_ms2)
 		battery_b3 = Battery("b3", 4000.0)
 		subcomponents.append(battery_b3)
-		battery_b4 = Battery("b4", 500.0)
+		battery_b4 = Battery("b4", 60000.0)
 		subcomponents.append(battery_b4)
-		robot_r2 = Robot("r2", "JEN", 8, Coordinates(5, 2, 1), subcomponents)
+		robot_r2 = Robot("r2", "JEN", 8, Coordinates(0, 1000, 1), subcomponents)
 		robot_r2.configure_robot()
 		self.mission.add_robot("r2", robot_r2)
 	
 		# Initilize Robot: KAL
 		subcomponents = []
 		# Initilize Robot: KAL's subcomponents
-		sensor_s5 = Sensor("s5", "r3", "GPS_POSITION", 22.0, 15)
+		sensor_s5 = Sensor("s5", "r3", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s5)
-		sensor_s6 = Sensor("s6", "r3", "DEPTH", 15.0, 15)
+		sensor_s6 = Sensor("s6", "r3", "DEPTH", 2.0, 5)
 		subcomponents.append(sensor_s6)
-		motion_source_ms3 = MotionSource("ms3", 19.0)
+		motion_source_ms3 = MotionSource("ms3", 5.0)
 		subcomponents.append(motion_source_ms3)
-		battery_b5 = Battery("b5", 3000.0)
+		battery_b5 = Battery("b5", 50000.0)
 		subcomponents.append(battery_b5)
-		battery_b6 = Battery("b6", 1000.0)
+		battery_b6 = Battery("b6", 50000.0)
 		subcomponents.append(battery_b6)
-		robot_r3 = Robot("r3", "KAL", 5, Coordinates(8, 9, 2), subcomponents)
+		robot_r3 = Robot("r3", "KAL", 5, Coordinates(1000, 0, 1), subcomponents)
 		robot_r3.configure_robot()
 		self.mission.add_robot("r3", robot_r3)
 	
@@ -132,7 +132,7 @@ class MissionLoader:
 		goal_members_g2 = GoalMembers(members, self.mission)		
 		g_deps = []
 		goal_dependecies_g2 = GoalDependencies(g_deps)
-		goal_task_g2 = StayWithinMissionArea(Area(Coordinates(0, 0, 0), 150))
+		goal_task_g2 = StayWithinMissionArea(Area(Coordinates(0, 0, 0), 1000))
 		goal_area_g2 = GoalArea(Area(Coordinates(0, 4, 4), 11))
 		goal_messages = []
 		sender = self.mission.robots.get("r2")
@@ -252,35 +252,35 @@ class MissionLoader:
 		self.mission.add_goal("g6", goal_g6)	
 	
 		# Initilize Obstacle: o1
-		obstacle_o1 = Obstacle("o1", Area(Coordinates(0, 2, 1), 8))
+		obstacle_o1 = Obstacle("o1", Area(Coordinates(0, 500, 1), 8))
 		self.mission.add_obstacle("o1", obstacle_o1)	
 	
 		# Initilize Obstacle: o2
-		obstacle_o2 = Obstacle("o2", Area(Coordinates(0, 1, 5), 3))
+		obstacle_o2 = Obstacle("o2", Area(Coordinates(500, 500, 1), 3))
 		self.mission.add_obstacle("o2", obstacle_o2)	
 	
 		# Initilize Obstacle: o3
-		obstacle_o3 = Obstacle("o3", Area(Coordinates(8, 8, 0), 11))
+		obstacle_o3 = Obstacle("o3", Area(Coordinates(500, 0, 1), 11))
 		self.mission.add_obstacle("o3", obstacle_o3)	
 	
 		# Initilize Obstacle: o4
-		obstacle_o4 = Obstacle("o4", Area(Coordinates(5, 4, 1), 7))
+		obstacle_o4 = Obstacle("o4", Area(Coordinates(500, -500, 1), 7))
 		self.mission.add_obstacle("o4", obstacle_o4)	
 	
 		# Initilize Obstacle: o5
-		obstacle_o5 = Obstacle("o5", Area(Coordinates(3, 3, 0), 12))
+		obstacle_o5 = Obstacle("o5", Area(Coordinates(0, -500, 1), 12))
 		self.mission.add_obstacle("o5", obstacle_o5)	
 	
 		# Initilize Obstacle: o6
-		obstacle_o6 = Obstacle("o6", Area(Coordinates(11, 2, 5), 9))
+		obstacle_o6 = Obstacle("o6", Area(Coordinates(-500, -500, 1), 9))
 		self.mission.add_obstacle("o6", obstacle_o6)	
 	
 		# Initilize Obstacle: o7
-		obstacle_o7 = Obstacle("o7", Area(Coordinates(15, 5, 2), 4))
+		obstacle_o7 = Obstacle("o7", Area(Coordinates(-500, 0, 1), 4))
 		self.mission.add_obstacle("o7", obstacle_o7)	
 	
 		# Initilize Obstacle: o8
-		obstacle_o8 = Obstacle("o8", Area(Coordinates(12, 11, 2), 9))
+		obstacle_o8 = Obstacle("o8", Area(Coordinates(-500, 500, 1), 9))
 		self.mission.add_obstacle("o8", obstacle_o8)	
 	
 		return self.mission

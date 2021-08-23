@@ -4,6 +4,6 @@ class RandomRemainingEnergyCapacityReport:
         self.message = message
         self.capacity = capacity
 
-    def run(self, mission):
+    def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
         r.current_energy = self.capacity

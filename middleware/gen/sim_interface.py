@@ -13,6 +13,7 @@ class SimInterface(Thread):
     
     def reset(self):
         print("Thread 1 reset...")
+        self.topics.clear()
      
     def kill(self):
     	print("Thread 1 killed...")

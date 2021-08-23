@@ -30,7 +30,6 @@ from dsl.faults.RandomRemainingEnergyCapacityReport import RandomRemainingEnergy
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
 from dsl.faults.Fault import Fault
-from dsl.mission.Message import Message
 import random
 import numpy as np
 import copy
@@ -127,10 +126,10 @@ class FaultSpecification:
 		ft = RandomRobotCoordinates(mission.goals["[%= f.randomRobotCoordinates.affectedMessage.goal_ID %]"].messages["[%= f.randomRobotCoordinates.affectedMessage.ID %]"], random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		[% } %]
 		[% if (f.fixedObstacleCoordinates != null) { %]
-		ft = FixedObstacleCoordinates([%= f.fixedObstacleCoordinates.NEW_X %], [%= f.fixedObstacleCoordinates.NEW_Y %], [%= f.fixedObstacleCoordinates.NEW_Z %]) 
+		ft = FixedObstacleCoordinates(random.randint(1, 8), [%= f.fixedObstacleCoordinates.NEW_X %], [%= f.fixedObstacleCoordinates.NEW_Y %], [%= f.fixedObstacleCoordinates.NEW_Z %]) 
 		[% } %]
 		[% if (f.randomObstacleCoordinates != null) { %]
-		ft = RandomObstacleCoordinates(random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
+		ft = RandomObstacleCoordinates(random.randint(1, 8), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		[% } %]
 		[% if (f.randomSampleRate != null) { %]
 		ft = RandomSampleRate(mission.goals["[%= f.randomSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.randomSampleRate.affectedMessage.ID %]"], random.randint([%= f.randomSampleRate.LOWER_BOUND %], [%= f.randomSampleRate.UPPER_BOUND %])) 

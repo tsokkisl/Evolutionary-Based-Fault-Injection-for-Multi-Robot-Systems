@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="ASCII"?>
 <Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns="acs_project_setup" xmi:id="_FZx-kAKLEeyzn7hjjTRAhw">
-  <mission xmi:id="_GBUfsAKLEeyzn7hjjTRAhw" name="Mission1" duration="5000.0">
+  <mission xmi:id="_GBUfsAKLEeyzn7hjjTRAhw" name="Mission1" duration="2000.0">
     <robots xmi:id="_Od4cUAKLEeyzn7hjjTRAhw" name="TIM" ID="r1" speed="10">
-      <position xmi:id="_cYJXwAKLEeyzn7hjjTRAhw" x="2" y="1" z="1"/>
-      <sensors xmi:id="_cr298AKLEeyzn7hjjTRAhw" name="s1" ID="s1" parentID="r1" energyPerSample="10.0" samplesPerSecond="20"/>
-      <sensors xmi:id="_dQoe8AKLEeyzn7hjjTRAhw" name="s2" ID="s2" parentID="r1" energyPerSample="22.0" samplesPerSecond="15" type="PRESSURE"/>
-      <batteries xmi:id="_bpErQAKLEeyzn7hjjTRAhw" name="b1" ID="b1" parentID="r1" totalEnergy="2000.0"/>
-      <batteries xmi:id="_b4_9oAKLEeyzn7hjjTRAhw" name="b2" ID="b2" parentID="r1" totalEnergy="2000.0"/>
-      <motionSources xmi:id="_d6DPYAKLEeyzn7hjjTRAhw" name="ms1" ID="ms1" parentID="r1" energyPerDistanceUnit="25.0"/>
+      <position xmi:id="_cYJXwAKLEeyzn7hjjTRAhw" x="-1000" z="1"/>
+      <sensors xmi:id="_cr298AKLEeyzn7hjjTRAhw" name="s1" ID="s1" parentID="r1" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_dQoe8AKLEeyzn7hjjTRAhw" name="s2" ID="s2" parentID="r1" energyPerSample="2.0" samplesPerSecond="5" type="PRESSURE"/>
+      <batteries xmi:id="_bpErQAKLEeyzn7hjjTRAhw" name="b1" ID="b1" parentID="r1" totalEnergy="20000.0"/>
+      <batteries xmi:id="_b4_9oAKLEeyzn7hjjTRAhw" name="b2" ID="b2" parentID="r1" totalEnergy="80000.0"/>
+      <motionSources xmi:id="_d6DPYAKLEeyzn7hjjTRAhw" name="ms1" ID="ms1" parentID="r1" energyPerDistanceUnit="5.0"/>
     </robots>
     <robots xmi:id="_OwnLEAKLEeyzn7hjjTRAhw" name="JEN" ID="r2" speed="8">
-      <position xmi:id="_fDkcMAKLEeyzn7hjjTRAhw" x="5" y="2" z="1"/>
-      <sensors xmi:id="_g09hUAKLEeyzn7hjjTRAhw" name="s3" ID="s3" parentID="r2" energyPerSample="14.0" samplesPerSecond="40"/>
-      <sensors xmi:id="_hTaX4AKLEeyzn7hjjTRAhw" name="s4" ID="s4" parentID="r2" energyPerSample="20.0" samplesPerSecond="10" type="TEMPERATURE"/>
+      <position xmi:id="_fDkcMAKLEeyzn7hjjTRAhw" y="1000" z="1"/>
+      <sensors xmi:id="_g09hUAKLEeyzn7hjjTRAhw" name="s3" ID="s3" parentID="r2" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_hTaX4AKLEeyzn7hjjTRAhw" name="s4" ID="s4" parentID="r2" energyPerSample="2.0" samplesPerSecond="5" type="TEMPERATURE"/>
       <batteries xmi:id="_fWHkwAKLEeyzn7hjjTRAhw" name="b3" ID="b3" parentID="r2" totalEnergy="4000.0"/>
-      <batteries xmi:id="_fnLfkAKLEeyzn7hjjTRAhw" name="b4" ID="b4" parentID="r2" totalEnergy="500.0"/>
-      <motionSources xmi:id="_h5rGoAKLEeyzn7hjjTRAhw" name="ms2" ID="ms2" parentID="r2" energyPerDistanceUnit="25.0"/>
+      <batteries xmi:id="_fnLfkAKLEeyzn7hjjTRAhw" name="b4" ID="b4" parentID="r2" totalEnergy="60000.0"/>
+      <motionSources xmi:id="_h5rGoAKLEeyzn7hjjTRAhw" name="ms2" ID="ms2" parentID="r2" energyPerDistanceUnit="5.0"/>
     </robots>
     <robots xmi:id="_PDuUUAKLEeyzn7hjjTRAhw" name="KAL" ID="r3" speed="5">
-      <position xmi:id="_i3GYMAKLEeyzn7hjjTRAhw" x="8" y="9" z="2"/>
-      <sensors xmi:id="_jQMNoAKLEeyzn7hjjTRAhw" name="s5" ID="s5" parentID="r3" energyPerSample="22.0" samplesPerSecond="15"/>
-      <sensors xmi:id="_jvrmAAKLEeyzn7hjjTRAhw" name="s6" ID="s6" parentID="r3" energyPerSample="15.0" samplesPerSecond="15" type="DEPTH"/>
-      <batteries xmi:id="_kWUvQAKLEeyzn7hjjTRAhw" name="b5" ID="b5" parentID="r3" totalEnergy="3000.0"/>
-      <batteries xmi:id="_kqUCQAKLEeyzn7hjjTRAhw" name="b6" ID="b6" parentID="r3" totalEnergy="1000.0"/>
-      <motionSources xmi:id="_lWMQ0AKLEeyzn7hjjTRAhw" name="ms3" ID="ms3" parentID="r3" energyPerDistanceUnit="19.0"/>
+      <position xmi:id="_i3GYMAKLEeyzn7hjjTRAhw" x="1000" z="1"/>
+      <sensors xmi:id="_jQMNoAKLEeyzn7hjjTRAhw" name="s5" ID="s5" parentID="r3" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_jvrmAAKLEeyzn7hjjTRAhw" name="s6" ID="s6" parentID="r3" energyPerSample="2.0" samplesPerSecond="5" type="DEPTH"/>
+      <batteries xmi:id="_kWUvQAKLEeyzn7hjjTRAhw" name="b5" ID="b5" parentID="r3" totalEnergy="50000.0"/>
+      <batteries xmi:id="_kqUCQAKLEeyzn7hjjTRAhw" name="b6" ID="b6" parentID="r3" totalEnergy="50000.0"/>
+      <motionSources xmi:id="_lWMQ0AKLEeyzn7hjjTRAhw" name="ms3" ID="ms3" parentID="r3" energyPerDistanceUnit="5.0"/>
     </robots>
     <servers xmi:id="_PihJIAKLEeyzn7hjjTRAhw" name="sv1" ID="sv1"/>
     <goals xmi:id="_HPKy4AKLEeyzn7hjjTRAhw" ID="g1" name="AvoidCollision">
@@ -142,45 +142,45 @@
     </goals>
     <obstacles xmi:id="_JrLiUAKLEeyzn7hjjTRAhw" ID="o1">
       <area xmi:id="_RrK3sAKLEeyzn7hjjTRAhw" ID="a7" radius="8">
-        <center xmi:id="_R7Dt0AKLEeyzn7hjjTRAhw" y="2" z="1"/>
+        <center xmi:id="_R7Dt0AKLEeyzn7hjjTRAhw" y="500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_KAZkYAKLEeyzn7hjjTRAhw" ID="o2">
       <area xmi:id="_SMSnwAKLEeyzn7hjjTRAhw" ID="a8" radius="3">
-        <center xmi:id="_SdrSsAKLEeyzn7hjjTRAhw" y="1" z="5"/>
+        <center xmi:id="_SdrSsAKLEeyzn7hjjTRAhw" x="500" y="500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_KbxRwAKLEeyzn7hjjTRAhw" ID="o3">
       <area xmi:id="_Suof0AKLEeyzn7hjjTRAhw" ID="a9" radius="11">
-        <center xmi:id="_TBYcsAKLEeyzn7hjjTRAhw" x="8" y="8"/>
+        <center xmi:id="_TBYcsAKLEeyzn7hjjTRAhw" x="500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_KxAh8AKLEeyzn7hjjTRAhw" ID="o4">
       <area xmi:id="_TTdrMAKLEeyzn7hjjTRAhw" ID="a10" radius="7">
-        <center xmi:id="_TtpFwAKLEeyzn7hjjTRAhw" x="5" y="4" z="1"/>
+        <center xmi:id="_TtpFwAKLEeyzn7hjjTRAhw" x="500" y="-500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_LHbd4AKLEeyzn7hjjTRAhw" ID="o5">
       <area xmi:id="_UCTuMAKLEeyzn7hjjTRAhw" ID="a11" radius="12">
-        <center xmi:id="_UWpmgAKLEeyzn7hjjTRAhw" x="3" y="3"/>
+        <center xmi:id="_UWpmgAKLEeyzn7hjjTRAhw" y="-500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_MsjBkAKLEeyzn7hjjTRAhw" ID="o6">
       <area xmi:id="_Uxz4gAKLEeyzn7hjjTRAhw" ID="a12" radius="9">
-        <center xmi:id="_VFXGoAKLEeyzn7hjjTRAhw" x="11" y="2" z="5"/>
+        <center xmi:id="_VFXGoAKLEeyzn7hjjTRAhw" x="-500" y="-500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_Nfm2MAKLEeyzn7hjjTRAhw" ID="o7">
       <area xmi:id="_VeXcgAKLEeyzn7hjjTRAhw" ID="a13" radius="4">
-        <center xmi:id="_V0QM8AKLEeyzn7hjjTRAhw" x="15" y="5" z="2"/>
+        <center xmi:id="_V0QM8AKLEeyzn7hjjTRAhw" x="-500" z="1"/>
       </area>
     </obstacles>
     <obstacles xmi:id="_N3fKsAKLEeyzn7hjjTRAhw" ID="o8">
       <area xmi:id="_WLVQMAKLEeyzn7hjjTRAhw" ID="a14" radius="9">
-        <center xmi:id="_Wk0uQAKLEeyzn7hjjTRAhw" x="12" y="11" z="2"/>
+        <center xmi:id="_Wk0uQAKLEeyzn7hjjTRAhw" x="-500" y="500" z="1"/>
       </area>
     </obstacles>
-    <missionArea xmi:id="_I9KlwAKLEeyzn7hjjTRAhw" ID="a15" radius="150">
+    <missionArea xmi:id="_I9KlwAKLEeyzn7hjjTRAhw" ID="a15" radius="1000">
       <center xmi:id="_JQOEoAKLEeyzn7hjjTRAhw"/>
     </missionArea>
   </mission>
@@ -219,7 +219,7 @@
       <fixedSampleRate xmi:id="_PALmMAKNEeyzn7hjjTRAhw" affectedMessage="_YfAGgAKMEeyzn7hjjTRAhw" FIXED_VAL="120"/>
     </faults>
     <faults xmi:id="_-PepIAKMEeyzn7hjjTRAhw" name="f12" start="1444.0" finish="2222.0" probability="1.0">
-      <fixedSensorEnergyPerSample xmi:id="_PdTAAAKNEeyzn7hjjTRAhw" affectedMessage="_Yzl2cAKMEeyzn7hjjTRAhw"/>
+      <fixedSensorEnergyPerSample xmi:id="_PdTAAAKNEeyzn7hjjTRAhw" affectedMessage="_Yzl2cAKMEeyzn7hjjTRAhw" FIXED_VAL="10.0"/>
     </faults>
     <faults xmi:id="_-cJzMAKMEeyzn7hjjTRAhw" name="f13" start="225.0" finish="990.0" probability="1.0">
       <fixedSpeed xmi:id="_QBzbQAKNEeyzn7hjjTRAhw" affectedMessage="_YLvzUAKMEeyzn7hjjTRAhw" FIXED_VAL="50"/>

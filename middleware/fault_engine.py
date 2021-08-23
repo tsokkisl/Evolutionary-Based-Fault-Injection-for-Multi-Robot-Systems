@@ -180,7 +180,7 @@ def mate(indiv_1, indiv_2):
     print(tmp_2)
     print("-----------------------------------------------------")"""
     return indiv_1, indiv_2
-    
+
 """--------------------------------------------------------------------------------------------
 
                                         Main
@@ -202,7 +202,7 @@ if __name__ == "__main__":
                     mate(indiv_1, indiv_2)
         for indin in pop:
             ci.runCI(indiv)
-            #ci.sim_interface.reset()
+            ci.sim_interface.reset()
             mrs.reset()
     mrs.kill()
     ci.sim_interface.kill()

@@ -30,7 +30,6 @@ from dsl.faults.RandomRemainingEnergyCapacityReport import RandomRemainingEnergy
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
 from dsl.faults.Fault import Fault
-from dsl.mission.Message import Message
 import random
 import numpy as np
 import copy
@@ -74,7 +73,7 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f8
-		ft = FixedObstacleCoordinates(2, 1, 9) 
+		ft = FixedObstacleCoordinates(random.randint(1, 8), 2, 1, 9) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f9
@@ -90,7 +89,7 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f12
-		ft = FixedSensorEnergyPerSample(mission.goals["g3"].messages["m9"], ) 
+		ft = FixedSensorEnergyPerSample(mission.goals["g3"].messages["m9"], 10.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f13
@@ -114,7 +113,7 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f18
-		ft = RandomObstacleCoordinates(random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
+		ft = RandomObstacleCoordinates(random.randint(1, 8), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f19

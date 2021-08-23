@@ -4,6 +4,6 @@ class FixedSpeed:
         self.message = message
         self.speed = speed
     
-    def run(self, mission):
+    def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
         r.speed = self.speed

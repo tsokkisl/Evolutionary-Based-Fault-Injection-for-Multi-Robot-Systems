@@ -12,13 +12,12 @@ class MRS(Thread):
 	
 	robots = {}
 	topics = {}
-	flag = True
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.reset_robots()
+		self.initialize_robots()
 	
-	def reset_robots(self):	
+	def initialize_robots(self):	
     [% for (mission in Mission.all) { %]
 	[* Initilize Robots and subcomponents *]
 	[% for (r in mission.robots) { %]
@@ -111,7 +110,7 @@ class MRS(Thread):
 			[% } %]
 		[% } %]
 				
-		for topic in self.topics:
+		for topic in self.topics.values():
 			topic.unadvertise()
 			
 	def stop(self):
@@ -122,4 +121,4 @@ class MRS(Thread):
 	
 	def kill(self):
 		print("Thread 2 killed...")
-		self.flag = False
+		self.stop()

@@ -7,7 +7,7 @@ class FixedRobotCoordinates:
         self.coors.append(y)
         self.coors.append(z)
 
-    def run(self, mission):
+    def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
         r.position.x = self.coors[0]
         r.position.y = self.coors[1]
