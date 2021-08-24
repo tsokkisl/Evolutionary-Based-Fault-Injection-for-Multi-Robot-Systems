@@ -16,6 +16,7 @@ class MRS(Thread):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.initialize_robots()
+		self.flag = True
 	
 	def initialize_robots(self):	
     [% for (mission in Mission.all) { %]
@@ -85,7 +86,7 @@ class MRS(Thread):
 			[% } %]
 		[% } %]	
 
-		while self.client.is_connected:
+		while self.client.is_connected and self.flag:
 			for robot in self.robots.values():
 				robot.move()
 		[% for (mission in Mission.all) { %]
@@ -114,11 +115,16 @@ class MRS(Thread):
 			topic.unadvertise()
 			
 	def stop(self):
-		self.client.terminate()
+		#self.client.terminate()
+		self.flag = False
 	
 	def reset(self):
-		self.reset_robots()
+		print("Thread 2 Reset...")
+		self.initialize_robots()
 	
 	def kill(self):
 		print("Thread 2 killed...")
 		self.stop()
+		
+	def change_direction(self, robot, direction):
+		self.robots[robot.ID].direction = direction

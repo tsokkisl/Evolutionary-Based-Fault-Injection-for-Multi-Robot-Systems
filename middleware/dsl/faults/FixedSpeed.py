@@ -7,3 +7,4 @@ class FixedSpeed:
     def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
         r.speed = self.speed
+        if r.speed < 0: r.speed = 0

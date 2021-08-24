@@ -6,5 +6,6 @@ class ActivateSensor:
         self.sensor = sensor
         self.message = Message("mActivateSensor", "gid", "name", "sender", "receiver", "data")
 
-    def run(self, mission):
-        self.sensor.start()
+    def exec_fault(self, mission, mrs):
+        mission.robots[self.sensor.parent_ID].subcomponents[self.sensor.ID].start()
+        mrs.robots[self.sensor.parent_ID].subcomponents[self.sensor.ID].start()

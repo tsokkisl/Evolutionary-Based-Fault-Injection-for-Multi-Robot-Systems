@@ -1,21 +1,26 @@
 from gen.mission_loader import MissionLoader
-from gen.fault_specification import FaultSpecification
 from gen.sim_interface import SimInterface
 import random
+import time
 from dsl.mission.Sensor import Sensor
-from dsl.mission.Coordinates import Coordinates
 
 class CI:
 	
     total_goal_violations = [] 
     goal_violations_per_fault = {}
+    goals_last_violation_state = {}
     time = 0
     
     def __init__(self):
-        self.sim_interface = SimInterface()
         self.mission = MissionLoader().load_mission()
+        # Setup Sim Interface
+        print("--------------------------\nInitilising and starting sim interface\n--------------------------")
+        self.sim_interface = SimInterface()
+        self.sim_interface.daemon = True
         self.sim_interface.start()
-        
+        time.sleep(5)
+        self.sim_interface.MRS_init()
+        time.sleep(5)
 
     def reset_system_state(self, fs):
         self.mission = MissionLoader().load_mission()
@@ -23,6 +28,7 @@ class CI:
         self.sim_interface.mission = self.mission
         self.total_goal_violations = [0 for _ in range(self.mission.duration)]
         self.goal_violations_per_fault = {}
+        self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         self.time = 0
 
     def update_goal_violations(self, gid):
@@ -52,7 +58,7 @@ class CI:
     def execute_faults(self):
         """ Check for fault """
         for fault in self.fault_specification:
-            fault.exec_fault(self.time, self.sim_interface.mission)
+            fault.exec_fault(self.time, self.sim_interface.mission, self.sim_interface.mrs)
             	
     def runCI(self, fs):
         self.reset_system_state(fs)
@@ -74,7 +80,10 @@ class CI:
         	self.time = t
         print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
-                
+    
+    def check_for_collision(self, p1, p2, r1, r2):
+        return (p1[0] - r1 < p2[0] + r2 and p1[0] + r1 > p2[0] - r2 and p1[1] + r1 > p2[1] - r2 and p1[1] - r1 < p2[1] + r2)
+                    
     [% for (m in Mission.all) { %]
         [% for (g in m.goals) { %]
         	[% if (g.task.gatherSamples != null) { %]

@@ -6,5 +6,6 @@ class StopRobot:
         self.robot = robot
         self.message = Message("mStopRobot", "gid", "name", "sender", "receiver", "data")
 
-    def exec_fault(self, mission):
-        self.robot.stop() 
+    def exec_fault(self, mission, mrs):
+        mission.robots[self.robot.ID].stop()
+        mrs.robots[self.robot.ID].stop()

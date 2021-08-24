@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from gen.mission_loader import MissionLoader
 from gen.fault_specification import FaultSpecification
 from gen.CI import CI
-from MRS import MRS
 import time
 
 mission_duration = 0
@@ -95,12 +94,6 @@ def GA(NGEN, pop_size, INDPB, CXPB, evaluation_function):
 -----------------------------------------------------------------------------------------------
 """
 
-# Setup CI
-ci = CI()
-mission_duration = ci.mission.duration
-time.sleep(1)
-#ci.print_mission_and_fault_specification()
-
 # Fitness function
 def evaluate(indiv):
     fitness = ci.runCI(indiv)
@@ -186,11 +179,13 @@ def mate(indiv_1, indiv_2):
                                         Main
 
 --------------------------------------------------------------------------------------------"""
+# Setup CI
+ci = CI()
+mission_duration = ci.mission.duration
+#ci.print_mission_and_fault_specification()
 
 if __name__ == "__main__":
     pop = FaultSpecification(MissionLoader().load_mission()).generate_population(10)
-    mrs = MRS()
-    mrs.start()
     for i in range(10):
         print('---------------- Generation {0} ---------------'.format(i))
         for indiv in pop:
@@ -203,8 +198,8 @@ if __name__ == "__main__":
         for indin in pop:
             ci.runCI(indiv)
             ci.sim_interface.reset()
-            mrs.reset()
-    mrs.kill()
+            ci.sim_interface.mrs.reset()
+    ci.sim_interface.mrs.kill()
     ci.sim_interface.kill()
     exit()
         

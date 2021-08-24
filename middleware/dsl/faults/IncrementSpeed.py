@@ -1,10 +1,9 @@
 class IncrementSpeed:
     
-    def __init__(self, message, percentage):
+    def __init__(self, message, val):
         self.message = message
-        self.percentage = percentage
+        self.val = val
     
     def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
-        current_speed = r.speed
-        r.speed = current_speed + current_speed * self.percentage
+        r.speed += self.val

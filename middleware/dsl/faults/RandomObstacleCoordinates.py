@@ -11,7 +11,7 @@ class RandomObstacleCoordinates:
         self.message = Message("mRandomObstacleCoordinates", "gid", "name", "sender", "receiver", "data")
 
     def exec_fault(self, mission):
-        o = mission.ostacles[self.obstacle_id]
+        o = mission.obstacles[self.obstacle_id]
         o.area.center.x = self.coors[0]
         o.area.center.y = self.coors[1]
         o.area.center.z = self.coors[2]

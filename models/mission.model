@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns="acs_project_setup" xmi:id="_FZx-kAKLEeyzn7hjjTRAhw">
-  <mission xmi:id="_GBUfsAKLEeyzn7hjjTRAhw" name="Mission1" duration="2000.0">
+  <mission xmi:id="_GBUfsAKLEeyzn7hjjTRAhw" name="Mission1" duration="5000.0">
     <robots xmi:id="_Od4cUAKLEeyzn7hjjTRAhw" name="TIM" ID="r1" speed="10">
       <position xmi:id="_cYJXwAKLEeyzn7hjjTRAhw" x="-1000" z="1"/>
       <sensors xmi:id="_cr298AKLEeyzn7hjjTRAhw" name="s1" ID="s1" parentID="r1" energyPerSample="2.0" samplesPerSecond="5"/>
@@ -195,7 +195,7 @@
       <decrementRemainingEnergyCapacityReport xmi:id="_KGlaAAKNEeyzn7hjjTRAhw" affectedMessage="_YfAGgAKMEeyzn7hjjTRAhw" PERCENTAGE="10.0"/>
     </faults>
     <faults xmi:id="_8cIcMAKMEeyzn7hjjTRAhw" name="f4" start="288.0" finish="1500.0" probability="1.0">
-      <decrementSampleRate xmi:id="_Kj8EYAKNEeyzn7hjjTRAhw" affectedMessage="_jbrPcAKMEeyzn7hjjTRAhw" VAL="40"/>
+      <decrementSampleRate xmi:id="_Kj8EYAKNEeyzn7hjjTRAhw" affectedMessage="_jbrPcAKMEeyzn7hjjTRAhw" VAL="2"/>
     </faults>
     <faults xmi:id="_8pdtkAKMEeyzn7hjjTRAhw" name="f5" start="2500.0" finish="4789.0" probability="1.0">
       <decrementSensorEnergyPerSample xmi:id="_K9SYgAKNEeyzn7hjjTRAhw" affectedMessage="_Yzl2cAKMEeyzn7hjjTRAhw" PERCENTAGE="10.0"/>

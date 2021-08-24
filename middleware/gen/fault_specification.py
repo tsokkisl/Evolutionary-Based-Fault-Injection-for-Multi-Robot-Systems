@@ -57,7 +57,7 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f4
-		ft = DecrementSampleRate(mission.goals["g5"].messages["m11"], 40) 
+		ft = DecrementSampleRate(mission.goals["g5"].messages["m11"], 2) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f5

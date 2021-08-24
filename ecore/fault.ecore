@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="project" nsURI="acs_project_fault" nsPrefix="">
+  <eClassifiers xsi:type="ecore:EClass" name="DelayMessage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DELAY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BlockMessage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="BLOCK_DURATION" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomRemainingEnergyCapacityReport">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LOWER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UPPER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ZeroRemainingEnergyCapacityReport">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="CAPACITY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedRemainingEnergyCapacityReport">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FIXED_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IncrementRemainingEnergyCapacityReport">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PERCENTAGE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DecrementRemainingEnergyCapacityReport">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PERCENTAGE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomSensorEnergyPerSample">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LOWER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UPPER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ZeroSensorEnergyPerSample">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="CONSUMPTION" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedSensorEnergyPerSample">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FIXED_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IncrementSensorEnergyPerSample">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PERCENTAGE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DecrementSensorEnergyPerSample">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PERCENTAGE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomSpeed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ZeroSpeed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="SPEED" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedSpeed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FIXED_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IncrementSpeed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DecrementSpeed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomSampleRate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LOWER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UPPER_BOUND" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ZeroSampleRate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="CONSUMPTION" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedSampleRate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FIXED_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IncrementSampleRate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DecrementSampleRate">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedEmptyStringMessage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="FIXED_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomStringMessage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="RANDOM_VAL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedRobotCoordinates">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_X" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_Y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_Z" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomRobotCoordinates">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedObstacleCoordinates">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_X" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_Y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NEW_Z" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RandomObstacleCoordinates">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedMessage" eType="ecore:EClass ../ecore/mission.ecore#//Message"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StartRobot">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedRobot" lowerBound="1"
+        eType="ecore:EClass ../ecore/mission.ecore#//Robot"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StopRobot">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedRobot" lowerBound="1"
+        eType="ecore:EClass ../ecore/mission.ecore#//Robot"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ActivateSensor">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedSensor" lowerBound="1"
+        eType="ecore:EClass ../ecore/mission.ecore#//Sensor"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeactivateSensor">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedSensor" lowerBound="1"
+        eType="ecore:EClass ../ecore/mission.ecore#//Sensor"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Fault">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="start" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="finish" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="probability" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="delayMessage" eType="#//DelayMessage"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="blockMessage" eType="#//BlockMessage"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomRemainingEnergyCapacityReport"
+        eType="#//RandomRemainingEnergyCapacityReport" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="zeroRemainingEnergyCapacityReport"
+        eType="#//ZeroRemainingEnergyCapacityReport" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedRemainingEnergyCapacityReport"
+        eType="#//FixedRemainingEnergyCapacityReport" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incrementRemainingEnergyCapacityReport"
+        eType="#//IncrementRemainingEnergyCapacityReport" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="decrementRemainingEnergyCapacityReport"
+        eType="#//DecrementRemainingEnergyCapacityReport" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomSensorEnergyPerSample"
+        eType="#//RandomSensorEnergyPerSample" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="zeroSensorEnergyPerSample"
+        eType="#//ZeroSensorEnergyPerSample" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedSensorEnergyPerSample"
+        eType="#//FixedSensorEnergyPerSample" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incrementSensorEnergyPerSample"
+        eType="#//IncrementSensorEnergyPerSample" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="decrementSensorEnergyPerSample"
+        eType="#//DecrementSensorEnergyPerSample" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomSpeed" eType="#//RandomSpeed"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="zeroSpeed" eType="#//ZeroSpeed"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedSpeed" eType="#//FixedSpeed"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incrementSpeed" eType="#//IncrementSpeed"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="decrementSpeed" eType="#//DecrementSpeed"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomSampleRate" eType="#//RandomSampleRate"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="zeroSampleRate" eType="#//ZeroSampleRate"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedSampleRate" eType="#//FixedSampleRate"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incrementSampleRate" eType="#//IncrementSampleRate"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="decrementSampleRate" eType="#//DecrementSampleRate"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedEmptyStringMessage"
+        eType="#//FixedEmptyStringMessage" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomStringMessage" eType="#//RandomStringMessage"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedRobotCoordinates"
+        eType="#//FixedRobotCoordinates" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomRobotCoordinates"
+        eType="#//RandomRobotCoordinates" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixedObstacleCoordinates"
+        eType="#//FixedObstacleCoordinates" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="randomObstacleCoordinates"
+        eType="#//RandomObstacleCoordinates" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="startRobot" eType="#//StartRobot"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stopRobot" eType="#//StopRobot"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="activateSensor" eType="#//ActivateSensor"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deactivateSensor" eType="#//DeactivateSensor"
+        containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>

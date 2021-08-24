@@ -31,3 +31,6 @@ class Coordinates:
 				closest = c
 				distance = d
 		return closest
+	
+	def get_coors(self):
+		return [int(self.get_x()), int(self.get_y()), int(self.get_z())]

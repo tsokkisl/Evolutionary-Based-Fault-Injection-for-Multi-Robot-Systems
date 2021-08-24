@@ -45,5 +45,5 @@ rule Model2MRS
 
 	parameters : Map{}
 
-	target : "../middleware/MRS.py"
+	target : "../middleware/gen/MRS.py"
 }

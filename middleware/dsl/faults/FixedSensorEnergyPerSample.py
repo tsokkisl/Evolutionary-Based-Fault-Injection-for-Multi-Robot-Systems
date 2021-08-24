@@ -1,3 +1,5 @@
+from dsl.mission.Sensor import Sensor
+
 class FixedSensorEnergyPerSample:
     
     def __init__(self, message, val):
@@ -5,5 +7,8 @@ class FixedSensorEnergyPerSample:
         self.val = val
     
     def exec_fault(self, mission):
-        s = mission.robots[self.message.get_from().ID].subcomponents[self.message.get_from().ID]
-        s.energy_per_sample = self.val
+       robot = mission.robots[self.message.get_from().ID]
+       for sc in robot.subcomponents.values():
+            if isinstance(sc, Sensor):
+                sc.energy_per_sample = self.val
+                if sc.energy_per_sample < 0: sc.energy_per_sample = 0

@@ -6,4 +6,4 @@ class DecrementRemainingEnergyCapacityReport:
 
     def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
-        r.current_energy -= self.val
+        r.current_energy -= r.current_energy * (self.val / 100)

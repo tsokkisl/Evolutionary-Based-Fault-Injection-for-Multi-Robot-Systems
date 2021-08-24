@@ -1,3 +1,4 @@
+from time import process_time
 from dsl.mission.Component import Component
 from dsl.mission.Coordinates import Coordinates
 from dsl.mission.Sensor import Sensor
@@ -83,7 +84,7 @@ class Robot(Component):
         for motion_source in motion_sources:
             current_location = self.position
             d = current_location.distance(prev_location)
-            energy_required = motion_source.getEnergyPerDistance(self.speed)
+            energy_required = motion_source.getEnergyPerDistance() * d
             self.deplete_energy(energy_required)
             self.current_energy = max(self.current_energy, 0.0)
         if self.current_energy <= 0.0:
@@ -92,17 +93,34 @@ class Robot(Component):
     def setup_initial_state(self):
         self.set_energy_capacity()
 
-    def change_direction(self, current_direction):
+    def change_direction(self):
         directions = ["NORTH", "EAST", "WEST", "SOUTH", "NORTH_EAST", "NORTH_WEST", "SOUTH_EAST", "SOUTH_WEST"]
-        i = random.randint(0, len(directions) - 1)
+        """i = random.randint(0, len(directions) - 1)
         while directions[i] == current_direction:
             i = random.randint(0, len(directions) - 1)
-        self.direction = directions[i]
+        self.direction = directions[i]"""
+        mv = self.moves[directions[0]]
+        min = self.position.distance(Coordinates(mv[0] * self.speed + self.position.get_x(), mv[1] * self.speed + self.position.get_y(), mv[2] * self.speed + self.position.get_z()))
+        for d in directions:
+            next_position = Coordinates(self.moves[d][0] * self.speed + self.position.get_x(), self.moves[d][1] * self.speed + self.position.get_y(), self.moves[d][2] * self.speed + self.position.get_z())
+            if self.position.distance(next_position) < min:
+                min = next_position
+                self.direction = d
+        return self.direction
+
+    def check_if_sufficient_energy(self):
+        m = self.moves[self.direction]
+        next_position = Coordinates(m[0] * self.speed + self.position.get_x(), m[1] * self.speed 
+        + self.position.get_y(), m[2] * self.speed + self.position.get_z())
+        d = self.position.distance(next_position)
+        return self.get_all_motion_sources()[0].getEnergyPerDistance() * d <= self.current_energy
 
     def move(self):
+        if self.speed <= 0 or not self.check_if_sufficient_energy(): return
         prev_location = self.position
-        self.position = Coordinates(self.moves[self.direction][0] + self.speed + prev_location.get_x(), self.moves[self.direction][1] + self.speed 
-        + prev_location.get_y(), self.moves[self.direction][2] + self.speed + prev_location.get_z())
+        m = self.moves[self.direction]
+        self.position = Coordinates(m[0] * self.speed + prev_location.get_x(), m[1] * self.speed 
+        + prev_location.get_y(), m[2] * self.speed + prev_location.get_z())
         #print(self.speed)
         #print(str((self.position.get_x(), self.position.get_y(), self.position.get_z())))
         self.register_energy_usage(prev_location)
@@ -134,3 +152,10 @@ class Robot(Component):
                 ms = sc
                 break
         return self.current_energy - (self.distance(self.starting_position) * ms.energy_per_distance_unit) > 0
+    
+    def start(self):
+        if self.current_energy > 0:
+            self.speed = 3
+    
+    def stop(self):
+        self.speed = 0

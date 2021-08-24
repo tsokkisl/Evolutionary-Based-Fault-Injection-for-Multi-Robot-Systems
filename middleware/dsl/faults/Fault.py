@@ -1,3 +1,8 @@
+from dsl.faults.ActivateSensor import ActivateSensor
+from dsl.faults.DeactivateSensor import DeactivateSensor
+from dsl.faults.StartRobot import StartRobot
+from dsl.faults.StopRobot import StopRobot
+
 class Fault:
 	name = ""
 	start = 0.0
@@ -17,6 +22,8 @@ class Fault:
 	def getLatestEndTime(self):
 		return self.finish
 
-	def exec_fault(self, currentTime, mission):
+	def exec_fault(self, currentTime, mission, mrs):
 		if currentTime >= self.start and currentTime <= self.finish:
-			self.ft.exec_fault(mission)
+			if isinstance(self.ft, ActivateSensor) or isinstance(self.ft, DeactivateSensor) or isinstance(self.ft, StartRobot) or isinstance(self.ft, StopRobot):
+				self.ft.exec_fault(mission, mrs)
+			else: self.ft.exec_fault(mission)

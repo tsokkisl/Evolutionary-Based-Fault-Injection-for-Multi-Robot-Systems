@@ -1,6 +1,7 @@
 from dsl.mission.Coordinates import Coordinates
 import roslibpy
 from threading import Thread
+from gen.MRS import MRS
 
 class SimInterface(Thread):
     
@@ -11,6 +12,13 @@ class SimInterface(Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
+    def MRS_init(self):
+        # Setup MRS
+        print("--------------------------\nInitilising and starting MRS\n--------------------------")
+        self.mrs = MRS()
+        self.mrs.daemon = True
+        self.mrs.start()
+        
     def reset(self):
         print("Thread 1 reset...")
         self.topics.clear()

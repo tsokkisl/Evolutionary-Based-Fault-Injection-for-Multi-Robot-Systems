@@ -21,7 +21,7 @@ from dsl.mission.GoalDependencies import GoalDependencies
 class MissionLoader:
 	def load_mission(self):
 		mission_area = Area(Coordinates(0, 0, 0), 1000)	
-		self.mission = Mission("Mission1", 2000.0, mission_area)
+		self.mission = Mission("Mission1", 5000.0, mission_area)
 	
 		# Initilize Server: sv1
 		s1 = Server("sv1", "sv1")

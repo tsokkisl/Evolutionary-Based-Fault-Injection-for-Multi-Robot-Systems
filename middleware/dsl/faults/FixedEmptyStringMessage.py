@@ -1,5 +1,5 @@
 class FixedEmptyStringMessage:
     pass
 
-def exec_fault(self):
+def exec_fault(self, mission):
     pass
