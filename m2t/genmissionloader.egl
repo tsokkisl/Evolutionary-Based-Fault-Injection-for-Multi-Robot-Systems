@@ -64,6 +64,9 @@ class MissionLoader:
 		robot_[%= r.ID %].set_string_component_property("[%= p.name %]", "[%= p.value %]")
 		[% } %]
 		robot_[%= r.ID %].configure_robot()
+		[% for (s in r.sensors) { %]
+		sensor_[%= s.ID %].set_parent(robot_[%= r.ID %])
+		[% } %]
 		self.mission.add_robot("[%= r.ID %]", robot_[%= r.ID %])
 	[% } %]
 	

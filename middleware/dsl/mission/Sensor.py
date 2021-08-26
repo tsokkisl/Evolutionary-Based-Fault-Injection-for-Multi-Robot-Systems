@@ -15,6 +15,7 @@ class Sensor(SubComponent):
 		self.valid_sample_probability = 1 / samples_per_second
 		self.samples = []
 		self.last_sample = 0
+		self.parent = None
 
 	def set_parent(self, parent):
 		self.parent = parent
@@ -31,9 +32,14 @@ class Sensor(SubComponent):
 	def start(self):
 		self.state = "Active"
 
+	def register_energy_usage(self):
+		energy_required = self.samples_per_second * self.energy_per_sample
+		self.parent.deplete_energy(energy_required)
+
 	def generate_samples(self):
 		samples = 0
 		for _ in range(self.samples_per_second):
 			if random.randint(0, 1) <= self.valid_sample_probability:
 				samples += 1
+		self.register_energy_usage()
 		return samples

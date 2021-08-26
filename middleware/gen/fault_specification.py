@@ -28,7 +28,8 @@ from dsl.faults.IncrementSpeed import IncrementSpeed
 from dsl.faults.RandomObstacleCoordinates import RandomObstacleCoordinates
 from dsl.faults.RandomRemainingEnergyCapacityReport import RandomRemainingEnergyCapacityReport
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
-from dsl.faults.IncrementSampleRate import IncrementSampleRate
+from dsl.faults.ZeroSampleRate import ZeroSampleRate
+from dsl.faults.ZeroSensorEnergyPerSample import ZeroSensorEnergyPerSample
 from dsl.faults.Fault import Fault
 import random
 import numpy as np
@@ -81,7 +82,7 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f10
-		ft = FixedRobotCoordinates(mission.goals["g1"].messages["m2"], -1, 7, 7) 
+		ft = FixedRobotCoordinates(mission.goals["g1"].messages["m2"], 500, 0, 1) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f11
@@ -149,9 +150,11 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f27
+		ft = ZeroSampleRate(mission.goals["g6"].messages["m12"], 0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f28
+		ft = ZeroSensorEnergyPerSample(mission.goals["g3"].messages["m7"], 0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f29

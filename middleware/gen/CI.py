@@ -18,9 +18,6 @@ class CI:
         self.sim_interface = SimInterface()
         self.sim_interface.daemon = True
         self.sim_interface.start()
-        time.sleep(5)
-        self.sim_interface.MRS_init()
-        time.sleep(5)
 
     def reset_system_state(self, fs):
         self.mission = MissionLoader().load_mission()
@@ -48,12 +45,9 @@ class CI:
                 if isinstance(sc, Sensor) and sc.state == "Active":
                     sample = self.sim_interface.get_sensor_sample(sc)
                     sc.samples.append(sample)
-            """print(robot.position.x)
-            print(robot.position.y)
-            print(robot.position.z)
-            print(robot.speed)
-            print(robot.current_energy)
-            print('--------------------------------')"""
+            #print('time={6}, position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
+            #robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
+            #print('--------------------------------')
 
     def execute_faults(self):
         """ Check for fault """
@@ -74,6 +68,8 @@ class CI:
         	self.check_gatherSamples_g6()
         	t += 1
         	self.time = t
+        	#time.sleep(1)
+        	self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
     
@@ -83,38 +79,51 @@ class CI:
     def check_avoidCollision(self):
         # protected region User implemented method on begin
         goal_ID = "g1"
+        is_violated = False
         """ Check if goal is violated and make a decision """
         collision_points = [[r.ID, r.position, 1] for r in self.sim_interface.mission.robots.values()] + [[o.ID, o.area.center, o.area.radius] for o in self.sim_interface.mission.obstacles.values()]
         for robot in self.sim_interface.mission.robots.values():
+            collision = False
             for point in collision_points:
                 if robot.ID != point[0] and self.check_for_collision(robot.position.get_coors(), point[1].get_coors(), 1, point[2]):
-                    self.update_goal_violations(goal_ID)
-                    d = robot.change_direction()
+                    is_violated = True
+                    d = robot.avoid_collision()
                     self.sim_interface.mrs.change_direction(robot, d)
                     self.goals_last_violation_state[goal_ID] = True
+                    collision = True
+                    break
+            if not collision:
+                d = robot.directions[random.randint(0, len(robot.directions) - 1)]
+                robot.direction = d
+                self.sim_interface.mrs.change_direction(robot, d)
+        if is_violated: self.update_goal_violations(goal_ID)
 		# protected region User implemented method end
 		
     def check_stayWithinMissionArea(self):
         # protected region User implemented method on begin
         goal_ID = "g2"
+        is_violated = False
         """ Check if goal is violated and make a decision """
         for robot in self.sim_interface.mission.robots.values():
-            if robot.distance_from_mission_center(self.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
-                self.update_goal_violations(goal_ID)
-                d = robot.change_direction()
+            if robot.distance_from_mission_center(self.sim_interface.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
+                is_violated = True
+                d = robot.change_direction_towards_center()
                 self.sim_interface.mrs.change_direction(robot, d)
                 self.goals_last_violation_state[goal_ID] = True
+        if is_violated: self.update_goal_violations(goal_ID)
 		# protected region User implemented method end
 		
     def check_sufficientEnergy(self):
         # protected region User implemented method on begin
         goal_ID = "g3"
+        is_violated = False
         """ Check if goal is violated and make a decision """
         for robot in self.sim_interface.mission.robots.values():
             if not robot.check_for_sufficient_energy():
-                self.update_goal_violations(goal_ID)
+                is_violated = True
                 self.sim_interface.mission.robots[robot.ID].update_speed(random.randint(robot.speed // 2, (robot.speed // 2) + 1))
                 self.goals_last_violation_state[goal_ID] = True
+        if is_violated: self.update_goal_violations(goal_ID)
 		# protected region User implemented method end
 		
     def check_gathersamples_g4(self):

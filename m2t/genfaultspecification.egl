@@ -28,7 +28,8 @@ from dsl.faults.IncrementSpeed import IncrementSpeed
 from dsl.faults.RandomObstacleCoordinates import RandomObstacleCoordinates
 from dsl.faults.RandomRemainingEnergyCapacityReport import RandomRemainingEnergyCapacityReport
 from dsl.faults.IncrementSampleRate import IncrementSampleRate
-from dsl.faults.IncrementSampleRate import IncrementSampleRate
+from dsl.faults.ZeroSampleRate import ZeroSampleRate
+from dsl.faults.ZeroSensorEnergyPerSample import ZeroSensorEnergyPerSample
 from dsl.faults.Fault import Fault
 import random
 import numpy as np
@@ -136,6 +137,12 @@ class FaultSpecification:
 		[% } %]
 		[% if (f.fixedSampleRate != null) { %]
 		ft = FixedSampleRate(mission.goals["[%= f.fixedSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.fixedSampleRate.affectedMessage.ID %]"], [%= f.fixedSampleRate.FIXED_VAL %]) 
+		[% } %]
+		[% if (f.zeroSampleRate != null) { %]
+		ft = ZeroSampleRate(mission.goals["[%= f.zeroSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.zeroSampleRate.affectedMessage.ID %]"], 0) 
+		[% } %]
+		[% if (f.zeroSensorEnergyPerSample != null) { %]
+		ft = ZeroSensorEnergyPerSample(mission.goals["[%= f.zeroSensorEnergyPerSample.affectedMessage.goal_ID %]"].messages["[%= f.zeroSensorEnergyPerSample.affectedMessage.ID %]"], 0) 
 		[% } %]
 		self.faults.append(ft)
 	[% } %]

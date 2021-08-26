@@ -213,7 +213,7 @@
       <fixedRemainingEnergyCapacityReport xmi:id="_N07UAAKNEeyzn7hjjTRAhw" affectedMessage="_YfAGgAKMEeyzn7hjjTRAhw" FIXED_VAL="150.0"/>
     </faults>
     <faults xmi:id="_92EqoAKMEeyzn7hjjTRAhw" name="f10" start="1.0" finish="145.0" probability="1.0">
-      <fixedRobotCoordinates xmi:id="_OYabkAKNEeyzn7hjjTRAhw" affectedMessage="_yc7dkAKLEeyzn7hjjTRAhw" NEW_X="-1" NEW_Y="7" NEW_Z="7"/>
+      <fixedRobotCoordinates xmi:id="_OYabkAKNEeyzn7hjjTRAhw" affectedMessage="_yc7dkAKLEeyzn7hjjTRAhw" NEW_X="500" NEW_Z="1"/>
     </faults>
     <faults xmi:id="_-CpHAAKMEeyzn7hjjTRAhw" name="f11" start="778.0" finish="3321.0" probability="1.0">
       <fixedSampleRate xmi:id="_PALmMAKNEeyzn7hjjTRAhw" affectedMessage="_YfAGgAKMEeyzn7hjjTRAhw" FIXED_VAL="120"/>

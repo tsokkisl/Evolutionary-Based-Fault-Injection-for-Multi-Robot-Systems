@@ -1,7 +1,6 @@
 from .SubComponent import SubComponent
 
 class MotionSource(SubComponent):
-	energy_per_distance_unit = 0
 	
 	def __init__(self, id, energy_per_distance_unit):
 		self.ID = id

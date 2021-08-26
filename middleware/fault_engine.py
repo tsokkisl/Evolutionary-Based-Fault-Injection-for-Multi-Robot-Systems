@@ -195,6 +195,8 @@ if __name__ == "__main__":
             for indiv_2 in pop:
                 if random.randint(0, 2) == 0:
                     mate(indiv_1, indiv_2)
+        ci.sim_interface.MRS_init()
+        time.sleep(2)
         for indin in pop:
             ci.runCI(indiv)
             ci.sim_interface.reset()

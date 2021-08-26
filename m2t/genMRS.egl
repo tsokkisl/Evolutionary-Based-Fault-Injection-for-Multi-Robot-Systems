@@ -7,6 +7,7 @@ from dsl.mission.Sensor import Sensor
 from dsl.mission.MotionSource import MotionSource
 import roslibpy
 from threading import Thread
+import time
 
 class MRS(Thread):
 	
@@ -49,6 +50,9 @@ class MRS(Thread):
 		robot_[%= r.ID %].set_string_component_property("[%= p.name %]", "[%= p.value %]")
 		[% } %]
 		robot_[%= r.ID %].configure_robot()
+		[% for (s in r.sensors) { %]
+		sensor_[%= s.ID %].set_parent(robot_[%= r.ID %])
+		[% } %]
 		self.robots["[%= r.ID %]"] = robot_[%= r.ID %]
 		
 	[% } %]
@@ -89,28 +93,33 @@ class MRS(Thread):
 		while self.client.is_connected and self.flag:
 			for robot in self.robots.values():
 				robot.move()
-		[% for (mission in Mission.all) { %]
-			[% for (robot in mission.robots) { %]
-			#--------------------------------- Publish data of Robot [%= robot.name %] ---------------------------------#
-				[% for (cp in robot.intProperties) { %]
-			[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
+				#print('position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
+            	#robot.position.z, robot.speed, robot.current_energy, robot.direction))
+			try:
+			[% for (mission in Mission.all) { %]
+				[% for (robot in mission.robots) { %]
+				#--------------------------------- Publish data of Robot [%= robot.name %] ---------------------------------#
+					[% for (cp in robot.intProperties) { %]
+				[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
+					[% } %]
+					[% for (cp in robot.doubleProperties) { %]
+				[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
+					[% } %]
+					[% for (cp in robot.stringProperties) { %]
+				[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
+					[% } %]
+				[%= robot.ID %]_POSITION.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].position.x) + ',' + str(self.robots["[%= robot.ID %]"].position.y) + ',' + 
+				str(self.robots["[%= robot.ID %]"].position.z)}))
+				[%= robot.ID %]_SPEED.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].speed)}))
+				[%= robot.ID %]_ENERGY.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].current_energy)}))
+					[% for (s in robot.sensors) { %]	
+				[%= s.ID %]_[%= s.type %].publish(roslibpy.Message({'data': str(self.robots["[%= s.parentID %]"].subcomponents["[%= s.ID %]"].generate_samples())}))
+					[% } %]		
 				[% } %]
-				[% for (cp in robot.doubleProperties) { %]
-			[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
-				[% } %]
-				[% for (cp in robot.stringProperties) { %]
-			[%= robot.ID %]_[%= cp.name %].publish(roslibpy.Message({'data': 'data'}))
-				[% } %]
-			[%= robot.ID %]_POSITION.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].position.x) + ',' + str(self.robots["[%= robot.ID %]"].position.y) + ',' + 
-			str(self.robots["[%= robot.ID %]"].position.z)}))
-			[%= robot.ID %]_SPEED.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].speed)}))
-			[%= robot.ID %]_ENERGY.publish(roslibpy.Message({'data': str(self.robots["[%= robot.ID %]"].current_energy)}))
-				[% for (s in robot.sensors) { %]	
-			[%= s.ID %]_[%= s.type %].publish(roslibpy.Message({'data': str(self.robots["[%= s.parentID %]"].subcomponents["[%= s.ID %]"].generate_samples())}))
-				[% } %]		
 			[% } %]
-		[% } %]
-				
+			except Exception as e:
+				print(e)
+					
 		for topic in self.topics.values():
 			topic.unadvertise()
 			
@@ -128,3 +137,6 @@ class MRS(Thread):
 		
 	def change_direction(self, robot, direction):
 		self.robots[robot.ID].direction = direction
+	
+	def change_speed(self, robot, speed):
+		self.robots[robot.ID].speed = speed

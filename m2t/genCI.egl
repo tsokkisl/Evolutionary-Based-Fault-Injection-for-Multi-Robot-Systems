@@ -18,9 +18,6 @@ class CI:
         self.sim_interface = SimInterface()
         self.sim_interface.daemon = True
         self.sim_interface.start()
-        time.sleep(5)
-        self.sim_interface.MRS_init()
-        time.sleep(5)
 
     def reset_system_state(self, fs):
         self.mission = MissionLoader().load_mission()
@@ -48,12 +45,9 @@ class CI:
                 if isinstance(sc, Sensor) and sc.state == "Active":
                     sample = self.sim_interface.get_sensor_sample(sc)
                     sc.samples.append(sample)
-            """print(robot.position.x)
-            print(robot.position.y)
-            print(robot.position.z)
-            print(robot.speed)
-            print(robot.current_energy)
-            print('--------------------------------')"""
+            print('time={6}, position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
+            robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
+            print('--------------------------------')
 
     def execute_faults(self):
         """ Check for fault """
@@ -78,6 +72,8 @@ class CI:
         [% } %]
         	t += 1
         	self.time = t
+        	#time.sleep(1)
+        	self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
     

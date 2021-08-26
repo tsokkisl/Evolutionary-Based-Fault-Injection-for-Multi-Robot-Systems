@@ -42,6 +42,8 @@ class MissionLoader:
 		subcomponents.append(battery_b2)
 		robot_r1 = Robot("r1", "TIM", 10, Coordinates(-1000, 0, 1), subcomponents)
 		robot_r1.configure_robot()
+		sensor_s1.set_parent(robot_r1)
+		sensor_s2.set_parent(robot_r1)
 		self.mission.add_robot("r1", robot_r1)
 	
 		# Initilize Robot: JEN
@@ -59,6 +61,8 @@ class MissionLoader:
 		subcomponents.append(battery_b4)
 		robot_r2 = Robot("r2", "JEN", 8, Coordinates(0, 1000, 1), subcomponents)
 		robot_r2.configure_robot()
+		sensor_s3.set_parent(robot_r2)
+		sensor_s4.set_parent(robot_r2)
 		self.mission.add_robot("r2", robot_r2)
 	
 		# Initilize Robot: KAL
@@ -76,6 +80,8 @@ class MissionLoader:
 		subcomponents.append(battery_b6)
 		robot_r3 = Robot("r3", "KAL", 5, Coordinates(1000, 0, 1), subcomponents)
 		robot_r3.configure_robot()
+		sensor_s5.set_parent(robot_r3)
+		sensor_s6.set_parent(robot_r3)
 		self.mission.add_robot("r3", robot_r3)
 	
 	

@@ -2,6 +2,7 @@ from dsl.mission.Coordinates import Coordinates
 import roslibpy
 from threading import Thread
 from gen.MRS import MRS
+import time
 
 class SimInterface(Thread):
     

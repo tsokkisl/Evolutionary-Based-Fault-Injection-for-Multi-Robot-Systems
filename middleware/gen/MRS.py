@@ -5,6 +5,7 @@ from dsl.mission.Sensor import Sensor
 from dsl.mission.MotionSource import MotionSource
 import roslibpy
 from threading import Thread
+import time
 
 class MRS(Thread):
 	
@@ -32,6 +33,8 @@ class MRS(Thread):
 		subcomponents.append(battery_b2)
 		robot_r1 = Robot("r1", "TIM", 10, Coordinates(-1000, 0, 1), subcomponents)
 		robot_r1.configure_robot()
+		sensor_s1.set_parent(robot_r1)
+		sensor_s2.set_parent(robot_r1)
 		self.robots["r1"] = robot_r1
 		
 		# Initilize Robot: JEN
@@ -49,6 +52,8 @@ class MRS(Thread):
 		subcomponents.append(battery_b4)
 		robot_r2 = Robot("r2", "JEN", 8, Coordinates(0, 1000, 1), subcomponents)
 		robot_r2.configure_robot()
+		sensor_s3.set_parent(robot_r2)
+		sensor_s4.set_parent(robot_r2)
 		self.robots["r2"] = robot_r2
 		
 		# Initilize Robot: KAL
@@ -66,6 +71,8 @@ class MRS(Thread):
 		subcomponents.append(battery_b6)
 		robot_r3 = Robot("r3", "KAL", 5, Coordinates(1000, 0, 1), subcomponents)
 		robot_r3.configure_robot()
+		sensor_s5.set_parent(robot_r3)
+		sensor_s6.set_parent(robot_r3)
 		self.robots["r3"] = robot_r3
 		
 	
@@ -113,37 +120,42 @@ class MRS(Thread):
 		while self.client.is_connected and self.flag:
 			for robot in self.robots.values():
 				robot.move()
-			#--------------------------------- Publish data of Robot TIM ---------------------------------#
-			r1_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].position.x) + ',' + str(self.robots["r1"].position.y) + ',' + 
-			str(self.robots["r1"].position.z)}))
-			r1_SPEED.publish(roslibpy.Message({'data': str(self.robots["r1"].speed)}))
-			r1_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r1"].current_energy)}))
+				#print('position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
+            	#robot.position.z, robot.speed, robot.current_energy, robot.direction))
+			try:
+				#--------------------------------- Publish data of Robot TIM ---------------------------------#
+				r1_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].position.x) + ',' + str(self.robots["r1"].position.y) + ',' + 
+				str(self.robots["r1"].position.z)}))
+				r1_SPEED.publish(roslibpy.Message({'data': str(self.robots["r1"].speed)}))
+				r1_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r1"].current_energy)}))
 	
-			s1_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].subcomponents["s1"].generate_samples())}))
+				s1_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].subcomponents["s1"].generate_samples())}))
 	
-			s2_PRESSURE.publish(roslibpy.Message({'data': str(self.robots["r1"].subcomponents["s2"].generate_samples())}))
+				s2_PRESSURE.publish(roslibpy.Message({'data': str(self.robots["r1"].subcomponents["s2"].generate_samples())}))
 		
-			#--------------------------------- Publish data of Robot JEN ---------------------------------#
-			r2_POSITION.publish(roslibpy.Message({'data': str(self.robots["r2"].position.x) + ',' + str(self.robots["r2"].position.y) + ',' + 
-			str(self.robots["r2"].position.z)}))
-			r2_SPEED.publish(roslibpy.Message({'data': str(self.robots["r2"].speed)}))
-			r2_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r2"].current_energy)}))
+				#--------------------------------- Publish data of Robot JEN ---------------------------------#
+				r2_POSITION.publish(roslibpy.Message({'data': str(self.robots["r2"].position.x) + ',' + str(self.robots["r2"].position.y) + ',' + 
+				str(self.robots["r2"].position.z)}))
+				r2_SPEED.publish(roslibpy.Message({'data': str(self.robots["r2"].speed)}))
+				r2_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r2"].current_energy)}))
 	
-			s3_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r2"].subcomponents["s3"].generate_samples())}))
+				s3_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r2"].subcomponents["s3"].generate_samples())}))
 	
-			s4_TEMPERATURE.publish(roslibpy.Message({'data': str(self.robots["r2"].subcomponents["s4"].generate_samples())}))
+				s4_TEMPERATURE.publish(roslibpy.Message({'data': str(self.robots["r2"].subcomponents["s4"].generate_samples())}))
 		
-			#--------------------------------- Publish data of Robot KAL ---------------------------------#
-			r3_POSITION.publish(roslibpy.Message({'data': str(self.robots["r3"].position.x) + ',' + str(self.robots["r3"].position.y) + ',' + 
-			str(self.robots["r3"].position.z)}))
-			r3_SPEED.publish(roslibpy.Message({'data': str(self.robots["r3"].speed)}))
-			r3_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r3"].current_energy)}))
+				#--------------------------------- Publish data of Robot KAL ---------------------------------#
+				r3_POSITION.publish(roslibpy.Message({'data': str(self.robots["r3"].position.x) + ',' + str(self.robots["r3"].position.y) + ',' + 
+				str(self.robots["r3"].position.z)}))
+				r3_SPEED.publish(roslibpy.Message({'data': str(self.robots["r3"].speed)}))
+				r3_ENERGY.publish(roslibpy.Message({'data': str(self.robots["r3"].current_energy)}))
 	
-			s5_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r3"].subcomponents["s5"].generate_samples())}))
+				s5_GPS_POSITION.publish(roslibpy.Message({'data': str(self.robots["r3"].subcomponents["s5"].generate_samples())}))
 	
-			s6_DEPTH.publish(roslibpy.Message({'data': str(self.robots["r3"].subcomponents["s6"].generate_samples())}))
+				s6_DEPTH.publish(roslibpy.Message({'data': str(self.robots["r3"].subcomponents["s6"].generate_samples())}))
 		
-				
+			except Exception as e:
+				print(e)
+					
 		for topic in self.topics.values():
 			topic.unadvertise()
 			
@@ -161,3 +173,6 @@ class MRS(Thread):
 		
 	def change_direction(self, robot, direction):
 		self.robots[robot.ID].direction = direction
+	
+	def change_speed(self, robot, speed):
+		self.robots[robot.ID].speed = speed
