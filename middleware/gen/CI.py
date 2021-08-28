@@ -45,9 +45,9 @@ class CI:
                 if isinstance(sc, Sensor) and sc.state == "Active":
                     sample = self.sim_interface.get_sensor_sample(sc)
                     sc.samples.append(sample)
-            #print('time={6}, position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
-            #robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
-            #print('--------------------------------')
+            """print('time={6}, position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
+            robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
+            print('--------------------------------')"""
 
     def execute_faults(self):
         """ Check for fault """
@@ -58,18 +58,21 @@ class CI:
         self.reset_system_state(fs)
         # Run simulation
         for t in range(self.mission.duration):
-        	self.update_system_state()
-        	self.execute_faults()
-        	self.check_avoidCollision()
-        	self.check_stayWithinMissionArea()
-        	self.check_sufficientEnergy()
-        	self.check_gathersamples_g4()
-        	self.check_gatherSamples_g5()
-        	self.check_gatherSamples_g6()
-        	t += 1
-        	self.time = t
-        	#time.sleep(1)
-        	self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+            self.update_system_state()
+            self.execute_faults()
+            self.check_avoidCollision()
+            self.check_stayWithinMissionArea()
+            self.check_sufficientEnergy()
+            self.check_gathersamples_g4()
+            self.check_gatherSamples_g5()
+            self.check_gatherSamples_g6()
+            t += 1
+            self.time = t
+            #time.sleep(1)
+            self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+            with open('metrics.txt', 'a') as f:
+                f.write(str(self.goal_violations_per_fault))
+                f.close()
         print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
     

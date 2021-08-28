@@ -1,0 +1,30 @@
+{'g4': 4985, 'g5': 4985, 'g6': 4985, 'g2': 22, 'g3': 333}
+{'g4': 4445, 'g5': 5000, 'g6': 478, 'g2': 1111, 'g3': 433}
+{'g4': 332, 'g5': 478, 'g6': 332, 'g2': 788, 'g3': 1111}
+{'g4': 4985, 'g5': 222, 'g6': 11, 'g2': 1404, 'g3': 15}
+{'g4': 5000, 'g5': 10, 'g6': 332, 'g2': 2500, 'g3': 2425}
+
+
+
+self.reset_system_state(fs)
+# Run simulation
+for t in range(self.mission.duration):
+    self.update_system_state()
+    self.execute_faults()
+[% for (m in Mission.all) { %]
+    [% for (g in m.goals) { %]
+    [% if (g.task.gatherSamples != null) { %]
+    self.check_[%= g.name.ftlc() %]_[%= g.ID %]()
+    [% } %]
+    [% else { %]
+    self.check_[%= g.name.ftlc() %]()
+    [% } %]
+    [% } %]
+[% } %]
+    t += 1
+    self.time = t
+    #time.sleep(1)
+    self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+    with open('metrics.txt', 'a') as f:
+        f.write(str(self.goal_violations_per_fault))
+        f.close()

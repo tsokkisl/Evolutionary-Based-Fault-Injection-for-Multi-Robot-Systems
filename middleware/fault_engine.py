@@ -9,6 +9,8 @@ from gen.mission_loader import MissionLoader
 from gen.fault_specification import FaultSpecification
 from gen.CI import CI
 import time
+import matplotlib.pyplot as plt
+import ast
 
 mission_duration = 0
 
@@ -174,6 +176,19 @@ def mate(indiv_1, indiv_2):
     print("-----------------------------------------------------")"""
     return indiv_1, indiv_2
 
+def generate_plots():
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'orange', 'pink', 'purple']
+    i = 0
+    with open('metrics.txt', 'r') as f:
+        for line in f.readlines():
+            l = []
+            for val in sorted(ast.literal_eval(line).items(), key=lambda item: item[0]):
+                l.append(int(val[1]))
+            for _ in range(6 - len(l)): l.append(0)
+            plt.plot(["g1", "g2", "g3", "g4", "g5", "g6"], l, color=colors[i], marker='.', linestyle = 'None', markersize = 12)
+            i += 1
+        plt.show(block=True)
+
 """--------------------------------------------------------------------------------------------
 
                                         Main
@@ -186,7 +201,7 @@ mission_duration = ci.mission.duration
 
 if __name__ == "__main__":
     pop = FaultSpecification(MissionLoader().load_mission()).generate_population(10)
-    for i in range(10):
+    for i in range(1):
         print('---------------- Generation {0} ---------------'.format(i))
         for indiv in pop:
             if random.randint(0, 2) == 0:
@@ -203,8 +218,8 @@ if __name__ == "__main__":
             ci.sim_interface.mrs.reset()
     ci.sim_interface.mrs.kill()
     ci.sim_interface.kill()
-    exit()
-        
+    
+    generate_plots()
     """# Run GA
     global MAX
     global BEST
