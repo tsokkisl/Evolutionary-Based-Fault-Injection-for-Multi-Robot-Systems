@@ -14,10 +14,11 @@ class CI:
     def __init__(self):
         self.mission = MissionLoader().load_mission()
         # Setup Sim Interface
-        print("--------------------------\nInitilising and starting sim interface\n--------------------------")
+        print("--------------- Initilizing and starting sim interface ---------------\n")
         self.sim_interface = SimInterface()
         self.sim_interface.daemon = True
         self.sim_interface.start()
+        time.sleep(2)
 
     def reset_system_state(self, fs):
         self.mission = MissionLoader().load_mission()
@@ -55,6 +56,7 @@ class CI:
             fault.exec_fault(self.time, self.sim_interface.mission, self.sim_interface.mrs)
             	
     def runCI(self, fs):
+        fitness = 0
         self.reset_system_state(fs)
         # Run simulation
         for t in range(self.mission.duration):
@@ -70,12 +72,14 @@ class CI:
             self.time = t
             #time.sleep(1)
             self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
-            with open('metrics.txt', 'a') as f:
-                f.write(str(self.goal_violations_per_fault))
-                f.close()
-        print(self.goal_violations_per_fault)
+        with open('metrics.txt', 'a') as f:
+            f.write(str(self.goal_violations_per_fault) + '\n')
+            f.close()
+        #print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
-    
+        for v in self.total_goal_violations: fitness += v
+        return fitness + (len(self.total_goal_violations) * 10000)
+        
     def check_for_collision(self, p1, p2, r1, r2):
         return (p1[0] - r1 < p2[0] + r2 and p1[0] + r1 > p2[0] - r2 and p1[1] + r1 > p2[1] - r2 and p1[1] - r1 < p2[1] + r2)
                     
@@ -170,7 +174,6 @@ class CI:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
 		# protected region User implemented method end
-		
     
     """
     def print_mission_and_fault_specification(self):

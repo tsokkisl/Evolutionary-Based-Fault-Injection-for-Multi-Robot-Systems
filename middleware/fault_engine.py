@@ -12,7 +12,13 @@ import time
 import matplotlib.pyplot as plt
 import ast
 
+MAX = [{}, {}]
 mission_duration = 0
+# Setup CI
+ci = CI()
+mission_duration = ci.mission.duration
+#ci.print_mission_and_fault_specification()
+fs = FaultSpecification(MissionLoader().load_mission())
 
 """--------------------------------------------------------------------------------------------
 
@@ -20,21 +26,18 @@ mission_duration = 0
 
 --------------------------------------------------------------------------------------------"""
 
-def GA(NGEN, pop_size, INDPB, CXPB, evaluation_function):
-    IND_SIZE = 100
+def GA(NGEN, pop_size, mutate_prob, mate_prob):
     # Register the functions in the toolbox
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
-    toolbox.register("attr_float", random.uniform, -1.0, 1.0)
-    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=IND_SIZE)
-
-    toolbox.register("evaluate", evaluation_function)
+    toolbox.register("individual", tools.initIterate, creator.Individual, fs.generate_individual)
+    toolbox.register("evaluate", evaluate)
     toolbox.register("select", tools.selRoulette)
-    toolbox.register("mutate", tools.mutGaussian, mu=0.0, sigma=0.2, indpb=INDPB)
+    toolbox.register("mutate", mutate)
+    toolbox.register("mate", mate)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    toolbox.register("mate", tools.cxOnePoint)
 
     stats = tools.Statistics(key=lambda ind: ind.fitness.values)
     stats.register("avg", np.mean)
@@ -44,28 +47,34 @@ def GA(NGEN, pop_size, INDPB, CXPB, evaluation_function):
     logbook = tools.Logbook()
     pop = toolbox.population(pop_size)
 
+    ci.sim_interface.MRS_init()
+    time.sleep(2)
+    
     # Calculate the fitness of the initilised population
+    print("----------------------- Initilizing Fitnessess -----------------------")
     fitnesses = [toolbox.evaluate(indiv) for indiv in pop]
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    for g in range(NGEN):
-        print("-- Generation %i --" % g)
+    #for ind, fit in zip(pop, fitnesses): print(ind, fit)
 
+    for g in range(NGEN):
+        print("---------------------------- Generation %i ----------------------------" % g)
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
 
         # Crossover procedure
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB:
+            if random.random() < mate_prob:
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
 
         # Mutation procedure
         for mutant in offspring:
-            toolbox.mutate(mutant)
-            del mutant.fitness.values
+            if random.random() < mutate_prob:
+                toolbox.mutate(mutant)
+                del mutant.fitness.values
 
         # Re-calcuate fitness after mutation and crossover
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
@@ -95,15 +104,28 @@ def GA(NGEN, pop_size, INDPB, CXPB, evaluation_function):
 
 -----------------------------------------------------------------------------------------------
 """
+def check_for_max(ci, fitness):
+    global MAX
+    sum_1, sum_2 = 0, 0
+    for val in ci.goal_violations_per_fault.values(): sum_1 += val
+    for val in MAX[1].values(): sum_2 += val
+    if len(ci.goal_violations_per_fault) == len(MAX[1]):
+        if sum_1 > sum_2: 
+            MAX[0] = fs
+            MAX[1] = ci.goal_violations_per_fault
+            print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
+    elif len(ci.goal_violations_per_fault) > len(MAX[1]):
+        MAX[0] = fs
+        MAX[1] = ci.goal_violations_per_fault
+        print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
 
 # Fitness function
 def evaluate(indiv):
     fitness = ci.runCI(indiv)
+    check_for_max(ci, fitness)
+    ci.sim_interface.reset()
+    ci.sim_interface.mrs.reset()
     return fitness,
-
-# Plot statistics
-def statistics():
-    pass
 
 def mutate(indiv):
     """print("indiv Before")
@@ -187,6 +209,7 @@ def generate_plots():
             for _ in range(6 - len(l)): l.append(0)
             plt.plot(["g1", "g2", "g3", "g4", "g5", "g6"], l, color=colors[i], marker='.', linestyle = 'None', markersize = 12)
             i += 1
+        f.close()
         plt.show(block=True)
 
 """--------------------------------------------------------------------------------------------
@@ -194,24 +217,20 @@ def generate_plots():
                                         Main
 
 --------------------------------------------------------------------------------------------"""
-# Setup CI
-ci = CI()
-mission_duration = ci.mission.duration
-#ci.print_mission_and_fault_specification()
 
 if __name__ == "__main__":
+    """mutate_prob = 0.3
+    mate_prob = 0.5
     pop = FaultSpecification(MissionLoader().load_mission()).generate_population(10)
+    ci.sim_interface.MRS_init()
+    time.sleep(2)
     for i in range(1):
         print('---------------- Generation {0} ---------------'.format(i))
         for indiv in pop:
-            if random.randint(0, 2) == 0:
-                mutate(indiv)
+            mutate(indiv, mutate_prob)
         for indiv_1 in pop:
             for indiv_2 in pop:
-                if random.randint(0, 2) == 0:
-                    mate(indiv_1, indiv_2)
-        ci.sim_interface.MRS_init()
-        time.sleep(2)
+                mate(indiv_1, indiv_2, mate_prob)
         for indin in pop:
             ci.runCI(indiv)
             ci.sim_interface.reset()
@@ -220,11 +239,31 @@ if __name__ == "__main__":
     ci.sim_interface.kill()
     
     generate_plots()
-    """# Run GA
-    global MAX
-    global BEST
-    generations = 4000
-    population_size = 500
-    MAX = 0
-    BEST = []
-    stats = GA(generations, population_size, 0.5, 0.4, evaluate)"""
+    exit()"""
+
+    # Run GA
+    generations = 10
+    population_size = 10
+    mutate_prob = 0.3
+    mate_prob = 0.5
+    statistics = GA(generations, population_size, mutate_prob, mate_prob)
+
+    print(MAX)
+    with open('statistics.txt', 'a') as f:
+        for stat in statistics:
+            f.write(str(stat) + '\n')
+        f.close()
+
+    plt.xlabel('Generation')
+    plt.ylabel('Mean Fitness')
+    plt.plot(statistics[0], statistics[1], label='Mean Fitness', color='orange')
+    plt.yscale("log")
+    plt.legend(loc='best', fancybox=True, framealpha=0.5)
+    plt.show(block=True)
+
+    plt.xlabel('Generation')
+    plt.ylabel('Best Individual per generation')
+    plt.plot(statistics[0], statistics[4], label='Best Individual', color='orange')
+    plt.yscale("log")
+    plt.legend(loc='best', fancybox=True, framealpha=0.5)
+    plt.show(block=True)

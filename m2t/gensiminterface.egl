@@ -15,13 +15,13 @@ class SimInterface(Thread):
     
     def MRS_init(self):
         # Setup MRS
-        print("--------------------------\nInitilising and starting MRS\n--------------------------")
+        print("-------------------- Initilising and starting MRS --------------------\n")
         self.mrs = MRS()
         self.mrs.daemon = True
         self.mrs.start()
         
     def reset(self):
-        print("Thread 1 reset...")
+        #print("Thread 1 reset...")
         self.topics.clear()
      
     def kill(self):

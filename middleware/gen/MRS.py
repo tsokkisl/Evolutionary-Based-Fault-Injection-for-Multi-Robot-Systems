@@ -164,7 +164,7 @@ class MRS(Thread):
 		self.flag = False
 	
 	def reset(self):
-		print("Thread 2 Reset...")
+		#print("Thread 2 Reset...")
 		self.initialize_robots()
 	
 	def kill(self):

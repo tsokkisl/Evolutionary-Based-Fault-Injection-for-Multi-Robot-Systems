@@ -180,3 +180,22 @@ class FaultSpecification:
 					j += 1
 			population.append(individual)
 		return population
+		
+	def generate_individual(self):
+		time_ranges = self.reset_chunks()
+		individual = []
+		j = 0
+		while j < 10:
+			f = self.faults[random.randint(0, len(self.faults) - 1)]
+			if time_ranges[f.message.ID] != None:
+				if len(time_ranges[f.message.ID]) > 0:
+					random.shuffle(time_ranges[f.message.ID])
+					tmp = time_ranges[f.message.ID].pop()
+					start = tmp[0]
+					finish = tmp[len(tmp) - 1]
+				else:
+					start = 0
+					finish = 0
+				individual.append(Fault(copy.deepcopy(f), start, finish))
+				j += 1
+		return individual

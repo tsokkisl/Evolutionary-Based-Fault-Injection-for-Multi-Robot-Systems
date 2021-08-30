@@ -113,7 +113,8 @@ class Robot(Component):
         for d in self.directions:
             next_position = Coordinates((self.moves[d][0] * self.speed) + self.position.get_x(), (self.moves[d][1] * self.speed) + self.position.get_y(), (self.moves[d][2] * self.speed) + self.position.get_z())
             if not self.check_for_collision(self.position.get_coors(), next_position.get_coors(), 1, 1): valid_directions.append(d)
-        self.direction = valid_directions[random.randint(0, len(valid_directions) - 1)]
+        if len(valid_directions) > 0:
+            self.direction = valid_directions[random.randint(0, len(valid_directions) - 1)]
         return self.direction
 
     def check_if_sufficient_energy(self):
