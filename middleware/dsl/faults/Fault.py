@@ -27,3 +27,10 @@ class Fault:
 			if isinstance(self.ft, ActivateSensor) or isinstance(self.ft, DeactivateSensor) or isinstance(self.ft, StartRobot) or isinstance(self.ft, StopRobot):
 				self.ft.exec_fault(mission, mrs)
 			else: self.ft.exec_fault(mission)
+		else:
+			if isinstance(self.ft, DeactivateSensor) and currentTime > self.finish:
+				mission.robots[self.ft.sensor.parent_ID].subcomponents[self.ft.sensor.ID].start()
+				mrs.robots[self.ft.sensor.parent_ID].subcomponents[self.ft.sensor.ID].start()
+			if isinstance(self.ft, StopRobot) and currentTime > self.finish:
+				mission.robots[self.ft.robot.ID].start()
+				mrs.robots[self.ft.robot.ID].start()

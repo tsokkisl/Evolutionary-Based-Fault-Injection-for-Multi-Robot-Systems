@@ -4,7 +4,7 @@ class RandomObstacleCoordinates:
 
     coors = []
     def __init__(self, obstacle_id, x, y, z):
-        self.obstacle_id = "o" + str(obstacle_id)
+        self.obstacle_id = obstacle_id
         self.coors.append(x)
         self.coors.append(y)
         self.coors.append(z)

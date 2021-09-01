@@ -5,10 +5,10 @@ class Mission:
 	obstacles = {}
 	goals = {}
 	
-	def __init__(self, n, d, m):
+	def __init__(self, n, d, a):
 		self.name = n
 		self.duration = int(d)
-		self.mission_area = m
+		self.mission_area = a
 	
 	def get_goals(self):
 		return self.goals.values()

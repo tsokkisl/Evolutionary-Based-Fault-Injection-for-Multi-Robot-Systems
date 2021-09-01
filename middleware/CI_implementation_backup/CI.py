@@ -14,7 +14,7 @@ class CI:
     def __init__(self):
         self.mission = MissionLoader().load_mission()
         # Setup Sim Interface
-        print("--------------------------\nInitilising and starting sim interface\n--------------------------")
+        print("--------------- Initilizing and starting sim interface ---------------\n")
         self.sim_interface = SimInterface()
         self.sim_interface.daemon = True
         self.sim_interface.start()
@@ -78,7 +78,7 @@ class CI:
         #print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
         for v in self.total_goal_violations: fitness += v
-        return fitness
+        return fitness + (len(self.total_goal_violations) * 10000)
         
     def check_for_collision(self, p1, p2, r1, r2):
         return (p1[0] - r1 < p2[0] + r2 and p1[0] + r1 > p2[0] - r2 and p1[1] + r1 > p2[1] - r2 and p1[1] - r1 < p2[1] + r2)
@@ -174,7 +174,6 @@ class CI:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
 		# protected region User implemented method end
-		
     
     """
     def print_mission_and_fault_specification(self):

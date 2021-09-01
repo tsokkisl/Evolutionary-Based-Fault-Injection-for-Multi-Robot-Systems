@@ -93,14 +93,23 @@ class Robot(Component):
     def setup_initial_state(self):
         self.set_energy_capacity()
 
-    def change_direction_towards_center(self):
+    def change_direction_towards_center(self, mission_center):
         mv = self.moves[self.directions[0]]
-        min = self.position.distance(Coordinates(mv[0] * self.speed + self.position.get_x(), mv[1] * self.speed + self.position.get_y(), mv[2] * self.speed + self.position.get_z()))
+        min = mission_center.distance(Coordinates(mv[0] * self.speed + self.position.get_x(), mv[1] * self.speed + self.position.get_y(), mv[2] * self.speed + self.position.get_z()))
         for d in self.directions:
             next_position = Coordinates(self.moves[d][0] * self.speed + self.position.get_x(), self.moves[d][1] * self.speed + self.position.get_y(), self.moves[d][2] * self.speed + self.position.get_z())
-            if self.position.distance(next_position) < min:
-                min = next_position
+            if mission_center.distance(next_position) < min:
+                min = mission_center.distance(next_position)
                 self.direction = d
+        return self.direction
+
+    def change_direction_towards_goal_area_center(self, goal_area):
+        valid_directions = []
+        for d in self.directions:
+            next_position = Coordinates(self.moves[d][0] * self.speed + self.position.get_x(), self.moves[d][1] * self.speed + self.position.get_y(), self.moves[d][2] * self.speed + self.position.get_z())
+            if goal_area.center.distance(next_position) <= goal_area.radius + 1: valid_directions.append(d)
+        if len(valid_directions) > 0:
+            self.direction = valid_directions[random.randint(0, len(valid_directions) - 1)]
         return self.direction
 
     def check_for_collision(self, p1, p2, r1, r2):

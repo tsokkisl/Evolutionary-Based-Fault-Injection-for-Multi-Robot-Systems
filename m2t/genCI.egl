@@ -94,25 +94,40 @@ class CI:
         [%= out.startPreserve("#", "", "User implemented method", true) %]
         goal_ID = "[%= g.ID %]"
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        goal_area = self.sim_interface.mission.goals[goal_ID].area.goalArea
+        robot = self.sim_interface.mission.robots[sensor.parent_ID]
         [% var dependencies = ""; %]
-        [% for (d in g.dependentGoals) { %]
-        	[% dependencies += g.name+ '_' + g.ID + ' '; %]
+        [% for (d in g.dependentGoals.dependencies) { %]
+        	[% dependencies += d.name+ '_' + d.ID + ' '; %]
+        [% } %]
+        [% var goalMembers = ""; %]
+        [% for (m in g.members.goalMembers) { %]
+        	[% goalMembers += m.name + ' '; %]
         [% } %]
         """ Dependencies: [%= dependencies %] """
+        """ Members: [%= goalMembers %] """
         """ Check if goal is violated and make a decision """
 		[%= out.stopPreserve() %]
+		
         	[% } %]
         	[% else { %]
     def check_[%= g.name.ftlc() %](self):
         [%= out.startPreserve("#", "", "User implemented method", true) %]
         goal_ID = "[%= g.ID %]"
+        is_violated = False
         [% var dependencies = ""; %]
-        [% for (d in g.dependentGoals) { %]
-        	[% dependencies += g.name+ '_' + g.ID + ' '; %]
+        [% for (d in g.dependentGoals.dependencies) { %]
+        	[% dependencies += d.name+ '_' + d.ID + ' '; %]
+        [% } %]
+        [% var goalMembers = ""; %]
+        [% for (m in g.members.goalMembers) { %]
+        	[% goalMembers += m.name + ' '; %]
         [% } %]
         """ Dependencies: [%= dependencies %] """
+        """ Members: [%= goalMembers %] """
         """ Check if goal is violated and make a decision """
 		[%= out.stopPreserve() %]
+		
         	[% } %]
         [% } %]
     [% } %]

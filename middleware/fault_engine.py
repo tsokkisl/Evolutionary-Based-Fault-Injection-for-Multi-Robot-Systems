@@ -48,17 +48,17 @@ def GA(NGEN, pop_size, mutate_prob, mate_prob):
     pop = toolbox.population(pop_size)
 
     ci.sim_interface.MRS_init()
-    time.sleep(2)
+    time.sleep(3)
     
     # Calculate the fitness of the initilised population
-    print("----------------------- Initilizing Fitnessess -----------------------")
+    print("---------------------------- Generation 0 ----------------------------")
     fitnesses = [toolbox.evaluate(indiv) for indiv in pop]
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
     #for ind, fit in zip(pop, fitnesses): print(ind, fit)
 
-    for g in range(NGEN):
+    for g in range(1, NGEN):
         print("---------------------------- Generation %i ----------------------------" % g)
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
@@ -243,8 +243,8 @@ if __name__ == "__main__":
 
     # Run GA
     generations = 10
-    population_size = 10
-    mutate_prob = 0.3
+    population_size = 20
+    mutate_prob = 0.5
     mate_prob = 0.5
     statistics = GA(generations, population_size, mutate_prob, mate_prob)
 

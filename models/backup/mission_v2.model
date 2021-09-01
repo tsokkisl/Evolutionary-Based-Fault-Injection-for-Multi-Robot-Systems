@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns="acs_project_setup" xmi:id="_VMdnEAmEEeyujvekVPE7rQ">
+  <mission xmi:id="_Wda4oAmEEeyujvekVPE7rQ" name="Mission 2" duration="5000.0">
+    <robots xmi:id="_aPe1AAmEEeyujvekVPE7rQ" name="LEN" ID="r1" speed="10">
+      <position xmi:id="_f7A0cAmEEeyujvekVPE7rQ" x="-1000" z="1"/>
+      <sensors xmi:id="_hnyfUAmEEeyujvekVPE7rQ" name="s1" ID="s1" parentID="r1" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_h9QZAAmEEeyujvekVPE7rQ" name="s2" ID="s2" parentID="r2" energyPerSample="2.0" samplesPerSecond="5" type="PRESSURE"/>
+      <batteries xmi:id="_fTb3EAmEEeyujvekVPE7rQ" name="b1" ID="b1" parentID="r1" totalEnergy="20000.0"/>
+      <batteries xmi:id="_fj9mYAmEEeyujvekVPE7rQ" name="b2" ID="b2" parentID="r1" totalEnergy="80000.0"/>
+      <motionSources xmi:id="_gP9wwAmEEeyujvekVPE7rQ" name="ms1" ID="ms1" parentID="r1" energyPerDistanceUnit="5.0"/>
+    </robots>
+    <robots xmi:id="_akIPUAmEEeyujvekVPE7rQ" name="JEN" ID="r2" speed="8">
+      <position xmi:id="_i--7wAmEEeyujvekVPE7rQ" y="1000" z="1"/>
+      <sensors xmi:id="_jn7yIAmEEeyujvekVPE7rQ" name="s3" ID="s3" parentID="r2" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_j70XcAmEEeyujvekVPE7rQ" name="s4&#x9;" ID="s4" parentID="r2" energyPerSample="2.0" samplesPerSecond="5" type="TEMPERATURE"/>
+      <batteries xmi:id="_iaNawAmEEeyujvekVPE7rQ" name="b3" ID="b3" parentID="r2" totalEnergy="4000.0"/>
+      <batteries xmi:id="_ipFkQAmEEeyujvekVPE7rQ" name="b4" ID="b4" parentID="r2" totalEnergy="60000.0"/>
+      <motionSources xmi:id="_k3iY0AmEEeyujvekVPE7rQ" name="ms2" ID="ms2" parentID="r2" energyPerDistanceUnit="5.0"/>
+    </robots>
+    <robots xmi:id="_a3LuMAmEEeyujvekVPE7rQ" name="KAL" ID="r3" speed="5">
+      <position xmi:id="_l14QYAmEEeyujvekVPE7rQ" x="1000" z="1"/>
+      <sensors xmi:id="_mMrm0AmEEeyujvekVPE7rQ" name="s5" ID="s5" parentID="r3" energyPerSample="2.0" samplesPerSecond="5"/>
+      <sensors xmi:id="_mgbCMAmEEeyujvekVPE7rQ" name="s6" ID="s6" parentID="r3" energyPerSample="2.0" samplesPerSecond="5" type="DEPTH"/>
+      <batteries xmi:id="_lOm1AAmEEeyujvekVPE7rQ" name="b5" ID="b5" parentID="r3" totalEnergy="50000.0"/>
+      <batteries xmi:id="_lc36gAmEEeyujvekVPE7rQ" name="b6" ID="b6" parentID="r3" totalEnergy="50000.0"/>
+      <motionSources xmi:id="_m_dHkAmEEeyujvekVPE7rQ" name="ms3" ID="ms3" parentID="r3" energyPerDistanceUnit="5.0"/>
+    </robots>
+    <servers xmi:id="_bL-5gAmEEeyujvekVPE7rQ" name="sv1" ID="sv1"/>
+    <goals xmi:id="_1iNmYAmEEeyujvekVPE7rQ" ID="g1" name="AvoidCollision">
+      <members xmi:id="_zjHxkAmGEeyujvekVPE7rQ" goalMembers="_akIPUAmEEeyujvekVPE7rQ _a3LuMAmEEeyujvekVPE7rQ _aPe1AAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_zMmH8AmGEeyujvekVPE7rQ"/>
+      <area xmi:id="_y2ackAmGEeyujvekVPE7rQ">
+        <goalArea xmi:id="_7hJYEAmGEeyujvekVPE7rQ" ID="a1" radius="4">
+          <center xmi:id="_8G1fEAmGEeyujvekVPE7rQ" x="600" y="-200"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_1XVhMAmGEeyujvekVPE7rQ">
+        <avoidCollision xmi:id="_122HsAmGEeyujvekVPE7rQ" robots="_akIPUAmEEeyujvekVPE7rQ _a3LuMAmEEeyujvekVPE7rQ _aPe1AAmEEeyujvekVPE7rQ" obstacles="_cIQUgAmEEeyujvekVPE7rQ _caCoEAmEEeyujvekVPE7rQ _csFaUAmEEeyujvekVPE7rQ _dBQZEAmEEeyujvekVPE7rQ _dcVykAmEEeyujvekVPE7rQ _dwbzQAmEEeyujvekVPE7rQ _efYj8AmEEeyujvekVPE7rQ _evxJUAmEEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_0trgMAmGEeyujvekVPE7rQ" ID="m1" goal_ID="g1" from="_akIPUAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_3f-BoAmGEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+      <messages xmi:id="_2vcjoAmGEeyujvekVPE7rQ" ID="m2" goal_ID="g1" from="_a3LuMAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_4leRIAmGEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+      <messages xmi:id="_3I924AmGEeyujvekVPE7rQ" ID="m3" goal_ID="g1" from="_aPe1AAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_460PAAmGEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_2VWTgAmEEeyujvekVPE7rQ" ID="g2" name="StayWithinMissionArea">
+      <members xmi:id="_9-5z8AmGEeyujvekVPE7rQ" goalMembers="_akIPUAmEEeyujvekVPE7rQ _a3LuMAmEEeyujvekVPE7rQ _aPe1AAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_9qWgQAmGEeyujvekVPE7rQ"/>
+      <area xmi:id="_6avwsAmGEeyujvekVPE7rQ">
+        <goalArea xmi:id="_60qskAmGEeyujvekVPE7rQ" ID="a2" radius="11">
+          <center xmi:id="_7ExlIAmGEeyujvekVPE7rQ" x="-800" y="450" z="1"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_-Vz4EAmGEeyujvekVPE7rQ">
+        <stayWithinMissionArea xmi:id="__pfGcAmGEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_BjTu0AmHEeyujvekVPE7rQ" ID="m4" goal_ID="g2" from="_akIPUAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_CmQZkAmHEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+      <messages xmi:id="_B4Ed4AmHEeyujvekVPE7rQ" ID="m5" goal_ID="g2" from="_a3LuMAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_C-6xMAmHEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+      <messages xmi:id="_CMNh4AmHEeyujvekVPE7rQ" ID="m6" goal_ID="g2" from="_aPe1AAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_DfcrYAmHEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_2ldzIAmEEeyujvekVPE7rQ" ID="g3" name="SufficientEnergy">
+      <members xmi:id="_moBXoAmHEeyujvekVPE7rQ" goalMembers="_akIPUAmEEeyujvekVPE7rQ _a3LuMAmEEeyujvekVPE7rQ _aPe1AAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_mP_5MAmHEeyujvekVPE7rQ"/>
+      <area xmi:id="_810sAAmGEeyujvekVPE7rQ">
+        <goalArea xmi:id="_rBsGkAmHEeyujvekVPE7rQ" ID="a3" radius="1000">
+          <center xmi:id="_rSgw0AmHEeyujvekVPE7rQ"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_n1NjgAmHEeyujvekVPE7rQ">
+        <sufficientEnergy xmi:id="_oUVIcAmHEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_m7wzAAmHEeyujvekVPE7rQ" ID="m7" goal_ID="g3" from="_akIPUAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_2V2loAmLEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+        <body xmi:id="_2n8bMAmLEeyujvekVPE7rQ" name="SPEED" type="Int"/>
+        <body xmi:id="_26PsIAmLEeyujvekVPE7rQ" name="ENERGY" type="Double"/>
+      </messages>
+      <messages xmi:id="_nRkq8AmHEeyujvekVPE7rQ" ID="m8" goal_ID="g3" from="_a3LuMAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_3MO0AAmLEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+        <body xmi:id="_3d7oAAmLEeyujvekVPE7rQ" name="SPEED" type="Int"/>
+        <body xmi:id="_3tXLIAmLEeyujvekVPE7rQ" name="ENERGY" type="Double"/>
+      </messages>
+      <messages xmi:id="_njzqcAmHEeyujvekVPE7rQ" ID="m9" goal_ID="g3" from="_aPe1AAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_4CuXIAmLEeyujvekVPE7rQ" name="POSITION" type="Coordinates"/>
+        <body xmi:id="_4VHHoAmLEeyujvekVPE7rQ" name="SPEED" type="Int"/>
+        <body xmi:id="_4kWdgAmLEeyujvekVPE7rQ" name="ENERGY" type="Double"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_21GKkAmEEeyujvekVPE7rQ" ID="g4" name="GatherSamples">
+      <members xmi:id="_t7Hx0AmHEeyujvekVPE7rQ" goalMembers="_akIPUAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_tazTAAmHEeyujvekVPE7rQ"/>
+      <area xmi:id="_r_1w4AmHEeyujvekVPE7rQ">
+        <goalArea xmi:id="_sRVJgAmHEeyujvekVPE7rQ" ID="a4" radius="50">
+          <center xmi:id="_siGwcAmHEeyujvekVPE7rQ" x="-250" y="250" z="1"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_uo1MYAmHEeyujvekVPE7rQ">
+        <gatherSamples xmi:id="_vW2I8AmHEeyujvekVPE7rQ" targetSampleNumber="250" sensor="_j70XcAmEEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_uT6sUAmHEeyujvekVPE7rQ" ID="m10" goal_ID="g4" from="_akIPUAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_wnR2EAmHEeyujvekVPE7rQ" name="TEMPERATURE" type="Int"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_3HVxIAmEEeyujvekVPE7rQ" ID="g5" name="GatherSamples">
+      <members xmi:id="_1jeDQAmHEeyujvekVPE7rQ" goalMembers="_a3LuMAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_1PsLoAmHEeyujvekVPE7rQ"/>
+      <area xmi:id="_zkyJAAmHEeyujvekVPE7rQ">
+        <goalArea xmi:id="_z0FJQAmHEeyujvekVPE7rQ" ID="a5" radius="50">
+          <center xmi:id="_0DNxcAmHEeyujvekVPE7rQ" x="250" y="250" z="1"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_2vRvEAmHEeyujvekVPE7rQ">
+        <gatherSamples xmi:id="_3RXIcAmHEeyujvekVPE7rQ" targetSampleNumber="400" sensor="_mgbCMAmEEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_1_lXgAmHEeyujvekVPE7rQ" ID="m11" goal_ID="g4" from="_a3LuMAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_2UnMUAmHEeyujvekVPE7rQ" name="DEPTH" type="Double"/>
+      </messages>
+    </goals>
+    <goals xmi:id="_3V7mwAmEEeyujvekVPE7rQ" ID="g6" name="GatherSamples">
+      <members xmi:id="_6NWYcAmHEeyujvekVPE7rQ" goalMembers="_aPe1AAmEEeyujvekVPE7rQ"/>
+      <dependentGoals xmi:id="_571xsAmHEeyujvekVPE7rQ"/>
+      <area xmi:id="_5HlqQAmHEeyujvekVPE7rQ">
+        <goalArea xmi:id="_5XRFAAmHEeyujvekVPE7rQ" ID="a6" radius="50">
+          <center xmi:id="_5omFkAmHEeyujvekVPE7rQ" x="250" y="-250" z="1"/>
+        </goalArea>
+      </area>
+      <task xmi:id="_7NF-MAmHEeyujvekVPE7rQ">
+        <gatherSamples xmi:id="_74j9EAmHEeyujvekVPE7rQ" targetSampleNumber="500" sensor="_h9QZAAmEEeyujvekVPE7rQ"/>
+      </task>
+      <messages xmi:id="_6kXKQAmHEeyujvekVPE7rQ" ID="m12" goal_ID="g6" from="_aPe1AAmEEeyujvekVPE7rQ" to="_bL-5gAmEEeyujvekVPE7rQ" header="h">
+        <body xmi:id="_65cCYAmHEeyujvekVPE7rQ" name="PRESSURE" type="Double"/>
+      </messages>
+    </goals>
+    <obstacles xmi:id="_cIQUgAmEEeyujvekVPE7rQ" ID="o1">
+      <area xmi:id="_ouIP4AmEEeyujvekVPE7rQ" ID="a7" radius="8">
+        <center xmi:id="_o9apEAmEEeyujvekVPE7rQ" y="500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_caCoEAmEEeyujvekVPE7rQ" ID="o2">
+      <area xmi:id="_pUS4AAmEEeyujvekVPE7rQ" ID="a8" radius="3">
+        <center xmi:id="_pmL5QAmEEeyujvekVPE7rQ" x="500" y="500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_csFaUAmEEeyujvekVPE7rQ" ID="o3">
+      <area xmi:id="_p4a4wAmEEeyujvekVPE7rQ" ID="a9" radius="11">
+        <center xmi:id="_qI8BAAmEEeyujvekVPE7rQ" x="500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_dBQZEAmEEeyujvekVPE7rQ" ID="o4">
+      <area xmi:id="_qcqOQAmEEeyujvekVPE7rQ" ID="a10" radius="7">
+        <center xmi:id="_qyX_kAmEEeyujvekVPE7rQ" x="500" y="-500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_dcVykAmEEeyujvekVPE7rQ" ID="o5">
+      <area xmi:id="_rMVXsAmEEeyujvekVPE7rQ" ID="a11" radius="12">
+        <center xmi:id="_rdn8AAmEEeyujvekVPE7rQ" y="-500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_dwbzQAmEEeyujvekVPE7rQ" ID="o6">
+      <area xmi:id="_sD1AYAmEEeyujvekVPE7rQ" ID="a12" radius="9">
+        <center xmi:id="_sb9zkAmEEeyujvekVPE7rQ" x="-500" y="-500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_efYj8AmEEeyujvekVPE7rQ" ID="o7">
+      <area xmi:id="_s2t14AmEEeyujvekVPE7rQ" ID="a13" radius="4">
+        <center xmi:id="_tLMREAmEEeyujvekVPE7rQ" x="-500" z="1"/>
+      </area>
+    </obstacles>
+    <obstacles xmi:id="_evxJUAmEEeyujvekVPE7rQ" ID="o8">
+      <area xmi:id="_tg6pcAmEEeyujvekVPE7rQ" ID="a14" radius="9">
+        <center xmi:id="_uamqgAmEEeyujvekVPE7rQ" x="-500" y="500" z="1"/>
+      </area>
+    </obstacles>
+    <missionArea xmi:id="_ZVSdoAmEEeyujvekVPE7rQ" ID="a15" radius="1000">
+      <center xmi:id="_ZqTrYAmEEeyujvekVPE7rQ"/>
+    </missionArea>
+  </mission>
+  <specification xmi:id="_W2F3UAmEEeyujvekVPE7rQ">
+    <faults xmi:id="_XLjxAAmEEeyujvekVPE7rQ" name="f1">
+      <activateSensor xmi:id="_U8FdMAmOEeyujvekVPE7rQ" affectedSensor="_h9QZAAmEEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_QY6pcAmNEeyujvekVPE7rQ" name="f2">
+      <blockMessage xmi:id="_VVuFMAmOEeyujvekVPE7rQ" affectedMessage="_BjTu0AmHEeyujvekVPE7rQ" BLOCK_DURATION="5.0"/>
+    </faults>
+    <faults xmi:id="_QnfQ8AmNEeyujvekVPE7rQ" name="f3">
+      <deactivateSensor xmi:id="_VqZUsAmOEeyujvekVPE7rQ" affectedSensor="_mMrm0AmEEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_Q2G7wAmNEeyujvekVPE7rQ" name="f4">
+      <decrementRemainingEnergyCapacityReport xmi:id="_WA_20AmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" PERCENTAGE="10.0"/>
+    </faults>
+    <faults xmi:id="_RE3JcAmNEeyujvekVPE7rQ" name="f5">
+      <decrementSampleRate xmi:id="_WaQEUAmOEeyujvekVPE7rQ" affectedMessage="_1_lXgAmHEeyujvekVPE7rQ" VAL="2"/>
+    </faults>
+    <faults xmi:id="_RS4-YAmNEeyujvekVPE7rQ" name="f6">
+      <decrementSensorEnergyPerSample xmi:id="_Yll6gAmOEeyujvekVPE7rQ" affectedMessage="_njzqcAmHEeyujvekVPE7rQ" PERCENTAGE="10.0"/>
+    </faults>
+    <faults xmi:id="_t8SyUAmOEeyujvekVPE7rQ" name="f7">
+      <decrementSpeed xmi:id="_zKqUoAmOEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ" VAL="1"/>
+    </faults>
+    <faults xmi:id="_RhzkIAmNEeyujvekVPE7rQ" name="f8">
+      <delayMessage xmi:id="_0WcLQAmOEeyujvekVPE7rQ" affectedMessage="_uT6sUAmHEeyujvekVPE7rQ" DELAY="200.0"/>
+    </faults>
+    <faults xmi:id="_RvxHoAmNEeyujvekVPE7rQ" name="f9">
+      <fixedObstacleCoordinates xmi:id="_2DxPwAmOEeyujvekVPE7rQ" affectedObstacle="_dcVykAmEEeyujvekVPE7rQ" NEW_X="2" NEW_Y="1" NEW_Z="9"/>
+    </faults>
+    <faults xmi:id="_R997sAmNEeyujvekVPE7rQ" name="f10">
+      <fixedRemainingEnergyCapacityReport xmi:id="_2jG3IAmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" FIXED_VAL="150.0"/>
+    </faults>
+    <faults xmi:id="_SLlg8AmNEeyujvekVPE7rQ" name="f11">
+      <fixedRobotCoordinates xmi:id="_3EvkkAmOEeyujvekVPE7rQ" affectedMessage="_2vcjoAmGEeyujvekVPE7rQ" NEW_X="500" NEW_Z="1"/>
+    </faults>
+    <faults xmi:id="_SaHFIAmNEeyujvekVPE7rQ" name="f12">
+      <fixedSampleRate xmi:id="_3yMgcAmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" FIXED_VAL="120"/>
+    </faults>
+    <faults xmi:id="_SntcQAmNEeyujvekVPE7rQ" name="f13">
+      <fixedSensorEnergyPerSample xmi:id="_4lu2MAmOEeyujvekVPE7rQ" affectedMessage="_njzqcAmHEeyujvekVPE7rQ" FIXED_VAL="10.0"/>
+    </faults>
+    <faults xmi:id="_S0psEAmNEeyujvekVPE7rQ" name="f14">
+      <fixedSpeed xmi:id="_5EkHQAmOEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ" FIXED_VAL="50"/>
+    </faults>
+    <faults xmi:id="_TBoYIAmNEeyujvekVPE7rQ" name="f15">
+      <incrementRemainingEnergyCapacityReport xmi:id="_5q5ugAmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" PERCENTAGE="10.0"/>
+    </faults>
+    <faults xmi:id="_TNzy8AmNEeyujvekVPE7rQ" name="f16">
+      <incrementSampleRate xmi:id="_6QgV8AmOEeyujvekVPE7rQ" affectedMessage="_1_lXgAmHEeyujvekVPE7rQ" VAL="25"/>
+    </faults>
+    <faults xmi:id="_TcWlQAmNEeyujvekVPE7rQ" name="f17">
+      <incrementSensorEnergyPerSample xmi:id="_6-qccAmOEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ" PERCENTAGE="22.0"/>
+    </faults>
+    <faults xmi:id="_Tr5dIAmNEeyujvekVPE7rQ" name="f18">
+      <incrementSpeed xmi:id="_7ybbsAmOEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ" VAL="10"/>
+    </faults>
+    <faults xmi:id="_T5X4cAmNEeyujvekVPE7rQ" name="f19">
+      <randomObstacleCoordinates xmi:id="_8bVOwAmOEeyujvekVPE7rQ" affectedObstacle="_caCoEAmEEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_UGnDMAmNEeyujvekVPE7rQ" name="f20">
+      <randomRemainingEnergyCapacityReport xmi:id="_88zkIAmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" LOWER_BOUND="255.0" UPPER_BOUND="1000.0"/>
+    </faults>
+    <faults xmi:id="_UTUpgAmNEeyujvekVPE7rQ" name="f21">
+      <randomRobotCoordinates xmi:id="_9hYQ0AmOEeyujvekVPE7rQ" affectedMessage="_3I924AmGEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_Ufk80AmNEeyujvekVPE7rQ" name="f22">
+      <randomSampleRate xmi:id="_-Pt9gAmOEeyujvekVPE7rQ" affectedMessage="_uT6sUAmHEeyujvekVPE7rQ" LOWER_BOUND="1" UPPER_BOUND="50"/>
+    </faults>
+    <faults xmi:id="_Usjo4AmNEeyujvekVPE7rQ" name="f23">
+      <randomSensorEnergyPerSample xmi:id="__GhpsAmOEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ" LOWER_BOUND="11.0" UPPER_BOUND="30.0"/>
+    </faults>
+    <faults xmi:id="_NylD4AmOEeyujvekVPE7rQ" name="f24">
+      <randomSpeed xmi:id="__s67UAmOEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ" LOWER_BOUND="2.0" UPPER_BOUND="8.0"/>
+    </faults>
+    <faults xmi:id="_OGllAAmOEeyujvekVPE7rQ" name="f25">
+      <startRobot xmi:id="_ASiw4AmPEeyujvekVPE7rQ" affectedRobot="_a3LuMAmEEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_OYXRgAmOEeyujvekVPE7rQ" name="f26">
+      <stopRobot xmi:id="_A0luAAmPEeyujvekVPE7rQ" affectedRobot="_aPe1AAmEEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_Opy_wAmOEeyujvekVPE7rQ" name="f27">
+      <zeroRemainingEnergyCapacityReport xmi:id="_BZfK0AmPEeyujvekVPE7rQ" affectedMessage="_nRkq8AmHEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_PC1K0AmOEeyujvekVPE7rQ" name="f28">
+      <zeroSampleRate xmi:id="_CB5OoAmPEeyujvekVPE7rQ" affectedMessage="_6kXKQAmHEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_PWH6QAmOEeyujvekVPE7rQ" name="f29">
+      <zeroSensorEnergyPerSample xmi:id="_Cvt98AmPEeyujvekVPE7rQ" affectedMessage="_m7wzAAmHEeyujvekVPE7rQ"/>
+    </faults>
+    <faults xmi:id="_Pok8MAmOEeyujvekVPE7rQ" name="f30">
+      <zeroSpeed xmi:id="_DUFPQAmPEeyujvekVPE7rQ" affectedMessage="_njzqcAmHEeyujvekVPE7rQ"/>
+    </faults>
+  </specification>
+</Setup>

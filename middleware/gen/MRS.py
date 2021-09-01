@@ -18,9 +18,9 @@ class MRS(Thread):
 		self.flag = True
 	
 	def initialize_robots(self):	
-		# Initilize Robot: TIM
+		# Initilize Robot: LEN
 		subcomponents = []
-		# Initilize Robot: TIM's subcomponents
+		# Initilize Robot: LEN's subcomponents
 		sensor_s1 = Sensor("s1", "r1", "GPS_POSITION", 2.0, 5)
 		subcomponents.append(sensor_s1)
 		sensor_s2 = Sensor("s2", "r1", "PRESSURE", 2.0, 5)
@@ -31,7 +31,7 @@ class MRS(Thread):
 		subcomponents.append(battery_b1)
 		battery_b2 = Battery("b2", 80000.0)
 		subcomponents.append(battery_b2)
-		robot_r1 = Robot("r1", "TIM", 10, Coordinates(-1000, 0, 1), subcomponents)
+		robot_r1 = Robot("r1", "LEN", 5, Coordinates(250, -250, 1), subcomponents)
 		robot_r1.configure_robot()
 		sensor_s1.set_parent(robot_r1)
 		sensor_s2.set_parent(robot_r1)
@@ -50,7 +50,7 @@ class MRS(Thread):
 		subcomponents.append(battery_b3)
 		battery_b4 = Battery("b4", 60000.0)
 		subcomponents.append(battery_b4)
-		robot_r2 = Robot("r2", "JEN", 8, Coordinates(0, 1000, 1), subcomponents)
+		robot_r2 = Robot("r2", "JEN", 4, Coordinates(-250, 250, 1), subcomponents)
 		robot_r2.configure_robot()
 		sensor_s3.set_parent(robot_r2)
 		sensor_s4.set_parent(robot_r2)
@@ -69,7 +69,7 @@ class MRS(Thread):
 		subcomponents.append(battery_b5)
 		battery_b6 = Battery("b6", 50000.0)
 		subcomponents.append(battery_b6)
-		robot_r3 = Robot("r3", "KAL", 5, Coordinates(1000, 0, 1), subcomponents)
+		robot_r3 = Robot("r3", "KAL", 4, Coordinates(250, 250, 1), subcomponents)
 		robot_r3.configure_robot()
 		sensor_s5.set_parent(robot_r3)
 		sensor_s6.set_parent(robot_r3)
@@ -80,7 +80,7 @@ class MRS(Thread):
 		self.client = roslibpy.Ros(host='localhost', port=9090)
 		self.client.run()
 					
-		#--------------------------------- Robot TIM Topics ---------------------------------#
+		#--------------------------------- Robot LEN Topics ---------------------------------#
 		r1_POSITION = roslibpy.Topic(self.client, '/r1_POSITION', 'std_msgs/String')
 		self.topics["r1_POSITION"] = r1_POSITION
 		r1_SPEED = roslibpy.Topic(self.client, '/r1_SPEED', 'std_msgs/String')
@@ -123,7 +123,7 @@ class MRS(Thread):
 				#print('position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
             	#robot.position.z, robot.speed, robot.current_energy, robot.direction))
 			try:
-				#--------------------------------- Publish data of Robot TIM ---------------------------------#
+				#--------------------------------- Publish data of Robot LEN ---------------------------------#
 				r1_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].position.x) + ',' + str(self.robots["r1"].position.y) + ',' + 
 				str(self.robots["r1"].position.z)}))
 				r1_SPEED.publish(roslibpy.Message({'data': str(self.robots["r1"].speed)}))

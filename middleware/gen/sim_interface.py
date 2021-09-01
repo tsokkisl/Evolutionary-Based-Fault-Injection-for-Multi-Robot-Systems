@@ -33,7 +33,7 @@ class SimInterface(Thread):
         self.client = roslibpy.Ros(host='localhost', port=9090)
         self.client.run()
             
-        #--------------------------------- Robot TIM Topics ---------------------------------#
+        #--------------------------------- Robot LEN Topics ---------------------------------#
         r1_POSITION = roslibpy.Topic(self.client, '/r1_POSITION', 'std_msgs/String')
         r1_POSITION.subscribe(lambda message: self.assign_to_topic('r1_POSITION', message))
         r1_SPEED = roslibpy.Topic(self.client, '/r1_SPEED', 'std_msgs/String')

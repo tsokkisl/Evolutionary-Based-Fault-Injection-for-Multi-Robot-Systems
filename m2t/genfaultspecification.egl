@@ -82,10 +82,10 @@ class FaultSpecification:
 		ft = DecrementRemainingEnergyCapacityReport(mission.goals["[%= f.decrementRemainingEnergyCapacityReport.affectedMessage.goal_ID %]"].messages["[%= f.decrementRemainingEnergyCapacityReport.affectedMessage.ID %]"], [%= f.decrementRemainingEnergyCapacityReport.PERCENTAGE %]) 
 		[% } %]
 		[% if (f.randomSpeed != null) { %]
-		ft = RandomSpeed(mission.goals["[%= f.randomSpeed.affectedMessage.goal_ID %]"].messages["[%= f.randomSpeed.affectedMessage.ID %]"], random.randint(-10, 10)) 
+		ft = RandomSpeed(mission.goals["[%= f.randomSpeed.affectedMessage.goal_ID %]"].messages["[%= f.randomSpeed.affectedMessage.ID %]"], random.randint([%= f.randomSpeed.LOWER_BOUND %], [%= f.randomSpeed.UPPER_BOUND %])) 
 		[% } %]
 		[% if (f.zeroSpeed != null) { %]
-		ft = ZeroSpeed(mission.goals["[%= f.zeroSpeed.affectedMessage.goal_ID %]"].messages["[%= f.zeroSpeed.affectedMessage.ID %]"], [%= f.zeroSpeed.SPEED %])
+		ft = ZeroSpeed(mission.goals["[%= f.zeroSpeed.affectedMessage.goal_ID %]"].messages["[%= f.zeroSpeed.affectedMessage.ID %]"], [%= f.zeroSpeed.VAL %])
 		[% } %]
 		[% if (f.fixedSpeed != null) { %]
 		ft = FixedSpeed(mission.goals["[%= f.fixedSpeed.affectedMessage.goal_ID %]"].messages["[%= f.fixedSpeed.affectedMessage.ID %]"], [%= f.fixedSpeed.FIXED_VAL %])
@@ -114,12 +114,6 @@ class FaultSpecification:
 		[% if (f.decrementSampleRate != null) { %]
 		ft = DecrementSampleRate(mission.goals["[%= f.decrementSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.decrementSampleRate.affectedMessage.ID %]"], [%= f.decrementSampleRate.VAL %]) 
 		[% } %]
-		[% if (f.fixedEmptyStringMessage != null) { %]
-		ft = FixedEmptyStringMessage(mission.goals["[%= f.fixedEmptyStringMessage.affectedMessage.goal_ID %]"].messages["[%= f.fixedEmptyStringMessage.affectedMessage.ID %]"], [%= f.fixedEmptyStringMessage.FIXED_VAL %]) 
-		[% } %]
-		[% if (f.randomStringMessage != null) { %]
-		ft = RandomStringMessage(mission.goals["[%= f.randomStringMessage.affectedMessage.goal_ID %]"].messages["[%= f.randomStringMessage.affectedMessage.ID %]"], [%= f.randomStringMessage.RANDOM_VAL %]) 
-		[% } %]
 		[% if (f.fixedRobotCoordinates != null) { %]
 		ft = FixedRobotCoordinates(mission.goals["[%= f.fixedRobotCoordinates.affectedMessage.goal_ID %]"].messages["[%= f.fixedRobotCoordinates.affectedMessage.ID %]"], [%= f.fixedRobotCoordinates.NEW_X %], [%= f.fixedRobotCoordinates.NEW_Y %], [%= f.fixedRobotCoordinates.NEW_Z %]) 
 		[% } %]
@@ -127,10 +121,10 @@ class FaultSpecification:
 		ft = RandomRobotCoordinates(mission.goals["[%= f.randomRobotCoordinates.affectedMessage.goal_ID %]"].messages["[%= f.randomRobotCoordinates.affectedMessage.ID %]"], random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		[% } %]
 		[% if (f.fixedObstacleCoordinates != null) { %]
-		ft = FixedObstacleCoordinates(random.randint(1, 8), [%= f.fixedObstacleCoordinates.NEW_X %], [%= f.fixedObstacleCoordinates.NEW_Y %], [%= f.fixedObstacleCoordinates.NEW_Z %]) 
+		ft = FixedObstacleCoordinates("[%= f.fixedObstacleCoordinates.affectedObstacle.ID %]", [%= f.fixedObstacleCoordinates.NEW_X %], [%= f.fixedObstacleCoordinates.NEW_Y %], [%= f.fixedObstacleCoordinates.NEW_Z %]) 
 		[% } %]
 		[% if (f.randomObstacleCoordinates != null) { %]
-		ft = RandomObstacleCoordinates(random.randint(1, 8), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
+		ft = RandomObstacleCoordinates("[%= f.randomObstacleCoordinates.affectedObstacle.ID %]", random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		[% } %]
 		[% if (f.randomSampleRate != null) { %]
 		ft = RandomSampleRate(mission.goals["[%= f.randomSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.randomSampleRate.affectedMessage.ID %]"], random.randint([%= f.randomSampleRate.LOWER_BOUND %], [%= f.randomSampleRate.UPPER_BOUND %])) 
@@ -139,10 +133,10 @@ class FaultSpecification:
 		ft = FixedSampleRate(mission.goals["[%= f.fixedSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.fixedSampleRate.affectedMessage.ID %]"], [%= f.fixedSampleRate.FIXED_VAL %]) 
 		[% } %]
 		[% if (f.zeroSampleRate != null) { %]
-		ft = ZeroSampleRate(mission.goals["[%= f.zeroSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.zeroSampleRate.affectedMessage.ID %]"], 0) 
+		ft = ZeroSampleRate(mission.goals["[%= f.zeroSampleRate.affectedMessage.goal_ID %]"].messages["[%= f.zeroSampleRate.affectedMessage.ID %]"], [%= f.zeroSampleRate.VAL %]) 
 		[% } %]
 		[% if (f.zeroSensorEnergyPerSample != null) { %]
-		ft = ZeroSensorEnergyPerSample(mission.goals["[%= f.zeroSensorEnergyPerSample.affectedMessage.goal_ID %]"].messages["[%= f.zeroSensorEnergyPerSample.affectedMessage.ID %]"], 0) 
+		ft = ZeroSensorEnergyPerSample(mission.goals["[%= f.zeroSensorEnergyPerSample.affectedMessage.goal_ID %]"].messages["[%= f.zeroSensorEnergyPerSample.affectedMessage.ID %]"], [%= f.zeroSensorEnergyPerSample.VAL %]) 
 		[% } %]
 		self.faults.append(ft)
 	[% } %]

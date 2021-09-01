@@ -39,7 +39,7 @@ class Sensor(SubComponent):
 	def generate_samples(self):
 		samples = 0
 		for _ in range(self.samples_per_second):
-			if random.randint(0, 1) <= self.valid_sample_probability:
+			if random.random() <= self.valid_sample_probability:
 				samples += 1
 		self.register_energy_usage()
 		return samples

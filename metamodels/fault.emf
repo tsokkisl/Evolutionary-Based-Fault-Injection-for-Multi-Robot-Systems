@@ -21,7 +21,7 @@ class BlockMessage {
 	attr Double BLOCK_DURATION;
 }
 
-/* ------------------------------------------------------ */
+/* Messages of type Double */
 
 class RandomRemainingEnergyCapacityReport {
 	ref project.Message affectedMessage;
@@ -57,7 +57,7 @@ class RandomSensorEnergyPerSample {
 
 class ZeroSensorEnergyPerSample {
 	ref project.Message affectedMessage;
-	attr Double CONSUMPTION = 0;
+	attr Double VAL = 0;
 }
 
 class FixedSensorEnergyPerSample {
@@ -75,15 +75,17 @@ class DecrementSensorEnergyPerSample {
 	attr Double PERCENTAGE;
 }
 
-/* ------------------------------------------------------ */
+/* Messages of type Integer */
 
 class RandomSpeed {
-	ref project.Message affectedMessage;	
+	ref project.Message affectedMessage;
+	attr Double LOWER_BOUND;
+	attr Double UPPER_BOUND;	
 }
 
 class ZeroSpeed {
 	ref project.Message affectedMessage;
-	attr int SPEED = 0;
+	attr int VAL = 0;
 }
 
 class FixedSpeed {
@@ -109,7 +111,7 @@ class RandomSampleRate {
 
 class ZeroSampleRate {
 	ref project.Message affectedMessage;
-	attr int CONSUMPTION = 0;
+	attr int VAL = 0;
 }
 
 class FixedSampleRate {
@@ -127,19 +129,7 @@ class DecrementSampleRate {
 	attr int VAL;
 }
 
-/* ------------------------------------------------------ */
-
-class FixedEmptyStringMessage {
-	ref project.Message affectedMessage;
-	attr String FIXED_VAL = ""; 	
-}
-
-class RandomStringMessage {
-	ref project.Message affectedMessage;
-	attr String RANDOM_VAL;
-}
-
-/* ------------------------------------------------------ */
+/* Messages of type Coordinates */
 
 class FixedRobotCoordinates {
 	ref project.Message affectedMessage;
@@ -150,17 +140,6 @@ class FixedRobotCoordinates {
 
 class RandomRobotCoordinates {
 	ref project.Message affectedMessage;
-}
-
-class FixedObstacleCoordinates {
-	ref project.Message affectedMessage;
-	attr int NEW_X;
-	attr int NEW_Y;
-	attr int NEW_Z;
-}
-
-class RandomObstacleCoordinates {
-	ref project.Message affectedMessage;	
 }
 
 /* Generate fake commands */
@@ -181,11 +160,19 @@ class DeactivateSensor {
 	ref project.Sensor[1] affectedSensor;
 }
 
+class FixedObstacleCoordinates {
+	ref project.Obstacle affectedObstacle;
+	attr int NEW_X;
+	attr int NEW_Y;
+	attr int NEW_Z;
+}
+
+class RandomObstacleCoordinates {
+	ref project.Obstacle affectedObstacle;
+}
+
 class Fault {
 	attr String name;
-	attr Double start;
-	attr Double finish;
-	attr Double probability;
 	val DelayMessage[0..1] delayMessage;
 	val BlockMessage[0..1] blockMessage;
 	val RandomRemainingEnergyCapacityReport[0..1] randomRemainingEnergyCapacityReport;
@@ -208,8 +195,6 @@ class Fault {
 	val FixedSampleRate[0..1] fixedSampleRate;
 	val IncrementSampleRate[0..1] incrementSampleRate;
 	val DecrementSampleRate[0..1] decrementSampleRate;
-	val FixedEmptyStringMessage[0..1] fixedEmptyStringMessage;
-	val RandomStringMessage[0..1] randomStringMessage;
 	val FixedRobotCoordinates[0..1] fixedRobotCoordinates;
 	val RandomRobotCoordinates[0..1] randomRobotCoordinates;
 	val FixedObstacleCoordinates[0..1] fixedObstacleCoordinates;

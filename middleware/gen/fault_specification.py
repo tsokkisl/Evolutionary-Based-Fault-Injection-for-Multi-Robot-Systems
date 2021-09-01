@@ -43,7 +43,7 @@ class FaultSpecification:
 	
 		self.mission = mission
 		
-		#Fault Specification 
+		#Fault Specification fs
 	
 		#Initializing Fault: f1
 		ft = ActivateSensor(mission.robots["r1"].subcomponents["s2"])
@@ -54,111 +54,111 @@ class FaultSpecification:
 		self.faults.append(ft)
 	
 		#Initializing Fault: f3
-		ft = DecrementRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 10.0) 
+		ft = DeactivateSensor(mission.robots["r3"].subcomponents["s5"]) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f4
-		ft = DecrementSampleRate(mission.goals["g5"].messages["m11"], 2) 
+		ft = DecrementRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 10.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f5
-		ft = DecrementSensorEnergyPerSample(mission.goals["g3"].messages["m9"], 10.0)
+		ft = DecrementSampleRate(mission.goals["g5"].messages["m11"], 2) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f6
-		ft = DecrementSpeed(mission.goals["g3"].messages["m7"], 1) 
+		ft = DecrementSensorEnergyPerSample(mission.goals["g3"].messages["m9"], 10.0)
 		self.faults.append(ft)
 	
 		#Initializing Fault: f7
-		ft = DelayMessage(mission.goals["g4"].messages["m10"], 200.0) 
+		ft = DecrementSpeed(mission.goals["g3"].messages["m7"], 1) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f8
-		ft = FixedObstacleCoordinates(random.randint(1, 8), 2, 1, 9) 
+		ft = DelayMessage(mission.goals["g4"].messages["m10"], 200.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f9
-		ft = FixedRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 150.0) 
+		ft = FixedObstacleCoordinates("o5", 200, -450, 1) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f10
-		ft = FixedRobotCoordinates(mission.goals["g1"].messages["m2"], 500, 0, 1) 
+		ft = FixedRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 150.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f11
-		ft = FixedSampleRate(mission.goals["g3"].messages["m8"], 120) 
+		ft = FixedRobotCoordinates(mission.goals["g1"].messages["m2"], 1200, -800, 1) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f12
-		ft = FixedSensorEnergyPerSample(mission.goals["g3"].messages["m9"], 10.0) 
+		ft = FixedSampleRate(mission.goals["g3"].messages["m8"], 120) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f13
-		ft = FixedSpeed(mission.goals["g3"].messages["m7"], 50)
+		ft = FixedSensorEnergyPerSample(mission.goals["g3"].messages["m9"], 10.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f14
-		ft = IncrementRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 10.0)
+		ft = FixedSpeed(mission.goals["g3"].messages["m7"], 50)
 		self.faults.append(ft)
 	
 		#Initializing Fault: f15
-		ft = IncrementSampleRate(mission.goals["g5"].messages["m11"], 25)
+		ft = IncrementRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 10.0)
 		self.faults.append(ft)
 	
 		#Initializing Fault: f16
-		ft = IncrementSensorEnergyPerSample(mission.goals["g3"].messages["m7"], 22.0)
+		ft = IncrementSampleRate(mission.goals["g5"].messages["m11"], 25)
 		self.faults.append(ft)
 	
 		#Initializing Fault: f17
-		ft = IncrementSpeed(mission.goals["g3"].messages["m7"], 10) 
+		ft = IncrementSensorEnergyPerSample(mission.goals["g3"].messages["m7"], 22.0)
 		self.faults.append(ft)
 	
 		#Initializing Fault: f18
-		ft = RandomObstacleCoordinates(random.randint(1, 8), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
+		ft = IncrementSpeed(mission.goals["g3"].messages["m7"], 10) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f19
-		ft = RandomRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], random.uniform(255.0, 1000.0)) 
+		ft = RandomObstacleCoordinates("o2", random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f20
-		ft = RandomRobotCoordinates(mission.goals["g1"].messages["m3"], random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
+		ft = RandomRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], random.uniform(255.0, 1000.0)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f21
-		ft = RandomSampleRate(mission.goals["g4"].messages["m10"], random.randint(1, 50)) 
+		ft = RandomRobotCoordinates(mission.goals["g1"].messages["m3"], random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius), random.randint(-mission.mission_area.radius, mission.mission_area.radius)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f22
-		ft = RandomSensorEnergyPerSample(mission.goals["g3"].messages["m7"], random.uniform(11.0, 30.0))
+		ft = RandomSampleRate(mission.goals["g4"].messages["m10"], random.randint(1, 50)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f23
-		ft = RandomSpeed(mission.goals["g3"].messages["m8"], random.randint(-10, 10)) 
+		ft = RandomSensorEnergyPerSample(mission.goals["g3"].messages["m7"], random.uniform(11.0, 30.0))
 		self.faults.append(ft)
 	
 		#Initializing Fault: f24
-		ft = StartRobot(mission.robots["r3"])
+		ft = RandomSpeed(mission.goals["g3"].messages["m8"], random.randint(-8.0, 8.0)) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f25
-		ft = StopRobot(mission.robots["r1"])
+		ft = StartRobot(mission.robots["r3"])
 		self.faults.append(ft)
 	
 		#Initializing Fault: f26
-		ft = ZeroRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 0.0) 
+		ft = StopRobot(mission.robots["r1"])
 		self.faults.append(ft)
 	
 		#Initializing Fault: f27
-		ft = ZeroSampleRate(mission.goals["g6"].messages["m12"], 0) 
+		ft = ZeroRemainingEnergyCapacityReport(mission.goals["g3"].messages["m8"], 0.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f28
-		ft = ZeroSensorEnergyPerSample(mission.goals["g3"].messages["m7"], 0) 
+		ft = ZeroSampleRate(mission.goals["g6"].messages["m12"], 0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f29
-		ft = DeactivateSensor(mission.robots["r3"].subcomponents["s5"]) 
+		ft = ZeroSensorEnergyPerSample(mission.goals["g3"].messages["m7"], 0.0) 
 		self.faults.append(ft)
 	
 		#Initializing Fault: f30
