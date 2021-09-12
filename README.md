@@ -21,6 +21,6 @@ sudo apt-get install ros-noetic-rosbridge-suite
 ```
 * Run Multi-Objective evolution
 ```
-./script.sh -mo ['g1', ..., 'gn'] # where gi id of goal i
+./script.sh -mo ['g1', ..., 'gn'] # where `gi` is the `id` of goal `i`
 ```
     
