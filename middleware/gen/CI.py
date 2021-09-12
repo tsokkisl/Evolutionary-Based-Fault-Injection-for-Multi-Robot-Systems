@@ -81,6 +81,7 @@ class CI:
         return fitness * 0.3 + (len(self.total_goal_violations) * 10000) * 0.7
     
     def run_multi_objective_CI(self, fs, goals):
+        self.goals = goals
         fitness = 0
         self.flag = True
         self.sim_interface.reset()

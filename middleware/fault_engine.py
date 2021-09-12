@@ -1,5 +1,6 @@
 #!/usr/local/bin python3
 import random
+from deap.tools.support import ParetoFront
 import numpy as np
 from deap import base
 from deap import creator
@@ -15,6 +16,7 @@ import sys
 
 MAX = [{}, {}]
 TYPE = ""
+PARETO = []
 goals = []
 mission_duration = 0
 # Setup CI
@@ -107,28 +109,59 @@ def GA(NGEN, pop_size, mutate_prob, mate_prob):
 
 -----------------------------------------------------------------------------------------------
 """
-def check_for_max(ci, fitness):
+def check_for_max(ci, fitness, indiv):
     global MAX
     sum_1, sum_2 = 0, 0
     for val in ci.goal_violations_per_fault.values(): sum_1 += val
     for val in MAX[1].values(): sum_2 += val
     if len(ci.goal_violations_per_fault) == len(MAX[1]):
         if sum_1 > sum_2: 
-            MAX[0] = fs
+            MAX[0] = indiv
             MAX[1] = ci.goal_violations_per_fault
             print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
     elif len(ci.goal_violations_per_fault) > len(MAX[1]):
-        MAX[0] = fs
+        MAX[0] = indiv
         MAX[1] = ci.goal_violations_per_fault
         print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
+
+def pareto_front(ci, indiv):
+    global PARETO
+    flag = True
+    p = []
+    idv = [ci.goal_violations_per_fault[goals[0]], ci.goal_violations_per_fault[goals[1]]]
+    #p.append(indiv)
+    p.append(idv[0])
+    p.append(idv[1])
+    temp_pareto = []
+    l = len(PARETO)
+    if len(PARETO) == 0:
+        PARETO.append(p)
+    else:
+        for i in PARETO:
+            if (idv[0] <= i[0] and idv[1] <= i[1]):
+                flag = False
+                break
+            elif (idv[0] >= i[0] and idv[1] >= i[1]):
+                pass
+            else:
+                temp_pareto.append(i)
+        if flag: 
+            PARETO = temp_pareto
+            PARETO.append(idv)
+        if len(PARETO) > l:
+            print("New Pareto front found for [{0}, {1}]! => {2}".format(goals[0], goals[1], PARETO))
+
 
 # Fitness function
 def evaluate(indiv):
     global TYPE
     global goals
-    if TYPE == "-so": fitness = ci.run_single_objective_CI(indiv)
-    elif TYPE == "-mo": fitness = ci.run_multi_objective_CI(indiv, goals)
-    check_for_max(ci, fitness)
+    if TYPE == "-so": 
+        fitness = ci.run_single_objective_CI(indiv)
+        check_for_max(ci, fitness, indiv)    
+    elif TYPE == "-mo": 
+        fitness = ci.run_multi_objective_CI(indiv, goals)
+        pareto_front(ci, indiv)
     return fitness,
 
 def mutate(indiv):
