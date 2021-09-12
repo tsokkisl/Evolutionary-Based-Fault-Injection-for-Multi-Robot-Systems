@@ -20,8 +20,8 @@ from dsl.mission.GoalDependencies import GoalDependencies
 
 class MissionLoader:
 	def load_mission(self):
-		mission_area = Area(Coordinates(0, 0, 0), 1000)	
-		self.mission = Mission("Mission 2", 5000.0, mission_area)
+		mission_area = Area(Coordinates(0, 0, 0), 2000)	
+		self.mission = Mission("1000", 1000.0, mission_area)
 	
 		# Initilize Server: sv1
 		s1 = Server("sv1", "sv1")
@@ -138,7 +138,7 @@ class MissionLoader:
 		goal_members_g2 = GoalMembers(members, self.mission)		
 		g_deps = []
 		goal_dependecies_g2 = GoalDependencies(g_deps)
-		goal_task_g2 = StayWithinMissionArea(Area(Coordinates(0, 0, 0), 1000))
+		goal_task_g2 = StayWithinMissionArea(Area(Coordinates(0, 0, 0), 2000))
 		goal_area_g2 = GoalArea(Area(Coordinates(-800, 450, 1), 11))
 		goal_messages = []
 		sender = self.mission.robots.get("r2")

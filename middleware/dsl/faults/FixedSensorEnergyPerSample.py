@@ -1,4 +1,5 @@
 from dsl.mission.Sensor import Sensor
+import random
 
 class FixedSensorEnergyPerSample:
     
@@ -12,3 +13,6 @@ class FixedSensorEnergyPerSample:
             if isinstance(sc, Sensor):
                 sc.energy_per_sample = self.val
                 if sc.energy_per_sample < 0: sc.energy_per_sample = 0
+
+    def mutate(self):
+        self.val = random.randint(1, 15)

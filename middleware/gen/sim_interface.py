@@ -12,12 +12,15 @@ class SimInterface(Thread):
 	
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+        self.ci = None
+    	
     def MRS_init(self):
         # Setup MRS
         print("-------------------- Initilising and starting MRS --------------------\n")
         self.mrs = MRS()
         self.mrs.daemon = True
+        self.mrs.ci = self.ci
+        self.mrs.duration = self.mission.duration
         self.mrs.start()
         
     def reset(self):

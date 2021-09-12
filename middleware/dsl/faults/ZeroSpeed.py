@@ -1,3 +1,5 @@
+import random
+
 class ZeroSpeed:
     
     def __init__(self, message, speed):
@@ -7,3 +9,6 @@ class ZeroSpeed:
     def exec_fault(self, mission):
         r = mission.robots[self.message.get_from().ID]
         r.speed = self.speed
+
+    def mutate(self):
+        self.speed = 0

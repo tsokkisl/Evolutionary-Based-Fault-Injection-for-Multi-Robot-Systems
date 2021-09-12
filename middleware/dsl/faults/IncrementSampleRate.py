@@ -1,4 +1,5 @@
 from dsl.mission.Sensor import Sensor
+import random
 
 class IncrementSampleRate:
     
@@ -11,3 +12,6 @@ class IncrementSampleRate:
         for sc in robot.subcomponents.values():
             if isinstance(sc, Sensor):
                 sc.samples_per_second += self.val
+
+    def mutate(self):
+        self.val = random.randint(1, 10)

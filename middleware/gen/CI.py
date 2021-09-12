@@ -9,23 +9,23 @@ class CI:
     total_goal_violations = [] 
     goal_violations_per_fault = {}
     goals_last_violation_state = {}
-    time = 0
+    flag = True
     
     def __init__(self):
-        self.mission = MissionLoader().load_mission()
         # Setup Sim Interface
         print("--------------- Initilizing and starting sim interface ---------------\n")
         self.sim_interface = SimInterface()
+        self.sim_interface.mission = MissionLoader().load_mission()
+        self.sim_interface.ci = self
         self.sim_interface.daemon = True
         self.sim_interface.start()
         time.sleep(2)
 
     def reset_system_state(self, fs):
-        self.mission = MissionLoader().load_mission()
         self.fault_specification = fs
-        self.sim_interface.mission = self.mission
-        self.total_goal_violations = [0 for _ in range(self.mission.duration)]
-        self.goal_violations_per_fault = {}
+        self.sim_interface.mission = MissionLoader().load_mission()
+        self.total_goal_violations = [0 for _ in range(self.sim_interface.mission.duration)]
+        self.goal_violations_per_fault = {"g1": 0, "g2": 0, "g3": 0, "g4": 0, "g5": 0, "g6": 0}
         self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         self.time = 0
 
@@ -38,7 +38,7 @@ class CI:
 
     def update_system_state(self):
         """ Update mission state """
-        for robot in self.mission.robots.values():
+        for robot in self.sim_interface.mission.robots.values():
             robot.update_position(self.sim_interface.get_POSITION(robot))
             robot.update_energy(self.sim_interface.get_ENERGY(robot))
             robot.update_speed(self.sim_interface.get_SPEED(robot))
@@ -50,36 +50,63 @@ class CI:
             robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
             print('--------------------------------')"""
 
-    def execute_faults(self):
+    def execute_faults(self, time):
         """ Check for fault """
         for fault in self.fault_specification:
-            fault.exec_fault(self.time, self.sim_interface.mission, self.sim_interface.mrs)
+            fault.exec_fault(time, self.sim_interface.mission, self.sim_interface.mrs)
             	
-    def runCI(self, fs):
+    def run_single_objective_CI(self, fs):
         fitness = 0
+        self.flag = True
+        self.sim_interface.reset()
+        self.sim_interface.mrs.reset()
         self.reset_system_state(fs)
         # Run simulation
-        for t in range(self.mission.duration):
+        while self.flag:
             self.update_system_state()
-            self.execute_faults()
+            self.execute_faults(self.sim_interface.mrs.time)
             self.check_avoidCollision()
             self.check_stayWithinMissionArea()
             self.check_sufficientEnergy()
             self.check_gatherSamples_g4()
             self.check_gatherSamples_g5()
             self.check_gatherSamples_g6()
-            t += 1
-            self.time = t
-            #time.sleep(1)
             self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         with open('metrics.txt', 'a') as f:
             f.write(str(self.goal_violations_per_fault) + '\n')
             f.close()
         #print(self.goal_violations_per_fault)
         #print(self.total_goal_violations)
-        for v in self.total_goal_violations: fitness += v
-        return fitness + (len(self.total_goal_violations) * 10000)
-        
+        for v in self.goal_violations_per_fault.values(): fitness += v
+        return fitness * 0.3 + (len(self.total_goal_violations) * 10000) * 0.7
+    
+    def run_multi_objective_CI(self, fs, goals):
+        fitness = 0
+        self.flag = True
+        self.sim_interface.reset()
+        self.sim_interface.mrs.reset()
+        self.reset_system_state(fs)
+        # Run simulation
+        while self.flag:
+            self.update_system_state()
+            self.execute_faults(self.sim_interface.mrs.time)
+            self.check_avoidCollision()
+            self.check_stayWithinMissionArea()
+            self.check_sufficientEnergy()
+            self.check_gatherSamples_g4()
+            self.check_gatherSamples_g5()
+            self.check_gatherSamples_g6()
+            self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+        with open('metrics.txt', 'a') as f:
+            f.write(str(self.goal_violations_per_fault) + '\n')
+            f.close()
+        #print(self.goal_violations_per_fault)
+        #print(self.total_goal_violations)
+        if goals[0] not in self.goal_violations_per_fault.keys(): self.goal_violations_per_fault[goals[0]] = 0
+        if goals[1] not in self.goal_violations_per_fault.keys(): self.goal_violations_per_fault[goals[1]] = 0
+        fitness = self.goal_violations_per_fault[goals[0]] + self.goal_violations_per_fault[goals[1]]
+        return fitness
+            
     def check_for_collision(self, p1, p2, r1, r2):
         return (p1[0] - r1 < p2[0] + r2 and p1[0] + r1 > p2[0] - r2 and p1[1] + r1 > p2[1] - r2 and p1[1] - r1 < p2[1] + r2)
                     
@@ -200,28 +227,3 @@ class CI:
             self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
-    
-    """
-    def print_mission_and_fault_specification(self):
-        self.reset_system_state(FaultSpecification(MissionLoader().load_mission()))
-        # Setup mission specification
-        print("Mission Specification")
-        print(self.mission.name)
-        print(self.mission.duration)
-        print(self.mission.mission_area)
-        print(self.mission.robots)
-        print(self.mission.servers)
-        print(self.mission.obstacles)
-        print(self.mission.goals)
-
-        print("\nFault Specification")
-        print(self.fault_specification.faults)
-        pop = self.fault_specification.generate_population()
-        for i in range(len(pop)):
-            s = ""
-            print("INDIVIDUAL: " + str(i))
-            for k in pop[i]:
-                s += k.type.message.ID + "(" + str(k.start) + ", " + str(k.finish)+ ") "
-            print(s)
-            print("---------------------------------\n")
-     """

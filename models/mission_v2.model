@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <Setup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns="acs_project_setup" xmi:id="_VMdnEAmEEeyujvekVPE7rQ">
-  <mission xmi:id="_Wda4oAmEEeyujvekVPE7rQ" name="Mission 2" duration="5000.0">
+  <mission xmi:id="_Wda4oAmEEeyujvekVPE7rQ" name="1000" duration="1000.0">
     <robots xmi:id="_aPe1AAmEEeyujvekVPE7rQ" name="LEN" ID="r1" speed="5">
       <position xmi:id="_f7A0cAmEEeyujvekVPE7rQ" x="250" y="-250" z="1"/>
       <sensors xmi:id="_hnyfUAmEEeyujvekVPE7rQ" name="s1" ID="s1" parentID="r1" energyPerSample="2.0" samplesPerSecond="5"/>
@@ -180,7 +180,7 @@
         <center xmi:id="_uamqgAmEEeyujvekVPE7rQ" x="-500" y="500" z="1"/>
       </area>
     </obstacles>
-    <missionArea xmi:id="_ZVSdoAmEEeyujvekVPE7rQ" ID="a15" radius="1000">
+    <missionArea xmi:id="_ZVSdoAmEEeyujvekVPE7rQ" ID="a15" radius="2000">
       <center xmi:id="_ZqTrYAmEEeyujvekVPE7rQ"/>
     </missionArea>
   </mission>

@@ -1,3 +1,5 @@
+import random
+
 class DecrementSpeed:
     
     def __init__(self, message, val):
@@ -8,3 +10,6 @@ class DecrementSpeed:
         r = mission.robots[self.message.get_from().ID]
         r.speed -= self.val
         if r.speed < 0: r.speed = 0
+
+    def mutate(self):
+        self.val = random.randint(1, 10)

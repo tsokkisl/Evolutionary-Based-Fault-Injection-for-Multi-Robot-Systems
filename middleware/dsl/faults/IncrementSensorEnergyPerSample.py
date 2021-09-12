@@ -1,4 +1,5 @@
 from dsl.mission.Sensor import Sensor
+import random
 
 class IncrementSensorEnergyPerSample:
     
@@ -11,3 +12,6 @@ class IncrementSensorEnergyPerSample:
         for sc in robot.subcomponents.values():
             if isinstance(sc, Sensor):
                 sc.energy_per_sample += sc.energy_per_sample * (self.percentage / 100)
+
+    def mutate(self):
+        self.percentage = random.randint(10, 20)

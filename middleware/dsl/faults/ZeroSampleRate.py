@@ -11,3 +11,6 @@ class ZeroSampleRate:
         for sc in robot.subcomponents.values():
             if isinstance(sc, Sensor): 
                 sc.samples_per_second = self.val
+
+    def mutate(self):
+        self.val = 0

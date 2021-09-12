@@ -11,12 +11,15 @@ from gen.CI import CI
 import time
 import matplotlib.pyplot as plt
 import ast
+import sys
 
 MAX = [{}, {}]
+TYPE = ""
+goals = []
 mission_duration = 0
 # Setup CI
 ci = CI()
-mission_duration = ci.mission.duration
+mission_duration = ci.sim_interface.mission.duration
 #ci.print_mission_and_fault_specification()
 fs = FaultSpecification(MissionLoader().load_mission())
 
@@ -48,7 +51,7 @@ def GA(NGEN, pop_size, mutate_prob, mate_prob):
     pop = toolbox.population(pop_size)
 
     ci.sim_interface.MRS_init()
-    time.sleep(3)
+    time.sleep(4)
     
     # Calculate the fitness of the initilised population
     print("---------------------------- Generation 0 ----------------------------")
@@ -121,10 +124,11 @@ def check_for_max(ci, fitness):
 
 # Fitness function
 def evaluate(indiv):
-    fitness = ci.runCI(indiv)
+    global TYPE
+    global goals
+    if TYPE == "-so": fitness = ci.run_single_objective_CI(indiv)
+    elif TYPE == "-mo": fitness = ci.run_multi_objective_CI(indiv, goals)
     check_for_max(ci, fitness)
-    ci.sim_interface.reset()
-    ci.sim_interface.mrs.reset()
     return fitness,
 
 def mutate(indiv):
@@ -150,6 +154,7 @@ def mutate(indiv):
             upper_bound = indiv[j].start - 1
         indiv[i].start = random.randint(lower_bound, indiv[i].finish)
         indiv[i].finish = random.randint(indiv[i].start, upper_bound)
+        indiv[i].ft.mutate()
     """print("indiv After")
     print([[i.ft.message.ID, i.start, i.finish] for i in indiv])
     print("-----------------------------------------------------")"""
@@ -241,15 +246,20 @@ if __name__ == "__main__":
     generate_plots()
     exit()"""
 
+    TYPE = sys.argv[1]
+    if TYPE == '-mo':
+        goals.append(sys.argv[2])
+        goals.append(sys.argv[3])
+
     # Run GA
-    generations = 10
-    population_size = 20
-    mutate_prob = 0.5
-    mate_prob = 0.5
+    generations = 20
+    population_size = 10
+    mutate_prob = 0.7
+    mate_prob = 0.7
     statistics = GA(generations, population_size, mutate_prob, mate_prob)
 
     print(MAX)
-    with open('statistics.txt', 'a') as f:
+    with open('statistics.txt', 'w') as f:
         for stat in statistics:
             f.write(str(stat) + '\n')
         f.close()

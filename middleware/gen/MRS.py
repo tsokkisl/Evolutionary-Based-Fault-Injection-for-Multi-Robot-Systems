@@ -5,7 +5,6 @@ from dsl.mission.Sensor import Sensor
 from dsl.mission.MotionSource import MotionSource
 import roslibpy
 from threading import Thread
-import time
 
 class MRS(Thread):
 	
@@ -16,7 +15,10 @@ class MRS(Thread):
 		super().__init__(*args, **kwargs)
 		self.initialize_robots()
 		self.flag = True
-	
+		self.time = 0
+		self.duration = 0
+		self.ci = None
+		
 	def initialize_robots(self):	
 		# Initilize Robot: LEN
 		subcomponents = []
@@ -116,12 +118,28 @@ class MRS(Thread):
 		s6_DEPTH = roslibpy.Topic(self.client, '/s6_DEPTH', 'std_msgs/String')
 		self.topics["s6_DEPTH"] = s6_DEPTH
 	
-
+		f = open("logs.txt", "w")
+		f.write("-------------------------------------------------------------------------------------------------\n" +
+				"						  		         ROBOT SPECIFICATIONS			 					      \n" +
+				"-------------------------------------------------------------------------------------------------\n\n")
+		for robot in self.robots.values():
+			f.write("ROBOT: " + robot.name + " STARTING SPEED: " + str(robot.speed) + " STARTING POSITION: " + str(robot.position.get_coors()) + " STARTING ENERGY: " + str(robot.current_energy) + "\n\n")
+			for sc in  robot.subcomponents.values():
+				if isinstance(sc, Battery): f.write("	----- BATTERY: " + sc.ID + "  TOTAL ENERGY: " + str(sc.total_energy) + "\n\n")
+				elif isinstance(sc, Sensor): f.write("	----- SENSOR: " + sc.ID + "  TYPE: " + str(sc.sensor_type) + " SAMPLES/SECOND: " + str(sc.samples_per_second)+ " ENERGY/SAMPLE: " + str(sc.energy_per_sample) + "\n\n")
+				elif isinstance(sc, MotionSource): f.write("	----- MOTION SOURCE: " + sc.ID + " ENERGY/DISTANCE UNIT" + str(sc.energy_per_distance_unit) + "\n\n")
+			  	
 		while self.client.is_connected and self.flag:
+			if self.time == 0: 
+				f.write("-------------------------------------------------------------------------------------------------\n" +
+						"						  		       STARTING NEW SIMULATION			 					      \n"
+			  			"-------------------------------------------------------------------------------------------------\n\n")
 			for robot in self.robots.values():
 				robot.move()
+				f.write("[time = " + str(self.time) + "] ROBOT: " + robot.name + " SPEED: " + str(robot.speed) + " POSITION: " + str(robot.position.get_coors()) + " ENERGY: " + str(robot.current_energy) + "\n\n")
 				#print('position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
             	#robot.position.z, robot.speed, robot.current_energy, robot.direction))
+			
 			try:
 				#--------------------------------- Publish data of Robot LEN ---------------------------------#
 				r1_POSITION.publish(roslibpy.Message({'data': str(self.robots["r1"].position.x) + ',' + str(self.robots["r1"].position.y) + ',' + 
@@ -155,6 +173,13 @@ class MRS(Thread):
 		
 			except Exception as e:
 				print(e)
+			
+			self.time += 1
+			if self.time > self.duration: 
+				self.ci.flag = False
+				self.time = 0
+
+		f.close()
 					
 		for topic in self.topics.values():
 			topic.unadvertise()

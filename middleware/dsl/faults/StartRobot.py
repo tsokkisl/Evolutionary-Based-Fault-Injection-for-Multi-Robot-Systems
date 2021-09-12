@@ -9,3 +9,6 @@ class StartRobot:
     def exec_fault(self, mission, mrs):
         mission.robots[self.robot.ID].start()
         mrs.robots[self.robot.ID].start()
+
+    def mutate(self):
+        pass

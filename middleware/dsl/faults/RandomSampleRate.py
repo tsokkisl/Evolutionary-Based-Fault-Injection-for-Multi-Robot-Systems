@@ -13,3 +13,6 @@ class RandomSampleRate:
             if isinstance(sc, Sensor):
                 sc.samples_per_second = self.val
                 if sc.samples_per_second < 0: sc.samples_per_second = 0
+
+    def mutate(self):
+        self.val = random.randint(1, 10)

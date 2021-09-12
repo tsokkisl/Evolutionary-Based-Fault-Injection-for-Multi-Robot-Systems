@@ -6,3 +6,6 @@ class BlockMessage:
 
     def exec_fault(self, mission):
         pass
+    
+    def mutate(self):
+        pass

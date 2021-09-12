@@ -3,7 +3,6 @@ from dsl.faults.DeactivateSensor import DeactivateSensor
 from dsl.faults.DelayMessage import DelayMessage
 from dsl.faults.FixedRobotCoordinates import FixedRobotCoordinates
 from dsl.faults.ZeroRemainingEnergyCapacityReport import ZeroRemainingEnergyCapacityReport
-from dsl.faults.Fault import Fault
 from dsl.faults.RandomSpeed import RandomSpeed
 from dsl.faults.BlockMessage import BlockMessage
 from dsl.faults.RandomRobotCoordinates import RandomRobotCoordinates

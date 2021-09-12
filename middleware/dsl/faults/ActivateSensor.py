@@ -9,3 +9,6 @@ class ActivateSensor:
     def exec_fault(self, mission, mrs):
         mission.robots[self.sensor.parent_ID].subcomponents[self.sensor.ID].start()
         mrs.robots[self.sensor.parent_ID].subcomponents[self.sensor.ID].start()
+    
+    def mutate(self):
+        pass

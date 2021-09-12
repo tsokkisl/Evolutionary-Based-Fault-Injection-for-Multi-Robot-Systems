@@ -11,3 +11,6 @@ class ZeroSensorEnergyPerSample:
         for sc in robot.subcomponents.values():
             if isinstance(sc, Sensor):
                 sc.energy_per_sample = self.val
+    
+    def mutate(self):
+        self.val = 0.0

@@ -9,3 +9,6 @@ class StopRobot:
     def exec_fault(self, mission, mrs):
         mission.robots[self.robot.ID].stop()
         mrs.robots[self.robot.ID].stop()
+
+    def mutate(self):
+        pass
