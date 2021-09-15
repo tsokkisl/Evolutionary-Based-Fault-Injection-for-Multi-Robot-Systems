@@ -55,16 +55,24 @@ def GA(NGEN, pop_size, mutate_prob, mate_prob):
     ci.sim_interface.MRS_init()
     time.sleep(4)
     
+    if TYPE == '-mo': s ='mo'
+    else : s ='so'
     # Calculate the fitness of the initilised population
-    print("---------------------------- Generation 0 ----------------------------")
+    print("------------------------ Initilising Fitness -------------------------")
+    with open(s + '_metrics.txt', 'a') as f:
+        f.write("------------------------ Initilising Fitness -------------------------\n")
+        f.close()
     fitnesses = [toolbox.evaluate(indiv) for indiv in pop]
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
     #for ind, fit in zip(pop, fitnesses): print(ind, fit)
 
-    for g in range(1, NGEN):
+    for g in range(NGEN):
         print("---------------------------- Generation %i ----------------------------" % g)
+        with open(s + '_metrics.txt', 'a') as f:
+            f.write("---------------------------- Generation %i ----------------------------\n" % g)
+            f.close()
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
 
@@ -112,28 +120,26 @@ def GA(NGEN, pop_size, mutate_prob, mate_prob):
 def check_for_max(ci, fitness, indiv):
     global MAX
     sum_1, sum_2 = 0, 0
-    for val in ci.goal_violations_per_fault.values(): sum_1 += val
+    for val in ci.goal_violations_per_goal.values(): sum_1 += val
     for val in MAX[1].values(): sum_2 += val
-    if len(ci.goal_violations_per_fault) == len(MAX[1]):
+    if len(ci.goal_violations_per_goal) == len(MAX[1]):
         if sum_1 > sum_2: 
             MAX[0] = indiv
-            MAX[1] = ci.goal_violations_per_fault
-            print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
-    elif len(ci.goal_violations_per_fault) > len(MAX[1]):
+            MAX[1] = ci.goal_violations_per_goal
+            print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_goal))
+    elif len(ci.goal_violations_per_goal) > len(MAX[1]):
         MAX[0] = indiv
-        MAX[1] = ci.goal_violations_per_fault
-        print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_fault))
+        MAX[1] = ci.goal_violations_per_goal
+        print("New fault specification found! Fitness: {0} - Violations per Goal: {1} - ".format(fitness, ci.goal_violations_per_goal))
 
-def pareto_front(ci, indiv):
+def pareto_front(ci):
     global PARETO
     flag = True
     p = []
-    idv = [ci.goal_violations_per_fault[goals[0]], ci.goal_violations_per_fault[goals[1]]]
-    #p.append(indiv)
+    idv = [ci.goal_violations_per_goal[goals[0]], ci.goal_violations_per_goal[goals[1]]]
     p.append(idv[0])
     p.append(idv[1])
     temp_pareto = []
-    l = len(PARETO)
     if len(PARETO) == 0:
         PARETO.append(p)
     else:
@@ -148,9 +154,7 @@ def pareto_front(ci, indiv):
         if flag: 
             PARETO = temp_pareto
             PARETO.append(idv)
-        if len(PARETO) > l:
-            print("New Pareto front found for [{0}, {1}]! => {2}".format(goals[0], goals[1], PARETO))
-
+            print("New Pareto front found for Goals {0}, {1}: => {2}".format(goals[0], goals[1], PARETO))
 
 # Fitness function
 def evaluate(indiv):
@@ -161,7 +165,7 @@ def evaluate(indiv):
         check_for_max(ci, fitness, indiv)    
     elif TYPE == "-mo": 
         fitness = ci.run_multi_objective_CI(indiv, goals)
-        pareto_front(ci, indiv)
+        pareto_front(ci)
     return fitness,
 
 def mutate(indiv):
@@ -257,27 +261,6 @@ def generate_plots():
 --------------------------------------------------------------------------------------------"""
 
 if __name__ == "__main__":
-    """mutate_prob = 0.3
-    mate_prob = 0.5
-    pop = FaultSpecification(MissionLoader().load_mission()).generate_population(10)
-    ci.sim_interface.MRS_init()
-    time.sleep(2)
-    for i in range(1):
-        print('---------------- Generation {0} ---------------'.format(i))
-        for indiv in pop:
-            mutate(indiv, mutate_prob)
-        for indiv_1 in pop:
-            for indiv_2 in pop:
-                mate(indiv_1, indiv_2, mate_prob)
-        for indin in pop:
-            ci.runCI(indiv)
-            ci.sim_interface.reset()
-            ci.sim_interface.mrs.reset()
-    ci.sim_interface.mrs.kill()
-    ci.sim_interface.kill()
-    
-    generate_plots()
-    exit()"""
 
     TYPE = sys.argv[1]
     if TYPE == '-mo':
@@ -285,28 +268,35 @@ if __name__ == "__main__":
         goals.append(sys.argv[3])
 
     # Run GA
-    generations = 20
-    population_size = 10
+    generations = 50
+    population_size = 20
     mutate_prob = 0.7
     mate_prob = 0.7
     statistics = GA(generations, population_size, mutate_prob, mate_prob)
 
-    print(MAX)
-    with open('statistics.txt', 'w') as f:
-        for stat in statistics:
-            f.write(str(stat) + '\n')
-        f.close()
+    #print(MAX)
+
+    if TYPE == '-mo':
+        with open('mo_statistics.txt', 'w') as f:
+            for stat in statistics:
+                f.write(str(stat) + '\n')
+            f.close()
+    elif TYPE == '-so':
+        with open('so_statistics.txt', 'w') as f:
+            for stat in statistics:
+                f.write(str(stat) + '\n')
+            f.close()
 
     plt.xlabel('Generation')
     plt.ylabel('Mean Fitness')
-    plt.plot(statistics[0], statistics[1], label='Mean Fitness', color='orange')
+    plt.scatter(statistics[0], statistics[1], label='Mean Fitness', color='blue')
     plt.yscale("log")
     plt.legend(loc='best', fancybox=True, framealpha=0.5)
     plt.show(block=True)
 
     plt.xlabel('Generation')
     plt.ylabel('Best Individual per generation')
-    plt.plot(statistics[0], statistics[4], label='Best Individual', color='orange')
+    plt.scatter(statistics[0], statistics[4], label='Best Individual', color='blue')
     plt.yscale("log")
     plt.legend(loc='best', fancybox=True, framealpha=0.5)
     plt.show(block=True)

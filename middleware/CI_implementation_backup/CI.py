@@ -6,39 +6,36 @@ from dsl.mission.Sensor import Sensor
 
 class CI:
 	
-    total_goal_violations = [] 
-    goal_violations_per_fault = {}
+    goal_violations_per_goal = {}
     goals_last_violation_state = {}
-    time = 0
+    flag = True
     
     def __init__(self):
-        self.mission = MissionLoader().load_mission()
         # Setup Sim Interface
         print("--------------- Initilizing and starting sim interface ---------------\n")
         self.sim_interface = SimInterface()
+        self.sim_interface.mission = MissionLoader().load_mission()
+        self.sim_interface.ci = self
         self.sim_interface.daemon = True
         self.sim_interface.start()
         time.sleep(2)
 
     def reset_system_state(self, fs):
-        self.mission = MissionLoader().load_mission()
         self.fault_specification = fs
-        self.sim_interface.mission = self.mission
-        self.total_goal_violations = [0 for _ in range(self.mission.duration)]
-        self.goal_violations_per_fault = {}
+        self.sim_interface.mission = MissionLoader().load_mission()
+        self.goal_violations_per_goal = {"g1": 0, "g2": 0, "g3": 0, "g4": 0, "g5": 0, "g6": 0}
         self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         self.time = 0
 
     def update_goal_violations(self, gid):
-        self.total_goal_violations[self.time] += 1
-        if gid in self.goal_violations_per_fault.keys():
-            self.goal_violations_per_fault[gid] += 1
+        if gid in self.goal_violations_per_goal.keys():
+            self.goal_violations_per_goal[gid] += 1
         else:
-            self.goal_violations_per_fault[gid] = 1
+            self.goal_violations_per_goal[gid] = 1
 
     def update_system_state(self):
         """ Update mission state """
-        for robot in self.mission.robots.values():
+        for robot in self.sim_interface.mission.robots.values():
             robot.update_position(self.sim_interface.get_POSITION(robot))
             robot.update_energy(self.sim_interface.get_ENERGY(robot))
             robot.update_speed(self.sim_interface.get_SPEED(robot))
@@ -50,36 +47,66 @@ class CI:
             robot.position.z, robot.speed, robot.current_energy, robot.direction, self.time))
             print('--------------------------------')"""
 
-    def execute_faults(self):
+    def execute_faults(self, time):
         """ Check for fault """
         for fault in self.fault_specification:
-            fault.exec_fault(self.time, self.sim_interface.mission, self.sim_interface.mrs)
+            fault.exec_fault(time, self.sim_interface.mission, self.sim_interface.mrs)
             	
-    def runCI(self, fs):
+    def run_single_objective_CI(self, fs):
         fitness = 0
+        self.flag = True
+        temp = []
+        self.sim_interface.reset()
+        self.sim_interface.mrs.reset()
         self.reset_system_state(fs)
         # Run simulation
-        for t in range(self.mission.duration):
+        while self.flag:
             self.update_system_state()
-            self.execute_faults()
+            self.execute_faults(self.sim_interface.mrs.time)
             self.check_avoidCollision()
             self.check_stayWithinMissionArea()
             self.check_sufficientEnergy()
-            self.check_gathersamples_g4()
+            self.check_gatherSamples_g4()
             self.check_gatherSamples_g5()
             self.check_gatherSamples_g6()
-            t += 1
-            self.time = t
-            #time.sleep(1)
             self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+        for v in self.goal_violations_per_goal.values(): fitness += v
+        fitness = fitness * 0.3 + (len(self.goal_violations_per_goal) * 10000) * 0.7
+        for f in fs: temp.append({"Type": f.ft.__class__.__name__, "start": f.start, "finish": f.finish})
+        temp.append(self.goal_violations_per_goal)
+        temp.append(fitness)
+        f = open('metrics.txt', 'a')
+        f.write(str(temp) + '\n')
+        f.close()
+        return fitness
+    
+    def run_multi_objective_CI(self, fs, goals):
+        self.goals = goals
+        fitness = 0
+        self.flag = True
+        self.sim_interface.reset()
+        self.sim_interface.mrs.reset()
+        self.reset_system_state(fs)
+        # Run simulation
+        while self.flag:
+            self.update_system_state()
+            self.execute_faults(self.sim_interface.mrs.time)
+            self.check_avoidCollision()
+            self.check_stayWithinMissionArea()
+            self.check_sufficientEnergy()
+            self.check_gatherSamples_g4()
+            self.check_gatherSamples_g5()
+            self.check_gatherSamples_g6()
+            self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
+        #print(self.goal_violations_per_goal)
+        if goals[0] not in self.goal_violations_per_goal.keys(): self.goal_violations_per_goal[goals[0]] = 0
+        if goals[1] not in self.goal_violations_per_goal.keys(): self.goal_violations_per_goal[goals[1]] = 0
         with open('metrics.txt', 'a') as f:
-            f.write(str(self.goal_violations_per_fault) + '\n')
+            f.write(str(self.goal_violations_per_goal[goals[0]]) + ',' + str(self.goal_violations_per_goal[goals[1]]) + '\n')
             f.close()
-        #print(self.goal_violations_per_fault)
-        #print(self.total_goal_violations)
-        for v in self.total_goal_violations: fitness += v
-        return fitness + (len(self.total_goal_violations) * 10000)
-        
+        fitness = self.goal_violations_per_goal[goals[0]] + self.goal_violations_per_goal[goals[1]]
+        return fitness
+            
     def check_for_collision(self, p1, p2, r1, r2):
         return (p1[0] - r1 < p2[0] + r2 and p1[0] + r1 > p2[0] - r2 and p1[1] + r1 > p2[1] - r2 and p1[1] - r1 < p2[1] + r2)
                     
@@ -87,6 +114,8 @@ class CI:
         # protected region User implemented method on begin
         goal_ID = "g1"
         is_violated = False
+        """ Dependencies:  """
+        """ Members: JEN KAL LEN  """
         """ Check if goal is violated and make a decision """
         collision_points = [[r.ID, r.position, 1] for r in self.sim_interface.mission.robots.values()] + [[o.ID, o.area.center, o.area.radius] for o in self.sim_interface.mission.obstacles.values()]
         for robot in self.sim_interface.mission.robots.values():
@@ -94,13 +123,15 @@ class CI:
             for point in collision_points:
                 if robot.ID != point[0] and self.check_for_collision(robot.position.get_coors(), point[1].get_coors(), 1, point[2]):
                     is_violated = True
-                    d = robot.avoid_collision()
-                    self.sim_interface.mrs.change_direction(robot, d)
-                    self.goals_last_violation_state[goal_ID] = True
                     collision = True
+                    self.goals_last_violation_state[goal_ID] = True
                     break
             if not collision:
                 d = robot.directions[random.randint(0, len(robot.directions) - 1)]
+                robot.direction = d
+                self.sim_interface.mrs.change_direction(robot, d)
+            else:
+                d = robot.avoid_collision()
                 robot.direction = d
                 self.sim_interface.mrs.change_direction(robot, d)
         if is_violated: self.update_goal_violations(goal_ID)
@@ -110,11 +141,14 @@ class CI:
         # protected region User implemented method on begin
         goal_ID = "g2"
         is_violated = False
+        """ Dependencies:  """
+        """ Members: JEN KAL LEN  """
         """ Check if goal is violated and make a decision """
         for robot in self.sim_interface.mission.robots.values():
             if robot.distance_from_mission_center(self.sim_interface.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
                 is_violated = True
-                d = robot.change_direction_towards_center()
+                d = robot.change_direction_towards_center(self.sim_interface.mission.mission_area.center)
+                robot.direction = d
                 self.sim_interface.mrs.change_direction(robot, d)
                 self.goals_last_violation_state[goal_ID] = True
         if is_violated: self.update_goal_violations(goal_ID)
@@ -124,6 +158,8 @@ class CI:
         # protected region User implemented method on begin
         goal_ID = "g3"
         is_violated = False
+        """ Dependencies:  """
+        """ Members: JEN KAL LEN  """
         """ Check if goal is violated and make a decision """
         for robot in self.sim_interface.mission.robots.values():
             if not robot.check_for_sufficient_energy():
@@ -133,69 +169,67 @@ class CI:
         if is_violated: self.update_goal_violations(goal_ID)
 		# protected region User implemented method end
 		
-    def check_gathersamples_g4(self):
+    def check_gatherSamples_g4(self):
         # protected region User implemented method on begin
         goal_ID = "g4"
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        goal_area = self.sim_interface.mission.goals[goal_ID].goalArea.area
+        robot = self.sim_interface.mission.robots[sensor.parent_ID]
+        """ Dependencies:  """
+        """ Members: JEN  """
         """ Check if goal is violated and make a decision """
-        if sensor.state == "Active" and self.goals_last_violation_state["g3"] and self.goals_last_violation_state["g2"]:
+        if sensor.state == "Active" and goal_area.center.distance(robot.position) <= goal_area.radius + 1:
             if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
                 g = self.sim_interface.mission.goals.get(goal_ID).goalTask
                 g.total_samples += sensor.samples[len(sensor.samples) - 1]
         else:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
+            d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
+            self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
     def check_gatherSamples_g5(self):
         # protected region User implemented method on begin
         goal_ID = "g5"
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        goal_area = self.sim_interface.mission.goals[goal_ID].goalArea.area
+        robot = self.sim_interface.mission.robots[sensor.parent_ID]
+        """ Dependencies:  """
+        """ Members: KAL  """
         """ Check if goal is violated and make a decision """
-        if sensor.state == "Active" and self.goals_last_violation_state["g3"] and self.goals_last_violation_state["g2"]:
+        #print(sensor.state == "Active", self.goals_last_violation_state["g2"], goal_area.center.distance(robot.position) <= goal_area.radius + 1)
+        if sensor.state == "Active" and goal_area.center.distance(robot.position) <= goal_area.radius + 1:
             if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
                 g = self.sim_interface.mission.goals.get(goal_ID).goalTask
                 g.total_samples += sensor.samples[len(sensor.samples) - 1]
         else:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
+            d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
+            self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
     def check_gatherSamples_g6(self):
         # protected region User implemented method on begin
         goal_ID = "g6"
         sensor = self.sim_interface.mission.goals[goal_ID].goalTask.sensor
+        goal_area = self.sim_interface.mission.goals[goal_ID].goalArea.area
+        robot = self.sim_interface.mission.robots[sensor.parent_ID]
+        """ Dependencies:  """
+        """ Members: LEN  """
         """ Check if goal is violated and make a decision """
-        if sensor.state == "Active" and self.goals_last_violation_state["g3"] and self.goals_last_violation_state["g2"]:
+        if sensor.state == "Active" and goal_area.center.distance(robot.position) <= goal_area.radius + 1:
             if sensor.samples[len(sensor.samples) - 1] >= sensor.samples_per_second:
                 g = self.sim_interface.mission.goals.get(goal_ID).goalTask
                 g.total_samples += sensor.samples[len(sensor.samples) - 1]
         else:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
+            d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
+            self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
-    
-    """
-    def print_mission_and_fault_specification(self):
-        self.reset_system_state(FaultSpecification(MissionLoader().load_mission()))
-        # Setup mission specification
-        print("Mission Specification")
-        print(self.mission.name)
-        print(self.mission.duration)
-        print(self.mission.mission_area)
-        print(self.mission.robots)
-        print(self.mission.servers)
-        print(self.mission.obstacles)
-        print(self.mission.goals)
-
-        print("\nFault Specification")
-        print(self.fault_specification.faults)
-        pop = self.fault_specification.generate_population()
-        for i in range(len(pop)):
-            s = ""
-            print("INDIVIDUAL: " + str(i))
-            for k in pop[i]:
-                s += k.type.message.ID + "(" + str(k.start) + ", " + str(k.finish)+ ") "
-            print(s)
-            print("---------------------------------\n")
-     """
+		

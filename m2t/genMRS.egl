@@ -91,25 +91,25 @@ class MRS(Thread):
 			[% } %]
 			[% } %]
 		[% } %]	
-		f = open("logs.txt", "w")
-		f.write("-------------------------------------------------------------------------------------------------\n" +
+		self.file = open("logs.txt", "w")
+		self.file.write("-------------------------------------------------------------------------------------------------\n" +
 				"						  		         ROBOT SPECIFICATIONS			 					      \n" +
 				"-------------------------------------------------------------------------------------------------\n\n")
 		for robot in self.robots.values():
-			f.write("ROBOT: " + robot.name + " STARTING SPEED: " + str(robot.speed) + " STARTING POSITION: " + str(robot.position.get_coors()) + " STARTING ENERGY: " + str(robot.current_energy) + "\n\n")
+			self.file.write("ROBOT: " + robot.name + " STARTING SPEED: " + str(robot.speed) + " STARTING POSITION: " + str(robot.position.get_coors()) + " STARTING ENERGY: " + str(robot.current_energy) + "\n\n")
 			for sc in  robot.subcomponents.values():
-				if isinstance(sc, Battery): f.write("	----- BATTERY: " + sc.ID + "  TOTAL ENERGY: " + str(sc.total_energy) + "\n\n")
-				elif isinstance(sc, Sensor): f.write("	----- SENSOR: " + sc.ID + "  TYPE: " + str(sc.sensor_type) + " SAMPLES/SECOND: " + str(sc.samples_per_second)+ " ENERGY/SAMPLE: " + str(sc.energy_per_sample) + "\n\n")
-				elif isinstance(sc, MotionSource): f.write("	----- MOTION SOURCE: " + sc.ID + " ENERGY/DISTANCE UNIT" + str(sc.energy_per_distance_unit) + "\n\n")
+				if isinstance(sc, Battery): self.file.write("	----- BATTERY: " + sc.ID + "  TOTAL ENERGY: " + str(sc.total_energy) + "\n\n")
+				elif isinstance(sc, Sensor): self.file.write("	----- SENSOR: " + sc.ID + "  TYPE: " + str(sc.sensor_type) + " SAMPLES/SECOND: " + str(sc.samples_per_second)+ " ENERGY/SAMPLE: " + str(sc.energy_per_sample) + "\n\n")
+				elif isinstance(sc, MotionSource): self.file.write("	----- MOTION SOURCE: " + sc.ID + " ENERGY/DISTANCE UNIT" + str(sc.energy_per_distance_unit) + "\n\n")
 			  	
 		while self.client.is_connected and self.flag:
 			if self.time == 0: 
-				f.write("-------------------------------------------------------------------------------------------------\n" +
+				self.file.write("-------------------------------------------------------------------------------------------------\n" +
 						"						  		       STARTING NEW SIMULATION			 					      \n"
 			  			"-------------------------------------------------------------------------------------------------\n\n")
 			for robot in self.robots.values():
 				robot.move()
-				f.write("[time = " + str(self.time) + "] ROBOT: " + robot.name + " SPEED: " + str(robot.speed) + " POSITION: " + str(robot.position.get_coors()) + " ENERGY: " + str(robot.current_energy) + "\n\n")
+				self.file.write("[time = " + str(self.time) + "] ROBOT: " + robot.name + " SPEED: " + str(robot.speed) + " POSITION: " + str(robot.position.get_coors()) + " ENERGY: " + str(robot.current_energy) + "\n\n")
 				#print('position = [{0}, {1}, {2}], speed={3}, energy={4}, direction={5}'.format(robot.position.x, robot.position.y, 
             	#robot.position.z, robot.speed, robot.current_energy, robot.direction))
 			
@@ -143,7 +143,7 @@ class MRS(Thread):
 				self.ci.flag = False
 				self.time = 0
 
-		f.close()
+		self.file.close()
 					
 		for topic in self.topics.values():
 			topic.unadvertise()
@@ -162,6 +162,8 @@ class MRS(Thread):
 		
 	def change_direction(self, robot, direction):
 		self.robots[robot.ID].direction = direction
+		self.file.write("[time = " + str(self.time) + "] ROBOT: {0} HAS CHANGED DIRECTION TO: {1}\n".format(robot.name, robot.direction))
 	
 	def change_speed(self, robot, speed):
 		self.robots[robot.ID].speed = speed
+		self.file.write("[time = " + str(self.time) + "] ROBOT: {0} HAS CHANGED SPEED TO: {1}\n".format(robot.name, robot.speed))

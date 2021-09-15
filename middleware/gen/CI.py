@@ -6,8 +6,7 @@ from dsl.mission.Sensor import Sensor
 
 class CI:
 	
-    total_goal_violations = [] 
-    goal_violations_per_fault = {}
+    goal_violations_per_goal = {}
     goals_last_violation_state = {}
     flag = True
     
@@ -24,17 +23,15 @@ class CI:
     def reset_system_state(self, fs):
         self.fault_specification = fs
         self.sim_interface.mission = MissionLoader().load_mission()
-        self.total_goal_violations = [0 for _ in range(self.sim_interface.mission.duration)]
-        self.goal_violations_per_fault = {"g1": 0, "g2": 0, "g3": 0, "g4": 0, "g5": 0, "g6": 0}
+        self.goal_violations_per_goal = {"g1": 0, "g2": 0, "g3": 0, "g4": 0, "g5": 0, "g6": 0}
         self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
         self.time = 0
 
     def update_goal_violations(self, gid):
-        self.total_goal_violations[self.time] += 1
-        if gid in self.goal_violations_per_fault.keys():
-            self.goal_violations_per_fault[gid] += 1
+        if gid in self.goal_violations_per_goal.keys():
+            self.goal_violations_per_goal[gid] += 1
         else:
-            self.goal_violations_per_fault[gid] = 1
+            self.goal_violations_per_goal[gid] = 1
 
     def update_system_state(self):
         """ Update mission state """
@@ -58,6 +55,7 @@ class CI:
     def run_single_objective_CI(self, fs):
         fitness = 0
         self.flag = True
+        temp = []
         self.sim_interface.reset()
         self.sim_interface.mrs.reset()
         self.reset_system_state(fs)
@@ -72,13 +70,15 @@ class CI:
             self.check_gatherSamples_g5()
             self.check_gatherSamples_g6()
             self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
-        with open('metrics.txt', 'a') as f:
-            f.write(str(self.goal_violations_per_fault) + '\n')
-            f.close()
-        #print(self.goal_violations_per_fault)
-        #print(self.total_goal_violations)
-        for v in self.goal_violations_per_fault.values(): fitness += v
-        return fitness * 0.3 + (len(self.total_goal_violations) * 10000) * 0.7
+        for v in self.goal_violations_per_goal.values(): fitness += v
+        fitness = fitness * 0.3 + (len(self.goal_violations_per_goal) * 10000) * 0.7
+        for f in fs: temp.append({"Type": f.ft.__class__.__name__, "start": f.start, "finish": f.finish})
+        temp.append(self.goal_violations_per_goal)
+        temp.append(fitness)
+        f = open('so_metrics.txt', 'a')
+        f.write(str(temp) + '\n')
+        f.close()
+        return fitness
     
     def run_multi_objective_CI(self, fs, goals):
         self.goals = goals
@@ -98,14 +98,13 @@ class CI:
             self.check_gatherSamples_g5()
             self.check_gatherSamples_g6()
             self.goals_last_violation_state = {"g1": False, "g2": False, "g3": False, "g4": False, "g5": False, "g6": False}
-        with open('metrics.txt', 'a') as f:
-            f.write(str(self.goal_violations_per_fault) + '\n')
+        #print(self.goal_violations_per_goal)
+        if goals[0] not in self.goal_violations_per_goal.keys(): self.goal_violations_per_goal[goals[0]] = 0
+        if goals[1] not in self.goal_violations_per_goal.keys(): self.goal_violations_per_goal[goals[1]] = 0
+        with open('mo_metrics.txt', 'a') as f:
+            f.write(str(self.goal_violations_per_goal[goals[0]]) + ',' + str(self.goal_violations_per_goal[goals[1]]) + '\n')
             f.close()
-        #print(self.goal_violations_per_fault)
-        #print(self.total_goal_violations)
-        if goals[0] not in self.goal_violations_per_fault.keys(): self.goal_violations_per_fault[goals[0]] = 0
-        if goals[1] not in self.goal_violations_per_fault.keys(): self.goal_violations_per_fault[goals[1]] = 0
-        fitness = self.goal_violations_per_fault[goals[0]] + self.goal_violations_per_fault[goals[1]]
+        fitness = self.goal_violations_per_goal[goals[0]] + self.goal_violations_per_goal[goals[1]]
         return fitness
             
     def check_for_collision(self, p1, p2, r1, r2):
@@ -124,13 +123,15 @@ class CI:
             for point in collision_points:
                 if robot.ID != point[0] and self.check_for_collision(robot.position.get_coors(), point[1].get_coors(), 1, point[2]):
                     is_violated = True
-                    d = robot.avoid_collision()
-                    self.sim_interface.mrs.change_direction(robot, d)
-                    self.goals_last_violation_state[goal_ID] = True
                     collision = True
+                    self.goals_last_violation_state[goal_ID] = True
                     break
             if not collision:
                 d = robot.directions[random.randint(0, len(robot.directions) - 1)]
+                robot.direction = d
+                self.sim_interface.mrs.change_direction(robot, d)
+            else:
+                d = robot.avoid_collision()
                 robot.direction = d
                 self.sim_interface.mrs.change_direction(robot, d)
         if is_violated: self.update_goal_violations(goal_ID)
@@ -147,6 +148,7 @@ class CI:
             if robot.distance_from_mission_center(self.sim_interface.mission.mission_area.center) > self.sim_interface.mission.mission_area.radius:
                 is_violated = True
                 d = robot.change_direction_towards_center(self.sim_interface.mission.mission_area.center)
+                robot.direction = d
                 self.sim_interface.mrs.change_direction(robot, d)
                 self.goals_last_violation_state[goal_ID] = True
         if is_violated: self.update_goal_violations(goal_ID)
@@ -184,6 +186,7 @@ class CI:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
             d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
             self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
@@ -205,6 +208,7 @@ class CI:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
             d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
             self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
@@ -225,6 +229,7 @@ class CI:
             self.update_goal_violations(goal_ID)
             self.goals_last_violation_state[goal_ID] = True
             d = robot.change_direction_towards_goal_area_center(goal_area)
+            robot.direction = d
             self.sim_interface.mrs.change_direction(robot, d)
 		# protected region User implemented method end
 		
